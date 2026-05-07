@@ -352,6 +352,22 @@ def resnet18(
     return model.to(device)
 
 
+def resnet10(
+    model_rate,
+    model_config,
+    device="cpu",
+):
+    """Create the ResNet10 model."""
+    model_config["hidden_size"] = [
+        int(np.ceil(model_rate * x)) for x in model_config["hidden_layers"]
+    ]
+    scaler_rate = model_rate / model_config["global_model_rate"]
+    model_config["rate"] = scaler_rate
+    model = ResNet(model_config, block=Block, num_blocks=[1, 1, 1, 1])
+    model.apply(_init_param)
+    return model.to(device)
+
+
 class MLP(nn.Module):
     """Multi Layer Perceptron."""
 
@@ -461,23 +477,40 @@ class CNNCifar(nn.Module):
 
 def create_model(model_config, model_rate=None, track=False, device="cpu"):
     """Create the model based on the configuration given in hydra."""
-    model = None
     model_config = model_config.copy()
     model_config["track"] = track
 
     if model_config["model"] == "MLP":
         model = MLP()
-        model.to(device)
+        return model.to(device)
+
     elif model_config["model"] == "CNNCifar":
         model = CNNCifar()
-        model.to(device)
+        return model.to(device)
+
     elif model_config["model"] == "conv":
-        model = conv(model_rate=model_rate, model_config=model_config, device=device)
-    elif model_config["model"] == "resnet18":
-        model = resnet18(
-            model_rate=model_rate, model_config=model_config, device=device
+        return conv(
+            model_rate=model_rate,
+            model_config=model_config,
+            device=device,
         )
-    return model
+
+    elif model_config["model"] == "resnet18":
+        return resnet18(
+            model_rate=model_rate,
+            model_config=model_config,
+            device=device,
+        )
+
+    elif model_config["model"] == "resnet10":
+        return resnet10(
+            model_rate=model_rate,
+            model_config=model_config,
+            device=device,
+        )
+
+    else:
+        raise ValueError(f"Invalid model name: {model_config['model']}")
 
 
 def _init_param(m_param):

@@ -1,4 +1,4 @@
-"""fedprox: A Flower Baseline."""
+"""fedprox: Dataset loading for MNIST, FEMNIST, and CIFAR-10."""
 
 import numpy as np
 from datasets import DatasetDict, load_dataset
@@ -13,27 +13,49 @@ FDS = None  # Cache FederatedDataset
 
 MNIST_TRANSFORMS = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
 
+CIFAR10_TRANSFORMS = Compose(
+    [
+        ToTensor(),
+        Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)),
+    ]
+)
+
 
 class FEMNISTFilter(Preprocessor):
-    """A Preprocessor class that filter the FEMNIST data.
-
-    It filters data with label 0 to 9 (lower case letters 'a'-'j')
-    """
+    """Filter FEMNIST to labels 0-9."""
 
     def __call__(self, dataset: DatasetDict) -> DatasetDict:
-        """."""
-        allowed_labels = list(range(10))  # mapping to 'a'-'j'
-        filtered_dataset = dataset.filter(
-            lambda example: example["character"] in allowed_labels
-        )
-        return filtered_dataset
+        allowed_labels = list(range(10))
+        return dataset.filter(lambda example: example["character"] in allowed_labels)
 
 
 def apply_transforms(batch):
-    """Apply transforms to the partition from FederatedDataset."""
-    batch["image"] = [MNIST_TRANSFORMS(img) for img in batch["image"]]
+    """Apply transforms to MNIST/FEMNIST/CIFAR-10 batches."""
 
-    return batch
+    # CIFAR-10 from Hugging Face uses "img" + "label".
+    # Important: return ONLY tensor image + label.
+    # Do not return raw "img", because DataLoader cannot collate PIL images.
+    if "img" in batch:
+        return {
+            "image": [CIFAR10_TRANSFORMS(img.convert("RGB")) for img in batch["img"]],
+            "label": batch["label"],
+        }
+
+    # MNIST uses "image" + "label".
+    if "label" in batch and "image" in batch:
+        return {
+            "image": [MNIST_TRANSFORMS(img) for img in batch["image"]],
+            "label": batch["label"],
+        }
+
+    # FEMNIST uses "image" + "character".
+    if "character" in batch and "image" in batch:
+        return {
+            "image": [MNIST_TRANSFORMS(img) for img in batch["image"]],
+            "character": batch["character"],
+        }
+
+    raise KeyError(f"No valid image/label columns found. Batch keys: {batch.keys()}")
 
 
 def process_femnist(dataset):
@@ -47,10 +69,9 @@ def load_data(
     num_partitions: int,
 ):
     """Load and partition data."""
-    # Only initialize `FederatedDataset` once
     global FDS  # pylint: disable=global-statement
+
     if FDS is None:
-        # Generate a vector from a log-normal probability distribution
         rng = np.random.default_rng(dataset_config.seed)
         distribution_array = rng.lognormal(
             dataset_config.mu,
@@ -60,21 +81,22 @@ def load_data(
         distribution_array = distribution_array.reshape(
             (dataset_config.num_unique_labels, -1)
         )
-        labels_per_partition = dataset_config.num_unique_labels_per_partition
-        samples_per_label = dataset_config.preassigned_num_samples_per_label
+
         label_key = "character" if "femnist" in dataset_config.path else "label"
+
         partitioner = DistributionPartitioner(
             distribution_array=distribution_array,
             num_partitions=num_partitions,
-            num_unique_labels_per_partition=labels_per_partition,
-            partition_by=label_key,  # target column `label` ("character" for FEMNIST)
-            preassigned_num_samples_per_label=samples_per_label,
+            num_unique_labels_per_partition=dataset_config.num_unique_labels_per_partition,
+            partition_by=label_key,
+            preassigned_num_samples_per_label=dataset_config.preassigned_num_samples_per_label,
         )
+
         if "femnist" in dataset_config.path:
             FDS = FederatedDataset(
                 dataset=dataset_config.path,
                 partitioners={"train": partitioner},
-                preprocessor=FEMNISTFilter(),  # Add the Preprocessor class for FEMNIST
+                preprocessor=FEMNISTFilter(),
             )
         else:
             FDS = FederatedDataset(
@@ -84,13 +106,13 @@ def load_data(
 
     partition = FDS.load_partition(partition_id)
 
-    # Divide data on each node: 90% train, 10% test
     partition_train_test = partition.train_test_split(
-        test_size=dataset_config.val_ratio, seed=dataset_config.seed
+        test_size=dataset_config.val_ratio,
+        seed=dataset_config.seed,
     )
-    # The validation set is never used because we do centralized evaluation
-    # on the server on the held-out test dataset.
+
     partition_train_test = partition_train_test.with_transform(apply_transforms)
+
     return (
         DataLoader(
             partition_train_test["train"],
@@ -105,27 +127,17 @@ def load_data(
 
 
 def prepare_test_loader(dataset_config: EasyDict):
-    """Generate the dataloader for the test set.
-
-    Args:
-        dataset_config (dict): The dataset configuration.
-
-    Note: FEMNIST does not have a test data, so we need to manually process the
-    training data to create test data.
-
-    Returns
-    -------
-        DataLoader: The MNIST test set dataloader.
-    """
+    """Generate centralized test dataloader."""
     if "femnist" in dataset_config.path:
         dataset = load_dataset(path=dataset_config.path)["train"]
         split_dataset = dataset.train_test_split(
-            test_size=dataset_config.val_ratio, seed=dataset_config.seed
+            test_size=dataset_config.val_ratio,
+            seed=dataset_config.seed,
         )
         test_dataset = process_femnist(split_dataset["test"])
         test_dataset = test_dataset.with_transform(apply_transforms)
     else:
-        test_dataset = load_dataset(path=dataset_config.path)["test"].with_transform(
-            apply_transforms
-        )
+        test_dataset = load_dataset(path=dataset_config.path)["test"]
+        test_dataset = test_dataset.with_transform(apply_transforms)
+
     return DataLoader(test_dataset, batch_size=dataset_config.batch_size)

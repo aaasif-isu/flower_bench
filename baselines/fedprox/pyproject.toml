@@ -155,23 +155,39 @@ batch-size = 10
 drop-client = false # with FedProx, clients shouldn't be dropped even if they are stragglers
 
 [tool.flwr.app.config.model]
-name = "LogisticRegression"
+name = "ResNet10"
 num-classes = 10
 
-[tool.flwr.federations]
-default = "local-simulation"
 
-[tool.flwr.federations.local-simulation]
-options.num-supernodes = 1000
-options.backend.client-resources.num-cpus = 2
-options.backend.client-resources.num-gpus = 0.0
+#######################################################################
+# CONFIGURATION MIGRATION NOTICE:
+#
+# What was previously called "federation config" for SuperLink
+# connections in pyproject.toml has been renamed and moved.
+#
+# These settings are now **SuperLink connection configuration**
+# and are defined in the Flower configuration file.
+#
+# The entries below are commented out intentionally and are kept
+# only as a migration reference.
+#
+# Docs: https://flower.ai/docs/framework/ref-flower-configuration.html
+#######################################################################
 
-[tool.flwr.federations.gpu-simulation]
-options.num-supernodes = 1000
-options.backend.client-resources.num-cpus = 2
-options.backend.client-resources.num-gpus = 0.25
+# [tool.flwr.federations]
+# default = "local-simulation"
 
-[tool.flwr.federations.femnist-federation]
-options.num-supernodes = 200
-options.backend.client-resources.num-cpus = 2
-options.backend.client-resources.num-gpus = 0.0
+# [tool.flwr.federations.local-simulation]
+# options.num-supernodes = 1000
+# options.backend.client-resources.num-cpus = 2
+# options.backend.client-resources.num-gpus = 0.0
+
+# [tool.flwr.federations.gpu-simulation]
+# options.num-supernodes = 1000
+# options.backend.client-resources.num-cpus = 2
+# options.backend.client-resources.num-gpus = 0.25
+
+# [tool.flwr.federations.femnist-federation]
+# options.num-supernodes = 200
+# options.backend.client-resources.num-cpus = 2
+# options.backend.client-resources.num-gpus = 0.0

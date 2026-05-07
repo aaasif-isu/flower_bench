@@ -1,0 +1,9 @@
+- dataset.dataset_name=CIFAR10
+- dataset.iid=False
+- model.model_name=resnet18
+- num_rounds=1
+- num_epochs=1
+- dataset.batch_size.train=64
+- dataset.batch_size.test=128
+- client_resources.num_cpus=4
+- client_resources.num_gpus=0.25

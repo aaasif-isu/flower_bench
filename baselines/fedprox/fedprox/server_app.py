@@ -100,14 +100,7 @@ def server_fn(context: Context):
         return fit_config_fn
 
     device = torch.device("cpu")
-    testloader = prepare_test_loader(
-        configs.run_config.dataset  # pylint: disable=E1101
-    )  # for server-side evaluation
-    evaluate_fn = gen_evaluate_fn(
-        testloader,
-        device=device,
-        run_config=configs.run_config,  # pylint: disable=E1101
-    )
+    evaluate_fn = None #temp disable
     # Define strategy
     strategy = FedAvgWithStragglerDrop(
         fraction_fit=float(run_config.algorithm.fraction_fit),

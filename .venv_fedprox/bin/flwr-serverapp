@@ -1,0 +1,6 @@
+#!/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/.venv_fedprox/bin/python
+import sys
+from flwr.server.serverapp import flwr_serverapp
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(flwr_serverapp())

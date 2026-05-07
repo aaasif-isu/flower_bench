@@ -1,0 +1,6 @@
+- model=resnet10
+- num_rounds=5
+- client.local_epochs=1
+- num_clients=10
+- num_cpus=4
+- num_gpus=1

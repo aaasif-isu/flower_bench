@@ -94,6 +94,54 @@ def main(cfg: DictConfig) -> None:
     plot_from_pkl(directory=output_path)
     print("................")
 
+def plot_round_metrics(
+    csv_path="fedmeta_cifar10_resnet10_round_metrics.csv",
+    loss_png="fedmeta_round_loss_graph.png",
+    accuracy_png="fedmeta_round_accuracy_graph.png",
+):
+    rounds = []
+    query_losses = []
+    test_losses = []
+    test_accuracies = []
+
+    with open(csv_path, "r") as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            rounds.append(int(row["round"]))
+            query_losses.append(float(row["avg_client_query_loss"]))
+            test_losses.append(float(row["test_loss"]))
+            test_accuracies.append(float(row["test_accuracy"]))
+
+    # Loss graph
+    plt.figure(figsize=(8, 5))
+    plt.plot(rounds, query_losses, marker="o", label="Avg Client Query Loss")
+    plt.plot(rounds, test_losses, marker="o", label="Centralized Test Loss")
+    plt.title("FedMeta CIFAR-10 ResNet10: Loss per Round")
+    plt.xlabel("Global Round")
+    plt.ylabel("Loss")
+    plt.xticks(rounds)
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(loss_png, dpi=200)
+    plt.close()
+
+    # Accuracy graph
+    plt.figure(figsize=(8, 5))
+    plt.plot(rounds, test_accuracies, marker="o")
+    plt.title("FedMeta CIFAR-10 ResNet10: Accuracy per Round")
+    plt.xlabel("Global Round")
+    plt.ylabel("Centralized Test Accuracy")
+    plt.xticks(rounds)
+    plt.ylim(0, 1)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(accuracy_png, dpi=200)
+    plt.close()
+
+    print(f"Saved loss graph to: {loss_png}")
+    print(f"Saved accuracy graph to: {accuracy_png}")
 
 if __name__ == "__main__":
     main()

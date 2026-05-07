@@ -1,0 +1,31 @@
+[algorithm]
+name = "FedProx"
+num-server-rounds = 1
+fraction-fit = 0.01
+fraction-evaluate = 0.0
+min-evaluate-clients = 0
+min-available-clients = 1000
+local-epochs = 1
+stragglers-fraction = 0.0
+learning-rate = 0.03
+mu = 2.0
+num-clients = 1000
+
+[dataset]
+path = "uoft-cs/cifar10"
+power-law = true
+num-unique-labels-per-partition = 2
+num-unique-labels = 10
+preassigned-num-samples-per-label = 5
+seed = 42
+mu = 2.0
+sigma = 2.0
+val-ratio = 0.1
+batch-size = 64
+
+[fit]
+drop-client = false
+
+[model]
+name = "ResNet10"
+num-classes = 10

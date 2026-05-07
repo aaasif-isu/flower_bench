@@ -11,9 +11,6 @@ def get_on_fit_config(config: DictConfig):
     """
 
     def fit_config_fn(server_round: int):  # pylint: disable=unused-argument
-        # option to use scheduling of learning rate based on round
-        # if server_round > 50:
-        #     lr = config.lr / 10
         return {
             "local_epochs": config.local_epochs,
             "batch_size": config.batch_size,
@@ -25,21 +22,34 @@ def get_on_fit_config(config: DictConfig):
 def get_evaluate_fn(model, x_test, y_test, num_rounds, num_classes):
     """Generate the function for server global model evaluation.
 
-    The method evaluate_fn runs after global model aggregation.
+    The evaluate_fn runs after global model aggregation.
+    This version evaluates after EVERY round, not only the final round.
     """
+
+    y_test_cat = to_categorical(y_test, num_classes=num_classes)
 
     def evaluate_fn(
         server_round: int, parameters, config
     ):  # pylint: disable=unused-argument
-        if server_round == num_rounds:  # evaluates global model just on the last round
-            # instantiate the model
-            model.set_weights(parameters)
 
-            y_test_cat = to_categorical(y_test, num_classes=num_classes)
-            loss, accuracy = model.evaluate(x_test, y_test_cat, verbose=False)
+        # Skip initial evaluation before round 1
+        if server_round == 0:
+            return None
 
-            return loss, {"accuracy": accuracy}
+        # Set global model weights after aggregation
+        model.set_weights(parameters)
 
-        return None
+        # Evaluate global model on centralized test set
+        loss, accuracy = model.evaluate(x_test, y_test_cat, verbose=False)
+
+        # Print every round so it appears in the log
+        print(
+            f">>> Round {server_round}: "
+            f"test_loss={loss:.4f}, test_accuracy={accuracy:.4f}",
+            flush=True,
+        )
+
+        # Return metrics so Flower stores them in history
+        return float(loss), {"accuracy": float(accuracy)}
 
     return evaluate_fn

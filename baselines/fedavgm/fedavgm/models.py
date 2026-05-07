@@ -1,16 +1,16 @@
-"""CNN model architecture."""
+"""CNN and ResNet model architectures."""
 
 from flwr.common import ndarrays_to_parameters
-from keras.optimizers import SGD
-from keras.regularizers import l2
 from tensorflow import keras
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.regularizers import l2
 from tensorflow.nn import local_response_normalization  # pylint: disable=import-error
 
 
 def cnn(input_shape, num_classes, learning_rate):
     """CNN Model from (McMahan et. al., 2017).
 
-    Communication-efficient learning of deep networks from decentralized data
+    Communication-efficient learning of deep networks from decentralized data.
     """
     input_shape = tuple(input_shape)
 
@@ -44,21 +44,22 @@ def cnn(input_shape, num_classes, learning_rate):
             keras.layers.Dense(num_classes, activation="softmax"),
         ]
     )
+
     optimizer = SGD(learning_rate=learning_rate)
+
     model.compile(
-        loss="categorical_crossentropy", optimizer=optimizer, metrics=["accuracy"]
+        loss="categorical_crossentropy",
+        optimizer=optimizer,
+        metrics=["accuracy"],
     )
 
     return model
 
 
 def tf_example(input_shape, num_classes, learning_rate):
-    """CNN Model from TensorFlow v1.x example.
+    """CNN Model from TensorFlow v1.x CIFAR-10 example.
 
-    This is the model referenced on the FedAvg paper.
-
-    Reference:
-    https://web.archive.org/web/20170807002954/https://github.com/tensorflow/models/blob/master/tutorials/image/cifar10/cifar10.py
+    This is the model referenced in the FedAvg paper.
     """
     input_shape = tuple(input_shape)
 
@@ -108,14 +109,111 @@ def tf_example(input_shape, num_classes, learning_rate):
             keras.layers.Dense(num_classes, activation="softmax"),
         ]
     )
+
     optimizer = SGD(learning_rate=learning_rate)
+
     model.compile(
-        loss="categorical_crossentropy", optimizer=optimizer, metrics=["accuracy"]
+        loss="categorical_crossentropy",
+        optimizer=optimizer,
+        metrics=["accuracy"],
+    )
+
+    return model
+
+
+def residual_block(x, filters, stride=1):
+    """Basic residual block for ResNet10."""
+
+    shortcut = x
+
+    x = keras.layers.Conv2D(
+        filters,
+        kernel_size=3,
+        strides=stride,
+        padding="same",
+        use_bias=False,
+        kernel_regularizer=l2(0.0001),
+    )(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Activation("relu")(x)
+
+    x = keras.layers.Conv2D(
+        filters,
+        kernel_size=3,
+        strides=1,
+        padding="same",
+        use_bias=False,
+        kernel_regularizer=l2(0.0001),
+    )(x)
+    x = keras.layers.BatchNormalization()(x)
+
+    if stride != 1 or shortcut.shape[-1] != filters:
+        shortcut = keras.layers.Conv2D(
+            filters,
+            kernel_size=1,
+            strides=stride,
+            padding="same",
+            use_bias=False,
+            kernel_regularizer=l2(0.0001),
+        )(shortcut)
+        shortcut = keras.layers.BatchNormalization()(shortcut)
+
+    x = keras.layers.Add()([x, shortcut])
+    x = keras.layers.Activation("relu")(x)
+
+    return x
+
+
+def resnet10(input_shape=(32, 32, 3), num_classes=10, learning_rate=0.01, **kwargs):
+    """Create a Keras ResNet10 model for CIFAR-10/FedAvg.
+
+    This version works with the FedAvgM Hydra config:
+
+    _target_: fedavgm.models.resnet10
+    input_shape: ${dataset.input_shape}
+    num_classes: ${dataset.num_classes}
+    learning_rate: ${client.lr}
+    """
+
+    input_shape = tuple(input_shape)
+
+    inputs = keras.Input(shape=input_shape)
+
+    # Initial stem
+    x = keras.layers.Conv2D(
+        64,
+        kernel_size=3,
+        strides=1,
+        padding="same",
+        use_bias=False,
+        kernel_regularizer=l2(0.0001),
+    )(inputs)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Activation("relu")(x)
+
+    # ResNet10: 4 residual blocks, each with 2 conv layers
+    x = residual_block(x, 64, stride=1)
+    x = residual_block(x, 128, stride=2)
+    x = residual_block(x, 256, stride=2)
+    x = residual_block(x, 512, stride=2)
+
+    x = keras.layers.GlobalAveragePooling2D()(x)
+    outputs = keras.layers.Dense(num_classes, activation="softmax")(x)
+
+    model = keras.Model(inputs=inputs, outputs=outputs)
+
+    optimizer = SGD(learning_rate=learning_rate)
+
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=optimizer,
+        metrics=["accuracy"],
     )
 
     return model
 
 
 def model_to_parameters(model):
-    """Retrieve model weigths and convert to ndarrays."""
+    """Retrieve model weights and convert to Flower parameters."""
+
     return ndarrays_to_parameters(model.get_weights())

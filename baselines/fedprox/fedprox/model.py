@@ -3,6 +3,7 @@
 from collections import OrderedDict
 
 import torch
+import torch.nn.functional as F
 from easydict import EasyDict
 from torch import nn
 from torch.nn.parameter import Parameter
@@ -39,6 +40,90 @@ class LogisticRegression(nn.Module):
         output_tensor = self.linear(torch.flatten(input_tensor, 1))
         return output_tensor
 
+
+
+class BasicBlock(nn.Module):
+    """Basic residual block for ResNet."""
+
+    expansion = 1
+
+    def __init__(self, in_planes: int, planes: int, stride: int = 1) -> None:
+        super().__init__()
+
+        self.conv1 = nn.Conv2d(
+            in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False
+        )
+        self.bn1 = nn.BatchNorm2d(planes)
+
+        self.conv2 = nn.Conv2d(
+            planes, planes, kernel_size=3, stride=1, padding=1, bias=False
+        )
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(
+                    in_planes,
+                    planes,
+                    kernel_size=1,
+                    stride=stride,
+                    bias=False,
+                ),
+                nn.BatchNorm2d(planes),
+            )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)
+        out = F.relu(out)
+        return out
+
+
+class ResNet10(nn.Module):
+    """Small ResNet10-style model for CIFAR-10."""
+
+    def __init__(self, num_classes: int = 10) -> None:
+        super().__init__()
+
+        self.in_planes = 64
+
+        self.conv1 = nn.Conv2d(
+            3, 64, kernel_size=3, stride=1, padding=1, bias=False
+        )
+        self.bn1 = nn.BatchNorm2d(64)
+
+        self.layer1 = self._make_layer(64, num_blocks=1, stride=1)
+        self.layer2 = self._make_layer(128, num_blocks=1, stride=2)
+        self.layer3 = self._make_layer(256, num_blocks=1, stride=2)
+        self.layer4 = self._make_layer(512, num_blocks=1, stride=2)
+
+        self.linear = nn.Linear(512, num_classes)
+
+    def _make_layer(self, planes: int, num_blocks: int, stride: int) -> nn.Sequential:
+        strides = [stride] + [1] * (num_blocks - 1)
+        layers = []
+
+        for stride_value in strides:
+            layers.append(BasicBlock(self.in_planes, planes, stride_value))
+            self.in_planes = planes
+
+        return nn.Sequential(*layers)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out = F.relu(self.bn1(self.conv1(x)))
+
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+
+        out = F.adaptive_avg_pool2d(out, 1)
+        out = torch.flatten(out, 1)
+        out = self.linear(out)
+
+        return out
 
 def train(
     net: nn.Module,
@@ -178,19 +263,12 @@ def set_weights(net, parameters):
 
 
 def instantiate_model(config: EasyDict):
-    """Instantiate the model necessary for the experiment.
-
-    Args:
-        config (dict): The config used to determine the model type.
-
-    Raises
-    ------
-        ValueError: The model type specified by the config is currently not supported
-
-    Returns
-    -------
-        nn.Module: Instantiated model for experimentation.
-    """
+    """Instantiate the model necessary for the experiment."""
     if config.model.name == "LogisticRegression":
         return LogisticRegression(num_classes=config.model.num_classes)
-    raise ValueError("This model type is currently not supported.")
+
+    if config.model.name == "ResNet10":
+        return ResNet10(num_classes=config.model.num_classes)
+
+    raise ValueError(f"This model type is currently not supported: {config.model.name}")
+

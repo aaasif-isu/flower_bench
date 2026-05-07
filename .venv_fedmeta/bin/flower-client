@@ -1,0 +1,6 @@
+#!/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/.venv_fedmeta/bin/python
+import sys
+from flwr.client import run_client
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(run_client())
