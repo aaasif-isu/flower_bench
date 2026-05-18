@@ -87,6 +87,7 @@ class CsvFedAvg(FedAvg):
 def server_fn(context: Context):
     num_rounds = int(context.run_config["num-server-rounds"])
     num_clients = int(context.run_config["num-clients"])
+    clients_per_round = int(context.run_config.get("clients-per-round", num_clients))
     method_name = str(context.run_config["method"])
     csv_path = str(context.run_config["csv-path"])
 
@@ -96,10 +97,10 @@ def server_fn(context: Context):
     strategy = CsvFedAvg(
         method_name=method_name,
         csv_path=csv_path,
-        fraction_fit=1.0,
-        fraction_evaluate=1.0,
-        min_fit_clients=num_clients,
-        min_evaluate_clients=num_clients,
+        fraction_fit=clients_per_round / num_clients,
+        fraction_evaluate=clients_per_round / num_clients,
+        min_fit_clients=clients_per_round,
+        min_evaluate_clients=clients_per_round,
         min_available_clients=num_clients,
         evaluate_metrics_aggregation_fn=weighted_average,
         initial_parameters=initial_parameters,

@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from functools import lru_cache
 from typing import List, Tuple
 
 import numpy as np
@@ -102,13 +101,13 @@ def set_parameters(model: nn.Module, parameters: List[np.ndarray]) -> None:
     model.load_state_dict(state_dict, strict=True)
 
 
-@lru_cache(maxsize=8)
-def _get_partitions(
+def load_data(
+    partition_id: int,
     num_partitions: int,
+    batch_size: int,
     train_fraction: float,
     data_dir: str = "./data",
-):
-    """Cache CIFAR-10 partitions so every client does not reload/re-split data."""
+) -> Tuple[DataLoader, DataLoader]:
     transform_train = transforms.Compose(
         [
             transforms.RandomCrop(32, padding=4),
@@ -125,8 +124,8 @@ def _get_partitions(
         ]
     )
 
-    full_train = datasets.CIFAR10(root=data_dir, train=True, download=False, transform=transform_train)
-    full_test = datasets.CIFAR10(root=data_dir, train=False, download=False, transform=transform_test)
+    full_train = datasets.CIFAR10(root=data_dir, train=True, download=True, transform=transform_train)
+    full_test = datasets.CIFAR10(root=data_dir, train=False, download=True, transform=transform_test)
 
     train_size = int(len(full_train) * train_fraction)
     train_indices = np.random.default_rng(1234).choice(len(full_train), train_size, replace=False)
@@ -141,47 +140,11 @@ def _get_partitions(
     train_lengths[-1] += len(train_subset) - sum(train_lengths)
     test_lengths[-1] += len(full_test) - sum(test_lengths)
 
-    train_parts = random_split(
-        train_subset,
-        train_lengths,
-        generator=torch.Generator().manual_seed(1234),
-    )
-    test_parts = random_split(
-        full_test,
-        test_lengths,
-        generator=torch.Generator().manual_seed(1234),
-    )
+    train_parts = random_split(train_subset, train_lengths, generator=torch.Generator().manual_seed(1234))
+    test_parts = random_split(full_test, test_lengths, generator=torch.Generator().manual_seed(1234))
 
-    return train_parts, test_parts
-
-
-def load_data(
-    partition_id: int,
-    num_partitions: int,
-    batch_size: int,
-    train_fraction: float,
-    data_dir: str = "./data",
-) -> Tuple[DataLoader, DataLoader]:
-    train_parts, test_parts = _get_partitions(
-        num_partitions=num_partitions,
-        train_fraction=train_fraction,
-        data_dir=data_dir,
-    )
-
-    trainloader = DataLoader(
-        train_parts[partition_id],
-        batch_size=batch_size,
-        shuffle=True,
-        num_workers=0,
-        pin_memory=torch.cuda.is_available(),
-    )
-    testloader = DataLoader(
-        test_parts[partition_id],
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=0,
-        pin_memory=torch.cuda.is_available(),
-    )
+    trainloader = DataLoader(train_parts[partition_id], batch_size=batch_size, shuffle=True, num_workers=2)
+    testloader = DataLoader(test_parts[partition_id], batch_size=batch_size, shuffle=False, num_workers=2)
 
     return trainloader, testloader
 
