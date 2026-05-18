@@ -212,7 +212,11 @@ def save(inp, path, protocol=2, mode="torch"):
 def load(path, mode="torch"):
     """Load the file from given path."""
     if mode == "torch":
-        return torch.load(path, map_location=lambda storage, loc: storage)
+        return torch.load(
+        path,
+        map_location=lambda storage, loc: storage,
+        weights_only=False,
+    )
     elif mode == "numpy":
         return np.load(path, allow_pickle=True)
     else:

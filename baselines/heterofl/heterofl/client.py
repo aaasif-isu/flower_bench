@@ -18,12 +18,14 @@ class FlowerNumPyClient(fl.client.NumPyClient):
         self,
         # cid: str,
         net: torch.nn.Module,
+        model_config: Dict,
         dataloader,
         model_rate: Optional[float],
         client_train_settings: Dict,
     ):
         # self.cid = cid
         self.net = net
+        self.model_config = model_config
         self.trainloader = dataloader["trainloader"]
         self.label_split = dataloader["label_split"]
         self.valloader = dataloader["valloader"]
@@ -38,6 +40,20 @@ class FlowerNumPyClient(fl.client.NumPyClient):
         #     )
         # )
 
+    def _ensure_model_rate(self, model_rate: Optional[float]) -> None:
+        """Rebuild client model if server sends a different model width."""
+        if model_rate is None:
+            return
+
+        model_rate = float(model_rate)
+        if self.model_rate != model_rate:
+            self.model_rate = model_rate
+            self.net = create_model(
+                self.model_config,
+                model_rate=self.model_rate,
+                device=self.client_train_settings["device"],
+            )
+
     def get_parameters(self, config) -> NDArrays:
         """Return the parameters of the current net."""
         # print(f"[Client {self.cid}] get_parameters")
@@ -46,6 +62,8 @@ class FlowerNumPyClient(fl.client.NumPyClient):
     def fit(self, parameters, config) -> Tuple[NDArrays, int, Dict]:
         """Implement distributed fit function for a given client."""
         # print(f"cid = {self.cid}")
+        if "model_rate" in config:
+            self._ensure_model_rate(config["model_rate"])
         set_parameters(self.net, parameters)
         if "lr" in config:
             self.client_train_settings["lr"] = config["lr"]
@@ -125,6 +143,7 @@ def gen_client_fn(
                 model_rate=model_rate,
                 device=device,
             ),
+            model_config=model_config,
             dataloader=client_dataloader,
             model_rate=model_rate,
             client_train_settings=client_train_settings,

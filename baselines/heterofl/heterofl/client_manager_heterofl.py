@@ -139,7 +139,8 @@ class ClientManagerHeteroFL(fl.server.ClientManager):
 
     def get_client_to_model_mapping(self, cid) -> float:
         """Return model rate of client with cid."""
-        return self.clients_to_model_rate_mapping[int(cid)]
+        idx = int(cid) % len(self.clients_to_model_rate_mapping)
+        return self.clients_to_model_rate_mapping[idx]
 
     def get_all_clients_to_model_mapping(self) -> List[float]:
         """Return all available clients to model rate mapping."""

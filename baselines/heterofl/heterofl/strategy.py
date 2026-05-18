@@ -169,7 +169,7 @@ class HeteroFL(fl.server.strategy.Strategy):
                     client,
                     FitIns(
                         ndarrays_to_parameters(local_param_fitres),
-                        {"lr": learning_rate},
+                        {"lr": learning_rate, "model_rate": float(model_rate)},
                     ),
                 )
             )
@@ -277,7 +277,7 @@ class HeteroFL(fl.server.strategy.Strategy):
         if param_info["parameter_type"] == "weight":
             if param_info["val"].dim() > 1:
                 if k == output_names["output_weight_name"]:
-                    label_split = self.active_cl_labels[clnt_params["cid"]]
+                    label_split = self.active_cl_labels[int(clnt_params["cid"]) % len(self.active_cl_labels)]
                     label_split = label_split.type(torch.int)
                     param_idx[clnt][k] = list(param_idx[clnt][k])
                     param_idx[clnt][k][0] = param_idx[clnt][k][0][label_split]
@@ -295,7 +295,7 @@ class HeteroFL(fl.server.strategy.Strategy):
                 count[k][param_idx[clnt][k]] += 1
         else:
             if k == output_names["output_bias_name"]:
-                label_split = self.active_cl_labels[clnt_params["cid"]]
+                label_split = self.active_cl_labels[int(clnt_params["cid"]) % len(self.active_cl_labels)]
                 label_split = label_split.type(torch.int)
                 param_idx[clnt][k] = param_idx[clnt][k][label_split]
                 tmp_v[param_idx[clnt][k]] += clnt_params["local_parameters"][clnt][k][
@@ -344,7 +344,7 @@ class HeteroFL(fl.server.strategy.Strategy):
         if param_info["parameter_type"] == "weight":
             if param_info["val"].dim() > 1:
                 if "linear" in k:
-                    label_split = self.active_cl_labels[clnt_params["cid"]]
+                    label_split = self.active_cl_labels[int(clnt_params["cid"]) % len(self.active_cl_labels)]
                     label_split = label_split.type(torch.int)
                     param_idx[clnt][k] = list(param_idx[clnt][k])
                     param_idx[clnt][k][0] = param_idx[clnt][k][0][label_split]
@@ -362,7 +362,7 @@ class HeteroFL(fl.server.strategy.Strategy):
                 count[k][param_idx[clnt][k]] += 1
         else:
             if "linear" in k:
-                label_split = self.active_cl_labels[clnt_params["cid"]]
+                label_split = self.active_cl_labels[int(clnt_params["cid"]) % len(self.active_cl_labels)]
                 label_split = label_split.type(torch.int)
                 param_idx[clnt][k] = param_idx[clnt][k][label_split]
                 tmp_v[param_idx[clnt][k]] += clnt_params["local_parameters"][clnt][k][
