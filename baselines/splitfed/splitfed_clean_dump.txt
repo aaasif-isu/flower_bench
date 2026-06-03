@@ -1,0 +1,949 @@
+===== CURRENT DIR =====
+/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/baselines/splitfed
+===== SOURCE FILE TREE ONLY =====
+./data
+./pyproject.toml
+./results/splitfed_cifar10_resnet10_50rounds_full_10clients.csv
+./results/splitfed_cifar10_resnet10_clean.csv
+./results/splitfed_cifar10_resnet10.csv
+./results/splitfed_cifar10_resnet10_detailed.csv
+./scripts/collect_all_results.py
+./scripts/__pycache__/collect_all_results.cpython-310.pyc
+./splitfed_cifar10_resnet10_10rounds_clean.log
+./splitfed_cifar10_resnet10_10rounds.log
+./splitfed_clean_dump.txt
+./splitfed/client_app.py
+./splitfed/client_app.py.bak_detailed_metrics
+./splitfed_files_dump.txt
+./splitfed/__init__.py
+./splitfed/__pycache__/client_app.cpython-310.pyc
+./splitfed/__pycache__/client_app.cpython-39.pyc
+./splitfed/__pycache__/__init__.cpython-310.pyc
+./splitfed/__pycache__/__init__.cpython-39.pyc
+./splitfed/__pycache__/server_app.cpython-310.pyc
+./splitfed/__pycache__/server_app.cpython-39.pyc
+./splitfed/__pycache__/task.cpython-310.pyc
+./splitfed/__pycache__/task.cpython-39.pyc
+./splitfed_resnet10_cifar10_full_50rounds_5local_10clients
+./splitfed_resnet10_cifar10_full_50rounds_5local_10clients.log
+./splitfed/server_app.py
+./splitfed/server_app.py.bak_detailed_metrics
+./splitfed/server_app.py.bak_min_available_patch
+./splitfed/task.py
+./splitfed/task.py.bak_before_cache
+./.venv_splitfed
+===== pyproject.toml =====
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "splitfed"
+version = "1.0.0"
+description = "SplitFed baseline for FlowerBench"
+license = "Apache-2.0"
+dependencies = [
+    "flwr[simulation]>=1.23.0,<1.24.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "pillow",
+    "matplotlib",
+    "openpyxl",
+    "tqdm"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["splitfed"]
+
+[tool.flwr]
+default-federation = "local-simulation"
+
+[tool.flwr.app]
+publisher = "aadishah"
+
+[tool.flwr.app.components]
+serverapp = "splitfed.server_app:app"
+clientapp = "splitfed.client_app:app"
+
+[tool.flwr.app.config]
+num-server-rounds = 10
+num-clients = 5
+clients-per-round = 5
+local-epochs = 1
+batch-size = 64
+train-fraction = 0.2
+method = "SplitFed"
+csv-path = "results/splitfed_cifar10_resnet10.csv"
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 100
+options.backend.client-resources.num-cpus = 1
+options.backend.client-resources.num-gpus = 0.1
+===== splitfed/__init__.py =====
+===== splitfed/server_app.py =====
+import os
+import csv
+import time
+from typing import List, Tuple
+
+import pandas as pd
+from flwr.common import Context, Metrics, ndarrays_to_parameters, parameters_to_ndarrays
+from flwr.server import ServerApp, ServerAppComponents, ServerConfig
+from flwr.server.strategy import FedAvg
+
+from splitfed.task import SplitFedResNet10, get_parameters
+
+
+
+def arrays_size_mb(arrays):
+    """Return total size of numpy arrays/tensors in MB."""
+    total = 0
+    for arr in arrays:
+        if hasattr(arr, "nbytes"):
+            total += arr.nbytes
+        elif hasattr(arr, "numel") and hasattr(arr, "element_size"):
+            total += arr.numel() * arr.element_size()
+    return total / (1024 * 1024)
+
+
+def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
+    total_examples = sum(num_examples for num_examples, _ in metrics)
+
+    accuracy = sum(num_examples * m.get("accuracy", 0.0) for num_examples, m in metrics) / total_examples
+
+    return {"accuracy": accuracy}
+
+
+def weighted_fit_average(results):
+    total_examples = sum(fit_res.num_examples for _, fit_res in results)
+
+    train_loss = sum(
+        fit_res.num_examples * fit_res.metrics.get("train_loss", 0.0)
+        for _, fit_res in results
+    ) / total_examples
+
+    train_acc = sum(
+        fit_res.num_examples * fit_res.metrics.get("train_accuracy", 0.0)
+        for _, fit_res in results
+    ) / total_examples
+
+    return train_loss, train_acc
+
+
+class CsvFedAvg(FedAvg):
+    def __init__(self, method_name: str, csv_path: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.method_name = method_name
+        self.csv_path = csv_path
+        self.rows = []
+        self.fit_cache = {}
+        self.round_stats = {}
+        self.cumulative_total_comm_mb = 0.0
+        self.cumulative_round_wall_time_sec = 0.0
+
+        self.csv_fieldnames = [
+            "method",
+            "dataset",
+            "model",
+            "round",
+            "train_loss",
+            "train_accuracy",
+            "test_loss",
+            "test_accuracy",
+            "num_fit_clients",
+            "fit_failures",
+            "fit_param_down_mb",
+            "fit_param_up_mb",
+            "fit_param_total_comm_mb",
+            "split_train_smashed_forward_mb",
+            "split_train_smashed_backward_mb",
+            "split_train_label_mb",
+            "split_train_total_comm_mb",
+            "fit_total_comm_mb",
+            "client_train_time_mean_sec",
+            "client_train_time_max_sec",
+            "fit_total_time_mean_sec",
+            "fit_total_time_max_sec",
+            "fit_wall_time_sec",
+            "num_eval_clients",
+            "eval_failures",
+            "eval_param_down_mb",
+            "eval_param_up_mb",
+            "eval_param_total_comm_mb",
+            "split_eval_smashed_forward_mb",
+            "split_eval_label_mb",
+            "split_eval_total_comm_mb",
+            "eval_total_comm_mb",
+            "client_eval_time_mean_sec",
+            "client_eval_time_max_sec",
+            "eval_total_time_mean_sec",
+            "eval_total_time_max_sec",
+            "eval_wall_time_sec",
+            "round_param_comm_mb",
+            "round_splitfed_comm_mb",
+            "round_total_comm_mb",
+            "cumulative_total_comm_mb",
+            "round_wall_time_sec",
+            "cumulative_round_wall_time_sec",
+        ]
+
+        os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+        with open(self.csv_path, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=self.csv_fieldnames)
+            writer.writeheader()
+
+    def configure_fit(self, server_round, parameters, client_manager):
+        round_start = time.perf_counter()
+
+        fit_ins_list = super().configure_fit(
+            server_round,
+            parameters,
+            client_manager,
+        )
+
+        param_down_per_client_mb = arrays_size_mb(parameters_to_ndarrays(parameters))
+        num_fit_clients = len(fit_ins_list)
+
+        self.round_stats[server_round] = {
+            "round_start_time": round_start,
+            "fit_param_down_mb": param_down_per_client_mb * num_fit_clients,
+            "fit_param_up_mb": 0.0,
+            "fit_param_total_comm_mb": 0.0,
+            "fit_total_comm_mb": 0.0,
+            "fit_wall_time_sec": 0.0,
+            "num_fit_clients": num_fit_clients,
+            "fit_failures": 0,
+            "client_train_times": [],
+            "client_fit_total_times": [],
+            "train_loss": 0.0,
+            "train_accuracy": 0.0,
+            "num_eval_clients": 0,
+            "eval_failures": 0,
+            "eval_param_down_mb": 0.0,
+            "eval_param_up_mb": 0.0,
+            "eval_param_total_comm_mb": 0.0,
+            "eval_wall_time_sec": 0.0,
+            "client_eval_times": [],
+        }
+
+        return fit_ins_list
+
+    def configure_evaluate(self, server_round, parameters, client_manager):
+        eval_start = time.perf_counter()
+
+        eval_ins_list = super().configure_evaluate(
+            server_round,
+            parameters,
+            client_manager,
+        )
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {
+                "round_start_time": eval_start,
+            }
+
+        param_down_per_client_mb = arrays_size_mb(parameters_to_ndarrays(parameters))
+        num_eval_clients = len(eval_ins_list)
+
+        self.round_stats[server_round]["num_eval_clients"] = num_eval_clients
+        self.round_stats[server_round]["eval_param_down_mb"] = (
+            param_down_per_client_mb * num_eval_clients
+        )
+
+        return eval_ins_list
+
+    def aggregate_fit(self, server_round, results, failures):
+        fit_start = time.perf_counter()
+
+        parameters_aggregated, metrics_aggregated = super().aggregate_fit(
+            server_round, results, failures
+        )
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {
+                "round_start_time": fit_start,
+                "fit_param_down_mb": 0.0,
+            }
+
+        stats = self.round_stats[server_round]
+        stats["num_fit_clients"] = len(results)
+        stats["fit_failures"] = len(failures)
+
+        fit_param_up_mb = 0.0
+        client_train_times = []
+        client_fit_total_times = []
+
+        for _, fit_res in results:
+            fit_param_up_mb += arrays_size_mb(parameters_to_ndarrays(fit_res.parameters))
+
+            if "client_train_time_sec" in fit_res.metrics:
+                client_train_times.append(float(fit_res.metrics["client_train_time_sec"]))
+
+            if "client_fit_total_time_sec" in fit_res.metrics:
+                client_fit_total_times.append(float(fit_res.metrics["client_fit_total_time_sec"]))
+
+        stats["fit_param_up_mb"] = fit_param_up_mb
+        stats["client_train_times"] = client_train_times
+        stats["client_fit_total_times"] = client_fit_total_times
+
+        down_mb = float(stats.get("fit_param_down_mb", 0.0))
+        stats["fit_param_total_comm_mb"] = down_mb + fit_param_up_mb
+        stats["fit_total_comm_mb"] = down_mb + fit_param_up_mb
+        stats["fit_wall_time_sec"] = time.perf_counter() - stats.get("round_start_time", fit_start)
+
+        if results:
+            train_loss, train_acc = weighted_fit_average(results)
+            self.fit_cache[server_round] = {
+                "train_loss": train_loss,
+                "train_accuracy": train_acc,
+            }
+            stats["train_loss"] = train_loss
+            stats["train_accuracy"] = train_acc
+
+        return parameters_aggregated, metrics_aggregated
+
+    def aggregate_evaluate(self, server_round, results, failures):
+        eval_start = time.perf_counter()
+
+        loss_aggregated, metrics_aggregated = super().aggregate_evaluate(
+            server_round, results, failures
+        )
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {
+                "round_start_time": eval_start,
+            }
+
+        stats = self.round_stats[server_round]
+        stats["eval_failures"] = len(failures)
+        stats["eval_wall_time_sec"] = time.perf_counter() - eval_start
+
+        client_eval_times = []
+        eval_param_up_mb = 0.0
+
+        for _, evaluate_res in results:
+            if "client_eval_time_sec" in evaluate_res.metrics:
+                client_eval_times.append(float(evaluate_res.metrics["client_eval_time_sec"]))
+
+            eval_param_up_mb += float(evaluate_res.metrics.get("eval_param_up_mb", 0.0))
+
+        stats["client_eval_times"] = client_eval_times
+        stats["eval_param_up_mb"] = eval_param_up_mb
+
+        eval_down_mb = float(stats.get("eval_param_down_mb", 0.0))
+        stats["eval_param_total_comm_mb"] = eval_down_mb + eval_param_up_mb
+
+        fit_metrics = self.fit_cache.get(server_round, {})
+
+        if not results or len(results) == 0:
+            print(f"[CSV] Skipping round {server_round}: no evaluation results, failures={len(failures)}")
+            return loss_aggregated, metrics_aggregated
+
+        self._write_round_csv_row(
+            server_round=server_round,
+            train_loss=float(fit_metrics.get("train_loss", stats.get("train_loss", 0.0))),
+            train_accuracy=float(fit_metrics.get("train_accuracy", stats.get("train_accuracy", 0.0))),
+            test_loss=float(loss_aggregated) if loss_aggregated is not None else 0.0,
+            test_accuracy=float(metrics_aggregated.get("accuracy", 0.0)) if metrics_aggregated else 0.0,
+        )
+
+        return loss_aggregated, metrics_aggregated
+
+    def _write_round_csv_row(
+        self,
+        server_round,
+        train_loss,
+        train_accuracy,
+        test_loss,
+        test_accuracy,
+    ):
+        stats = self.round_stats.get(server_round, {})
+
+        round_wall_time_sec = 0.0
+        if "round_start_time" in stats:
+            round_wall_time_sec = time.perf_counter() - stats["round_start_time"]
+
+        self.cumulative_round_wall_time_sec += round_wall_time_sec
+
+        fit_param_down_mb = float(stats.get("fit_param_down_mb", 0.0))
+        fit_param_up_mb = float(stats.get("fit_param_up_mb", 0.0))
+        fit_param_total_comm_mb = fit_param_down_mb + fit_param_up_mb
+
+        eval_param_down_mb = float(stats.get("eval_param_down_mb", 0.0))
+        eval_param_up_mb = float(stats.get("eval_param_up_mb", 0.0))
+        eval_param_total_comm_mb = eval_param_down_mb + eval_param_up_mb
+
+        # This implementation does not truly transmit smashed activations
+        # across a split-learning boundary, so SplitFed-specific comm is 0.
+        round_splitfed_comm_mb = 0.0
+        round_param_comm_mb = fit_param_total_comm_mb + eval_param_total_comm_mb
+        round_total_comm_mb = round_param_comm_mb + round_splitfed_comm_mb
+
+        self.cumulative_total_comm_mb += round_total_comm_mb
+
+        client_train_times = stats.get("client_train_times", [])
+        client_fit_total_times = stats.get("client_fit_total_times", [])
+        client_eval_times = stats.get("client_eval_times", [])
+
+        client_train_time_mean_sec = (
+            sum(client_train_times) / len(client_train_times)
+            if client_train_times
+            else 0.0
+        )
+        client_train_time_max_sec = max(client_train_times) if client_train_times else 0.0
+
+        fit_total_time_mean_sec = (
+            sum(client_fit_total_times) / len(client_fit_total_times)
+            if client_fit_total_times
+            else 0.0
+        )
+        fit_total_time_max_sec = (
+            max(client_fit_total_times) if client_fit_total_times else 0.0
+        )
+
+        client_eval_time_mean_sec = (
+            sum(client_eval_times) / len(client_eval_times)
+            if client_eval_times
+            else 0.0
+        )
+        client_eval_time_max_sec = max(client_eval_times) if client_eval_times else 0.0
+
+        row = {
+            "method": self.method_name,
+            "dataset": "CIFAR10",
+            "model": "ResNet10",
+            "round": server_round,
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+            "test_loss": test_loss,
+            "test_accuracy": test_accuracy,
+            "num_fit_clients": int(stats.get("num_fit_clients", 0)),
+            "fit_failures": int(stats.get("fit_failures", 0)),
+            "fit_param_down_mb": fit_param_down_mb,
+            "fit_param_up_mb": fit_param_up_mb,
+            "fit_param_total_comm_mb": fit_param_total_comm_mb,
+            "split_train_smashed_forward_mb": 0.0,
+            "split_train_smashed_backward_mb": 0.0,
+            "split_train_label_mb": 0.0,
+            "split_train_total_comm_mb": 0.0,
+            "fit_total_comm_mb": fit_param_total_comm_mb,
+            "client_train_time_mean_sec": client_train_time_mean_sec,
+            "client_train_time_max_sec": client_train_time_max_sec,
+            "fit_total_time_mean_sec": fit_total_time_mean_sec,
+            "fit_total_time_max_sec": fit_total_time_max_sec,
+            "fit_wall_time_sec": float(stats.get("fit_wall_time_sec", 0.0)),
+            "num_eval_clients": int(stats.get("num_eval_clients", 0)),
+            "eval_failures": int(stats.get("eval_failures", 0)),
+            "eval_param_down_mb": eval_param_down_mb,
+            "eval_param_up_mb": eval_param_up_mb,
+            "eval_param_total_comm_mb": eval_param_total_comm_mb,
+            "split_eval_smashed_forward_mb": 0.0,
+            "split_eval_label_mb": 0.0,
+            "split_eval_total_comm_mb": 0.0,
+            "eval_total_comm_mb": eval_param_total_comm_mb,
+            "client_eval_time_mean_sec": client_eval_time_mean_sec,
+            "client_eval_time_max_sec": client_eval_time_max_sec,
+            "eval_total_time_mean_sec": client_eval_time_mean_sec,
+            "eval_total_time_max_sec": client_eval_time_max_sec,
+            "eval_wall_time_sec": float(stats.get("eval_wall_time_sec", 0.0)),
+            "round_param_comm_mb": round_param_comm_mb,
+            "round_splitfed_comm_mb": round_splitfed_comm_mb,
+            "round_total_comm_mb": round_total_comm_mb,
+            "cumulative_total_comm_mb": self.cumulative_total_comm_mb,
+            "round_wall_time_sec": round_wall_time_sec,
+            "cumulative_round_wall_time_sec": self.cumulative_round_wall_time_sec,
+        }
+
+        with open(self.csv_path, "a", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=self.csv_fieldnames)
+            writer.writerow(row)
+
+        print(f"[CSV] Saved round {server_round} detailed metrics to {self.csv_path}")
+        print(row)
+
+
+
+def server_fn(context: Context):
+    num_rounds = int(context.run_config["num-server-rounds"])
+    num_clients = int(context.run_config["num-clients"])
+    clients_per_round = int(context.run_config.get("clients-per-round", num_clients))
+    method_name = str(context.run_config["method"])
+    csv_path = str(context.run_config["csv-path"])
+
+    model = SplitFedResNet10(num_classes=10)
+    initial_parameters = ndarrays_to_parameters(get_parameters(model))
+
+    strategy = CsvFedAvg(
+        method_name=method_name,
+        csv_path=csv_path,
+        fraction_fit=clients_per_round / num_clients,
+        fraction_evaluate=clients_per_round / num_clients,
+        min_fit_clients=clients_per_round,
+        min_evaluate_clients=clients_per_round,
+        min_available_clients=clients_per_round,
+        evaluate_metrics_aggregation_fn=weighted_average,
+        initial_parameters=initial_parameters,
+    )
+
+    config = ServerConfig(num_rounds=num_rounds)
+
+    return ServerAppComponents(strategy=strategy, config=config)
+
+
+app = ServerApp(server_fn=server_fn)
+===== splitfed/client_app.py =====
+import time
+
+from flwr.client import ClientApp, NumPyClient
+from flwr.common import Context
+
+from splitfed.task import SplitFedResNet10, get_parameters, set_parameters, load_data, train, test
+
+
+
+def arrays_size_mb(arrays):
+    """Return total size of numpy arrays/tensors in MB."""
+    total = 0
+    for arr in arrays:
+        if hasattr(arr, "nbytes"):
+            total += arr.nbytes
+        elif hasattr(arr, "numel") and hasattr(arr, "element_size"):
+            total += arr.numel() * arr.element_size()
+    return total / (1024 * 1024)
+
+
+class SplitFedClient(NumPyClient):
+    def __init__(self, model, trainloader, testloader, local_epochs):
+        self.model = model
+        self.trainloader = trainloader
+        self.testloader = testloader
+        self.local_epochs = local_epochs
+
+    def get_parameters(self, config):
+        return get_parameters(self.model)
+
+    def fit(self, parameters, config):
+        fit_start = time.perf_counter()
+        fit_param_down_mb = arrays_size_mb(parameters)
+
+        set_parameters(self.model, parameters)
+
+        train_start = time.perf_counter()
+        train_loss, train_acc = train(
+            self.model,
+            self.trainloader,
+            epochs=self.local_epochs,
+        )
+        client_train_time_sec = time.perf_counter() - train_start
+
+        out_params = get_parameters(self.model)
+        fit_param_up_mb = arrays_size_mb(out_params)
+        client_fit_total_time_sec = time.perf_counter() - fit_start
+
+        return (
+            out_params,
+            len(self.trainloader.dataset),
+            {
+                "train_loss": float(train_loss),
+                "train_accuracy": float(train_acc),
+                "client_train_time_sec": float(client_train_time_sec),
+                "client_fit_total_time_sec": float(client_fit_total_time_sec),
+                "fit_param_down_mb": float(fit_param_down_mb),
+                "fit_param_up_mb": float(fit_param_up_mb),
+                "fit_param_total_comm_mb": float(fit_param_down_mb + fit_param_up_mb),
+            },
+        )
+
+    def evaluate(self, parameters, config):
+        eval_start = time.perf_counter()
+        eval_param_down_mb = arrays_size_mb(parameters)
+
+        set_parameters(self.model, parameters)
+
+        loss, accuracy = test(self.model, self.testloader)
+
+        client_eval_time_sec = time.perf_counter() - eval_start
+
+        return (
+            float(loss),
+            len(self.testloader.dataset),
+            {
+                "accuracy": float(accuracy),
+                "client_eval_time_sec": float(client_eval_time_sec),
+                "eval_param_down_mb": float(eval_param_down_mb),
+                "eval_param_up_mb": 0.0,
+                "eval_param_total_comm_mb": float(eval_param_down_mb),
+            },
+        )
+
+
+
+def client_fn(context: Context):
+    partition_id = int(context.node_config["partition-id"])
+
+    num_clients = int(context.run_config["num-clients"])
+    batch_size = int(context.run_config["batch-size"])
+    local_epochs = int(context.run_config["local-epochs"])
+    train_fraction = float(context.run_config["train-fraction"])
+
+    model = SplitFedResNet10(num_classes=10)
+
+    trainloader, testloader = load_data(
+        partition_id=partition_id,
+        num_partitions=num_clients,
+        batch_size=batch_size,
+        train_fraction=train_fraction,
+    )
+
+    return SplitFedClient(
+        model=model,
+        trainloader=trainloader,
+        testloader=testloader,
+        local_epochs=local_epochs,
+    ).to_client()
+
+
+app = ClientApp(client_fn=client_fn)
+===== splitfed/strategy.py =====
+MISSING: splitfed/strategy.py
+===== splitfed/task.py =====
+from collections import OrderedDict
+from functools import lru_cache
+from typing import List, Tuple
+
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import DataLoader, Subset, random_split
+from torchvision import datasets, transforms
+
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+class BasicBlock(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_planes, planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(planes),
+            )
+
+    def forward(self, x):
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)
+        return F.relu(out)
+
+
+class ResNet10ClientSide(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.in_planes = 64
+
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.layer1 = self._make_layer(64, stride=1)
+
+    def _make_layer(self, planes, stride):
+        block = BasicBlock(self.in_planes, planes, stride)
+        self.in_planes = planes
+        return block
+
+    def forward(self, x):
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = self.layer1(x)
+        return x
+
+
+class ResNet10ServerSide(nn.Module):
+    def __init__(self, num_classes=10):
+        super().__init__()
+        self.in_planes = 64
+
+        self.layer2 = self._make_layer(128, stride=2)
+        self.layer3 = self._make_layer(256, stride=2)
+        self.layer4 = self._make_layer(512, stride=2)
+        self.fc = nn.Linear(512, num_classes)
+
+    def _make_layer(self, planes, stride):
+        block = BasicBlock(self.in_planes, planes, stride)
+        self.in_planes = planes
+        return block
+
+    def forward(self, x):
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = F.avg_pool2d(x, 4)
+        x = torch.flatten(x, 1)
+        return self.fc(x)
+
+
+class SplitFedResNet10(nn.Module):
+    def __init__(self, num_classes=10):
+        super().__init__()
+        self.client_side = ResNet10ClientSide()
+        self.server_side = ResNet10ServerSide(num_classes=num_classes)
+
+    def forward(self, x):
+        smashed_data = self.client_side(x)
+        return self.server_side(smashed_data)
+
+
+def get_parameters(model: nn.Module) -> List[np.ndarray]:
+    return [val.cpu().numpy() for _, val in model.state_dict().items()]
+
+
+def set_parameters(model: nn.Module, parameters: List[np.ndarray]) -> None:
+    params_dict = zip(model.state_dict().keys(), parameters)
+    state_dict = OrderedDict({k: torch.tensor(v) for k, v in params_dict})
+    model.load_state_dict(state_dict, strict=True)
+
+
+@lru_cache(maxsize=8)
+def _get_partitions(
+    num_partitions: int,
+    train_fraction: float,
+    data_dir: str = "./data",
+):
+    """Cache CIFAR-10 partitions so every client does not reload/re-split data."""
+    transform_train = transforms.Compose(
+        [
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)),
+        ]
+    )
+
+    transform_test = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)),
+        ]
+    )
+
+    full_train = datasets.CIFAR10(root=data_dir, train=True, download=False, transform=transform_train)
+    full_test = datasets.CIFAR10(root=data_dir, train=False, download=False, transform=transform_test)
+
+    train_size = int(len(full_train) * train_fraction)
+    train_indices = np.random.default_rng(1234).choice(len(full_train), train_size, replace=False)
+    train_subset = Subset(full_train, train_indices)
+
+    train_partition_size = len(train_subset) // num_partitions
+    test_partition_size = len(full_test) // num_partitions
+
+    train_lengths = [train_partition_size] * num_partitions
+    test_lengths = [test_partition_size] * num_partitions
+
+    train_lengths[-1] += len(train_subset) - sum(train_lengths)
+    test_lengths[-1] += len(full_test) - sum(test_lengths)
+
+    train_parts = random_split(
+        train_subset,
+        train_lengths,
+        generator=torch.Generator().manual_seed(1234),
+    )
+    test_parts = random_split(
+        full_test,
+        test_lengths,
+        generator=torch.Generator().manual_seed(1234),
+    )
+
+    return train_parts, test_parts
+
+
+def load_data(
+    partition_id: int,
+    num_partitions: int,
+    batch_size: int,
+    train_fraction: float,
+    data_dir: str = "./data",
+) -> Tuple[DataLoader, DataLoader]:
+    train_parts, test_parts = _get_partitions(
+        num_partitions=num_partitions,
+        train_fraction=train_fraction,
+        data_dir=data_dir,
+    )
+
+    trainloader = DataLoader(
+        train_parts[partition_id],
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=0,
+        pin_memory=torch.cuda.is_available(),
+    )
+    testloader = DataLoader(
+        test_parts[partition_id],
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=0,
+        pin_memory=torch.cuda.is_available(),
+    )
+
+    return trainloader, testloader
+
+
+def train(model, trainloader, epochs):
+    model.train()
+    model.to(DEVICE)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    criterion = nn.CrossEntropyLoss()
+
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
+    for _ in range(epochs):
+        for images, labels in trainloader:
+            images, labels = images.to(DEVICE), labels.to(DEVICE)
+
+            optimizer.zero_grad()
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+            total_loss += loss.item() * labels.size(0)
+            _, predicted = torch.max(outputs, 1)
+            correct += (predicted == labels).sum().item()
+            total += labels.size(0)
+
+    avg_loss = total_loss / total
+    accuracy = correct / total
+
+    return avg_loss, accuracy
+
+
+def test(model, testloader):
+    model.eval()
+    model.to(DEVICE)
+
+    criterion = nn.CrossEntropyLoss()
+
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for images, labels in testloader:
+            images, labels = images.to(DEVICE), labels.to(DEVICE)
+
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+
+            total_loss += loss.item() * labels.size(0)
+            _, predicted = torch.max(outputs, 1)
+            correct += (predicted == labels).sum().item()
+            total += labels.size(0)
+
+    avg_loss = total_loss / total
+    accuracy = correct / total
+
+    return avg_loss, accuracy
+===== scripts/collect_all_results.py =====
+import argparse
+from pathlib import Path
+import pandas as pd
+
+METHOD_NAMES = ["fedavg", "fedprox", "heterofl", "fedmeta", "splitfed"]
+
+def infer_method(path: Path) -> str:
+    name = str(path).lower()
+    for method in METHOD_NAMES:
+        if method in name:
+            return method
+    return "unknown"
+
+def read_result_file(path: Path) -> pd.DataFrame:
+    df = pd.read_csv(path)
+
+    if "method" not in df.columns:
+        df["method"] = infer_method(path)
+
+    if "source_file" not in df.columns:
+        df["source_file"] = str(path)
+
+    return df
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", required=True)
+    parser.add_argument("--out", default="all_fed_results.csv")
+    args = parser.parse_args()
+
+    root = Path(args.root)
+    files = list(root.rglob("*.csv"))
+
+    rows = []
+
+    for file in files:
+        if args.out in file.name:
+            continue
+
+        try:
+            df = read_result_file(file)
+            rows.append(df)
+            print(f"[OK] Added {file}")
+        except Exception as e:
+            print(f"[SKIP] {file}: {e}")
+
+    if not rows:
+        print("No CSV files found.")
+        return
+
+    final = pd.concat(rows, ignore_index=True)
+    final.to_csv(args.out, index=False)
+
+    print(f"\nSaved combined CSV to: {args.out}")
+
+if __name__ == "__main__":
+    main()
+===== CSV HEADERS =====
+--- results/splitfed_cifar10_resnet10_50rounds_full_10clients.csv ---
+method,dataset,model,round,train_loss,train_accuracy,test_loss,test_accuracy
+rows:
+51 results/splitfed_cifar10_resnet10_50rounds_full_10clients.csv
+last 3 rows:
+SplitFed,CIFAR10,ResNet10,48,0.5479855360889435,0.8190400000000001,0.7311690462827682,0.749
+SplitFed,CIFAR10,ResNet10,49,0.5226587073373793,0.8283200000000001,0.7254719874858856,0.743
+SplitFed,CIFAR10,ResNet10,50,0.525479562151432,0.8266399999999999,0.7724599397182464,0.728
+--- results/splitfed_cifar10_resnet10_clean.csv ---
+method,dataset,model,round,train_loss,train_accuracy,test_loss,test_accuracy
+rows:
+11 results/splitfed_cifar10_resnet10_clean.csv
+last 3 rows:
+SplitFed,CIFAR10,ResNet10,8,1.4195979429244996,0.4841,1.3010591775894165,0.5243
+SplitFed,CIFAR10,ResNet10,9,1.3902180171966552,0.4938,1.2628401132583618,0.5421
+SplitFed,CIFAR10,ResNet10,10,1.3607427149772644,0.5068,1.2452859540939332,0.5483
+--- results/splitfed_cifar10_resnet10.csv ---
+method,dataset,model,round,train_loss,train_accuracy,test_loss,test_accuracy
+rows:
+11 results/splitfed_cifar10_resnet10.csv
+last 3 rows:
+SplitFed,CIFAR10,ResNet10,8,1.425662398147583,0.4773,1.292258373260498,0.5311
+SplitFed,CIFAR10,ResNet10,9,1.3943906047821044,0.4924,1.309456361579895,0.5282
+SplitFed,CIFAR10,ResNet10,10,1.352877547454834,0.5081,1.24401058177948,0.5508
+--- results/splitfed_cifar10_resnet10_detailed.csv ---
+method,dataset,model,round,train_loss,train_accuracy,test_loss,test_accuracy,num_fit_clients,fit_failures,fit_param_down_mb,fit_param_up_mb,fit_param_total_comm_mb,split_train_smashed_forward_mb,split_train_smashed_backward_mb,split_train_label_mb,split_train_total_comm_mb,fit_total_comm_mb,client_train_time_mean_sec,client_train_time_max_sec,fit_total_time_mean_sec,fit_total_time_max_sec,fit_wall_time_sec,num_eval_clients,eval_failures,eval_param_down_mb,eval_param_up_mb,eval_param_total_comm_mb,split_eval_smashed_forward_mb,split_eval_label_mb,split_eval_total_comm_mb,eval_total_comm_mb,client_eval_time_mean_sec,client_eval_time_max_sec,eval_total_time_mean_sec,eval_total_time_max_sec,eval_wall_time_sec,round_param_comm_mb,round_splitfed_comm_mb,round_total_comm_mb,cumulative_total_comm_mb,round_wall_time_sec,cumulative_round_wall_time_sec
+rows:
+3 results/splitfed_cifar10_resnet10_detailed.csv
+last 3 rows:
+method,dataset,model,round,train_loss,train_accuracy,test_loss,test_accuracy,num_fit_clients,fit_failures,fit_param_down_mb,fit_param_up_mb,fit_param_total_comm_mb,split_train_smashed_forward_mb,split_train_smashed_backward_mb,split_train_label_mb,split_train_total_comm_mb,fit_total_comm_mb,client_train_time_mean_sec,client_train_time_max_sec,fit_total_time_mean_sec,fit_total_time_max_sec,fit_wall_time_sec,num_eval_clients,eval_failures,eval_param_down_mb,eval_param_up_mb,eval_param_total_comm_mb,split_eval_smashed_forward_mb,split_eval_label_mb,split_eval_total_comm_mb,eval_total_comm_mb,client_eval_time_mean_sec,client_eval_time_max_sec,eval_total_time_mean_sec,eval_total_time_max_sec,eval_wall_time_sec,round_param_comm_mb,round_splitfed_comm_mb,round_total_comm_mb,cumulative_total_comm_mb,round_wall_time_sec,cumulative_round_wall_time_sec
+SplitFed,CIFAR10,ResNet10,1,1.8367674596786498,0.3307999999999999,1.8316655349731445,0.36,1,9,187.2644805908203,18.72644805908203,205.99092864990234,0.0,0.0,0.0,0.0,205.99092864990234,4.848206813912839,4.848206813912839,4.887417951948009,4.887417951948009,223.28769443801139,10,9,187.2644805908203,0.0,187.2644805908203,0.0,0.0,0.0,187.2644805908203,0.5488360730232671,0.5488360730232671,0.5488360730232671,0.5488360730232671,2.5250017642974854e-05,393.25540924072266,0.0,393.25540924072266,393.25540924072266,224.33309300302062,224.33309300302062
+SplitFed,CIFAR10,ResNet10,2,1.6457636562347413,0.396,1.592292399406433,0.45,1,9,187.2644805908203,18.72644805908203,205.99092864990234,0.0,0.0,0.0,0.0,205.99092864990234,1.181809506029822,1.181809506029822,1.1914537410484627,1.1914537410484627,1.4592033850494772,10,9,187.2644805908203,0.0,187.2644805908203,0.0,0.0,0.0,187.2644805908203,0.40527668595314026,0.40527668595314026,0.40527668595314026,0.40527668595314026,2.4090055376291275e-05,393.25540924072266,0.0,393.25540924072266,786.5108184814453,2.078981057042256,226.41207406006288

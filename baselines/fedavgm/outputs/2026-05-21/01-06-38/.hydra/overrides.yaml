@@ -1,0 +1,11 @@
+- strategy=fedavg
+- model=resnet10
+- num_rounds=50
+- num_clients=1
+- server.reporting_fraction=1.0
+- fraction_evaluate=0
+- num_cpus=1
+- num_gpus=1
+- strategy.min_available_clients=1
+- +strategy.min_fit_clients=1
+- +strategy.min_evaluate_clients=1

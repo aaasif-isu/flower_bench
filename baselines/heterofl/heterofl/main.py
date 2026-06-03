@@ -180,7 +180,14 @@ def main(cfg: DictConfig) -> None:
                 client_label_split=data_loaders["label_split"],
             ),
             strategy=strategy_heterofl,
-        )
+        
+        ray_init_args={
+            "include_dashboard": False,
+            "num_cpus": 2,
+            "num_gpus": 1,
+            "ignore_reinit_error": True,
+        },
+    )
     else:
         strategy_fedavg = instantiate(
             cfg.strategy,

@@ -1,6 +1,7 @@
 """Defines the MNIST Flower Client and a function to instantiate it."""
 
 from typing import Callable, Dict, List, Optional, Tuple
+import time
 
 import flwr as fl
 import torch
@@ -61,27 +62,64 @@ class FlowerNumPyClient(fl.client.NumPyClient):
 
     def fit(self, parameters, config) -> Tuple[NDArrays, int, Dict]:
         """Implement distributed fit function for a given client."""
-        # print(f"cid = {self.cid}")
+        fit_start = time.perf_counter()
+
+        fit_param_down_mb = sum(p.nbytes for p in parameters) / (1024 * 1024)
+
         if "model_rate" in config:
             self._ensure_model_rate(config["model_rate"])
+
         set_parameters(self.net, parameters)
+
         if "lr" in config:
             self.client_train_settings["lr"] = config["lr"]
+
+        train_start = time.perf_counter()
         train(
             self.net,
             self.trainloader,
             self.label_split,
             self.client_train_settings,
         )
-        return get_parameters(self.net), len(self.trainloader), {}
+        train_time_sec = time.perf_counter() - train_start
+
+        out_params = get_parameters(self.net)
+        fit_param_up_mb = sum(p.nbytes for p in out_params) / (1024 * 1024)
+        fit_total_time_sec = time.perf_counter() - fit_start
+
+        metrics = {
+            "client_train_time_sec": float(train_time_sec),
+            "client_fit_total_time_sec": float(fit_total_time_sec),
+            "fit_param_down_mb": float(fit_param_down_mb),
+            "fit_param_up_mb": float(fit_param_up_mb),
+            "fit_param_total_comm_mb": float(fit_param_down_mb + fit_param_up_mb),
+        }
+
+        return out_params, len(self.trainloader), metrics
 
     def evaluate(self, parameters, config) -> Tuple[float, int, Dict]:
         """Implement distributed evaluation for a given client."""
+        eval_start = time.perf_counter()
+
+        eval_param_down_mb = sum(p.nbytes for p in parameters) / (1024 * 1024)
+
         set_parameters(self.net, parameters)
+
         loss, accuracy = test(
             self.net, self.valloader, device=self.client_train_settings["device"]
         )
-        return float(loss), len(self.valloader), {"accuracy": float(accuracy)}
+
+        eval_time_sec = time.perf_counter() - eval_start
+        eval_param_up_mb = 0.0
+
+        return float(loss), len(self.valloader), {
+            "accuracy": float(accuracy),
+            "client_eval_time_sec": float(eval_time_sec),
+            "eval_param_down_mb": float(eval_param_down_mb),
+            "eval_param_up_mb": float(eval_param_up_mb),
+            "eval_param_total_comm_mb": float(eval_param_down_mb + eval_param_up_mb),
+        }
+
 
 
 def gen_client_fn(

@@ -1,0 +1,46 @@
+num_clients: 100
+num_epochs: 1
+num_rounds: 10
+seed: 0
+client_resources:
+  num_cpus: 0.2
+  num_gpus: 0
+control:
+  model_split_mode: dynamic
+  model_mode: a1-b1-c1-d1-e1
+dataset:
+  dataset_name: CIFAR10
+  iid: false
+  shard_per_user: 2
+  balance: false
+  batch_size:
+    train: 64
+    test: 128
+  shuffle:
+    train: true
+    test: false
+model:
+  model_name: resnet10
+  hidden_layers:
+  - 64
+  - 128
+  - 256
+  - 512
+  norm: bn
+  scale: 1
+  mask: 1
+optim_scheduler:
+  optimizer: SGD
+  lr: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  scheduler: MultiStepLR
+  milestones:
+  - 300
+  - 500
+strategy:
+  _target_: heterofl.strategy.HeteroFL
+  fraction_fit: 0.1
+  fraction_evaluate: 0.1
+  min_fit_clients: 10
+  min_evaluate_clients: 10

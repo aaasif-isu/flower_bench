@@ -5,10 +5,14 @@ extend or modify the functionality of an existing strategy.
 """
 
 from collections import OrderedDict
+import csv
+import time
+from pathlib import Path
 from logging import WARNING
 from typing import Dict, List, Optional, Tuple, Union
 
 import torch
+from hydra.utils import instantiate
 from flwr.common import (
     EvaluateIns,
     EvaluateRes,
@@ -146,18 +150,79 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
 class FedMeta(FedAvg):
     """FedMeta averages the gradient and server parameter update through it."""
 
-    def __init__(self, alpha, beta, data, algo, **kwargs):
+    def __init__(self, alpha, beta, data, algo, model=None, model_name='resnet10', dataset_name='CIFAR10', **kwargs):
         super().__init__(**kwargs)
         self.algo = algo
         self.data = data
+        self.model_name = model_name
+        self.dataset_name = dataset_name
         self.beta = beta
         self.ema_loss = None
         self.ema_acc = None
 
-        if self.data == "femnist":
+        self.round_stats: Dict[int, Dict] = {}
+        self.cumulative_total_comm_mb = 0.0
+        self.cumulative_round_wall_time_sec = 0.0
+        self.metrics_csv_path = Path.cwd() / "fedmeta_cifar10_resnet10_detailed.csv"
+
+        self.csv_fieldnames = [
+            "method",
+            "dataset",
+            "model",
+            "round",
+            "train_loss",
+            "train_accuracy",
+            "test_loss",
+            "test_accuracy",
+            "num_fit_clients",
+            "fit_failures",
+            "fit_param_down_mb",
+            "fit_param_up_mb",
+            "fit_param_total_comm_mb",
+            "split_train_smashed_forward_mb",
+            "split_train_smashed_backward_mb",
+            "split_train_label_mb",
+            "split_train_total_comm_mb",
+            "fit_total_comm_mb",
+            "client_train_time_mean_sec",
+            "client_train_time_max_sec",
+            "fit_total_time_mean_sec",
+            "fit_total_time_max_sec",
+            "fit_wall_time_sec",
+            "num_eval_clients",
+            "eval_failures",
+            "eval_param_down_mb",
+            "eval_param_up_mb",
+            "eval_param_total_comm_mb",
+            "split_eval_smashed_forward_mb",
+            "split_eval_label_mb",
+            "split_eval_total_comm_mb",
+            "eval_total_comm_mb",
+            "client_eval_time_mean_sec",
+            "client_eval_time_max_sec",
+            "eval_total_time_mean_sec",
+            "eval_total_time_max_sec",
+            "eval_wall_time_sec",
+            "round_param_comm_mb",
+            "round_splitfed_comm_mb",
+            "round_total_comm_mb",
+            "cumulative_total_comm_mb",
+            "round_wall_time_sec",
+            "cumulative_round_wall_time_sec",
+        ]
+
+        with open(self.metrics_csv_path, "w", newline="") as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=self.csv_fieldnames)
+            writer.writeheader()
+
+        if model is not None:
+            self.net = instantiate(model)
+        elif self.data == "femnist":
             self.net = FemnistNetwork()
         elif self.data == "shakespeare":
             self.net = StackedLSTM()
+        else:
+            raise ValueError(f"Unsupported data/model combination: data={self.data}, model={model}")
 
         self.alpha = torch.nn.ParameterList(
             [
@@ -171,6 +236,27 @@ class FedMeta(FedAvg):
     ) -> List[Tuple[ClientProxy, FitIns]]:
         """Configure the next round of training."""
         config = {"alpha": self.alpha, "algo": self.algo, "data": self.data}
+
+        self.round_stats[server_round] = {
+            "round_start_time": time.perf_counter(),
+            "fit_param_down_mb": 0.0,
+            "fit_param_up_mb": 0.0,
+            "fit_param_total_comm_mb": 0.0,
+            "fit_total_comm_mb": 0.0,
+            "fit_wall_time_sec": 0.0,
+            "num_fit_clients": 0,
+            "fit_failures": 0,
+            "client_train_times": [],
+            "client_fit_total_times": [],
+            "train_losses": [],
+            "num_eval_clients": 0,
+            "eval_failures": 0,
+            "eval_param_down_mb": 0.0,
+            "eval_param_up_mb": 0.0,
+            "eval_param_total_comm_mb": 0.0,
+            "eval_wall_time_sec": 0.0,
+            "client_eval_times": [],
+        }
         if self.on_fit_config_fn is not None:
             # Custom fit config function provided
             config = self.on_fit_config_fn(server_round)
@@ -185,6 +271,14 @@ class FedMeta(FedAvg):
             min_num_clients=min_num_clients,
             server_round=server_round,
             step="fit",
+        )
+
+        fit_param_down_mb = sum(len(tensor) for tensor in parameters.tensors) / (
+            1024 * 1024
+        )
+        self.round_stats[server_round]["num_fit_clients"] = len(clients)
+        self.round_stats[server_round]["fit_param_down_mb"] = (
+            fit_param_down_mb * len(clients)
         )
 
         # Return client/config pairs
@@ -216,6 +310,18 @@ class FedMeta(FedAvg):
             step="evaluate",
         )
 
+        eval_param_down_mb = sum(len(tensor) for tensor in parameters.tensors) / (
+            1024 * 1024
+        )
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {}
+
+        self.round_stats[server_round]["num_eval_clients"] = len(clients)
+        self.round_stats[server_round]["eval_param_down_mb"] = (
+            eval_param_down_mb * len(clients)
+        )
+
         # Return client/config pairs
         return [(client, evaluate_ins) for client in clients]
 
@@ -231,6 +337,47 @@ class FedMeta(FedAvg):
         # Do not aggregate if there are failures and failures are not accepted
         if not self.accept_failures and failures:
             return None, {}
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {}
+
+        self.round_stats[server_round]["num_fit_clients"] = len(results)
+        self.round_stats[server_round]["fit_failures"] = len(failures)
+
+        fit_param_up_mb = 0.0
+        client_train_times = []
+        client_fit_total_times = []
+        train_losses = []
+
+        for _, fit_res in results:
+            fit_param_up_mb += sum(
+                len(tensor) for tensor in fit_res.parameters.tensors
+            ) / (1024 * 1024)
+
+            fit_param_up_mb += float(fit_res.metrics.get("fit_grad_up_mb", 0.0))
+
+            if "client_train_time_sec" in fit_res.metrics:
+                client_train_times.append(float(fit_res.metrics["client_train_time_sec"]))
+
+            if "client_fit_total_time_sec" in fit_res.metrics:
+                client_fit_total_times.append(float(fit_res.metrics["client_fit_total_time_sec"]))
+
+            if "loss" in fit_res.metrics:
+                train_losses.append(float(fit_res.metrics["loss"]))
+
+        self.round_stats[server_round]["fit_param_up_mb"] = fit_param_up_mb
+        self.round_stats[server_round]["client_train_times"] = client_train_times
+        self.round_stats[server_round]["client_fit_total_times"] = client_fit_total_times
+        self.round_stats[server_round]["train_losses"] = train_losses
+
+        down_mb = float(self.round_stats[server_round].get("fit_param_down_mb", 0.0))
+        self.round_stats[server_round]["fit_param_total_comm_mb"] = down_mb + fit_param_up_mb
+        self.round_stats[server_round]["fit_total_comm_mb"] = down_mb + fit_param_up_mb
+
+        if "round_start_time" in self.round_stats[server_round]:
+            self.round_stats[server_round]["fit_wall_time_sec"] = (
+                time.perf_counter() - self.round_stats[server_round]["round_start_time"]
+            )
 
         # Convert results
         weights_results: List[Tuple[NDArrays, int]] = [
@@ -295,6 +442,8 @@ class FedMeta(FedAvg):
         failures: List[Union[Tuple[ClientProxy, EvaluateRes], BaseException]],
     ) -> Tuple[Optional[float], Dict[str, Scalar]]:
         """Aggregate evaluation losses using weighted average."""
+        eval_start = time.perf_counter()
+
         if not results:
             return None, {}
         # Do not aggregate if there are failures and failures are not accepted
@@ -330,5 +479,32 @@ class FedMeta(FedAvg):
 
         elif server_round == 1:  # Only log this warning once
             log(WARNING, "No evaluate_metrics_aggregation_fn provided")
+
+        eval_wall_time_sec = time.perf_counter() - eval_start
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {}
+
+        self.round_stats[server_round]["eval_failures"] = len(failures)
+        self.round_stats[server_round]["eval_wall_time_sec"] = eval_wall_time_sec
+
+        client_eval_times = []
+        eval_param_up_mb = 0.0
+        for _, evaluate_res in results:
+            if "client_eval_time_sec" in evaluate_res.metrics:
+                client_eval_times.append(float(evaluate_res.metrics["client_eval_time_sec"]))
+            eval_param_up_mb += float(evaluate_res.metrics.get("eval_param_up_mb", 0.0))
+
+        self.round_stats[server_round]["client_eval_times"] = client_eval_times
+        self.round_stats[server_round]["eval_param_up_mb"] = eval_param_up_mb
+
+        eval_down_mb = float(self.round_stats[server_round].get("eval_param_down_mb", 0.0))
+        self.round_stats[server_round]["eval_param_total_comm_mb"] = eval_down_mb + eval_param_up_mb
+
+        self._write_round_csv_row(
+            server_round=server_round,
+            test_loss=float(loss_aggregated),
+            metrics=metrics_aggregated,
+        )
 
         return loss_aggregated, metrics_aggregated

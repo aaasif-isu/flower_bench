@@ -1,0 +1,4 @@
+- num_rounds=2
+- client.local_epochs=1
+- num_cpus=1
+- num_gpus=0

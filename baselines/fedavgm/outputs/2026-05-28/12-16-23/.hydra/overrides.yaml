@@ -1,0 +1,6 @@
+- num_clients=10
+- num_rounds=2
+- client.local_epochs=1
+- server.reporting_fraction=1.0
+- num_cpus=1
+- num_gpus=1.0

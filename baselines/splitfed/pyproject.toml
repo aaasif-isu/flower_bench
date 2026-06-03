@@ -23,6 +23,9 @@ dependencies = [
 [tool.hatch.build.targets.wheel]
 packages = ["splitfed"]
 
+[tool.flwr]
+default-federation = "local-simulation"
+
 [tool.flwr.app]
 publisher = "aadishah"
 
@@ -41,6 +44,6 @@ method = "SplitFed"
 csv-path = "results/splitfed_cifar10_resnet10.csv"
 
 [tool.flwr.federations.local-simulation]
-options.num-supernodes = 5
-options.backend.client-resources.num-cpus = 4
-options.backend.client-resources.num-gpus = 0.20
+options.num-supernodes = 1
+options.backend.client-resources.num-cpus = 2
+options.backend.client-resources.num-gpus = 1.0

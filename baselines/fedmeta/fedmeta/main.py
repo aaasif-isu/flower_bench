@@ -53,6 +53,9 @@ def main(cfg: DictConfig) -> None:
         beta=cfg.algo[cfg.data.data].beta,
         data=cfg.data.data,
         algo=cfg.algo.algo,
+        model=cfg.data.model,
+        model_name=str(cfg.data.model._target_).split(".")[-1] if "_target_" in cfg.data.model else "resnet10",
+        dataset_name=str(cfg.data.data).upper(),
     )
 
     # Start Simulation
@@ -66,6 +69,12 @@ def main(cfg: DictConfig) -> None:
         },
         client_manager=FedmetaClientManager(valid_client=len(valloaders["qry"])),
         strategy=strategy,
+        ray_init_args={
+            "include_dashboard": False,
+            "num_cpus": 2,
+            "num_gpus": 1,
+            "ignore_reinit_error": True,
+        },
     )
 
     # 6. Save your results

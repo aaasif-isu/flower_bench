@@ -1,0 +1,26 @@
+SplitFed CIFAR10 ResNet10 Benchmark Summary
+==========================================
+
+Input CSV: results/splitfed_cifar10_resnet10_50rounds_v2.csv
+Clean CSV: results/splitfed_graphs_v2/splitfed_cifar10_resnet10_49rounds_clean.csv
+Valid rounds used: 1 to 49
+Excluded rows: any row with fit/eval failures or test_accuracy <= 0
+
+Final valid round:
+  Round: 49
+  Train loss: 0.113317
+  Train accuracy: 0.960608
+  Test loss: 0.413676
+  Test accuracy: 0.895300
+  Cumulative communication MB: 6346665.077
+  Cumulative wall time sec: 5327.671
+
+Best test accuracy:
+  Round: 48
+  Test accuracy: 0.896500
+  Test loss: 0.402201
+
+Best test loss:
+  Round: 43
+  Test loss: 0.399920
+  Test accuracy: 0.892100

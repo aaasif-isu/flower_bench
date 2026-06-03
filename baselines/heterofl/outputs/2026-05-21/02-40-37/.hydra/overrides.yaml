@@ -1,0 +1,14 @@
+- dataset.dataset_name=CIFAR10
+- dataset.iid=False
+- model.model_name=resnet10
+- num_rounds=10
+- num_epochs=1
+- num_clients=10
+- strategy.fraction_fit=0.2
+- strategy.fraction_evaluate=0.0
+- strategy.min_fit_clients=2
+- strategy.min_evaluate_clients=0
+- dataset.batch_size.train=64
+- dataset.batch_size.test=128
+- client_resources.num_cpus=0.5
+- client_resources.num_gpus=0

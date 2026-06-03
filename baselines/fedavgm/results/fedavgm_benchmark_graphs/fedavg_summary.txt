@@ -1,0 +1,8 @@
+final_round: 50
+final_test_accuracy: 0.4557999968528747
+final_test_loss: 1.8982208967208865
+final_train_accuracy: 0.9757777750492096
+final_train_loss: 0.3209071800112724
+total_time_sec: 7.382502332795411
+total_time_min: 0.12304170554659019
+total_comm_mb: 18726.356506347656

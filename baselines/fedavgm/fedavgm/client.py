@@ -29,20 +29,27 @@ class FlowerClient(fl.client.NumPyClient):
         """Implement distributed fit function for a given client."""
         self.model.set_weights(parameters)
 
-        self.model.fit(
+        history = self.model.fit(
             self.x_train,
             self.y_train,
             epochs=config["local_epochs"],
             batch_size=config["batch_size"],
             verbose=False,
         )
-        return self.model.get_weights(), len(self.x_train), {}
+
+        train_loss = float(history.history["loss"][-1])
+        train_accuracy = float(history.history["accuracy"][-1])
+
+        return self.model.get_weights(), len(self.x_train), {
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+        }
 
     def evaluate(self, parameters, config):
         """Implement distributed evaluation for a given client."""
         self.model.set_weights(parameters)
         loss, acc = self.model.evaluate(self.x_val, self.y_val, verbose=False)
-        return loss, len(self.x_val), {"accuracy": acc}
+        return float(loss), len(self.x_val), {"accuracy": float(acc)}
 
 
 def generate_client_fn(partitions, model, num_classes):

@@ -1,13 +1,19 @@
 """Create and connect the building blocks for your experiments; start the simulation.
 
-It includes processioning the dataset, instantiate strategy, specify how the global
-model is going to be evaluated, etc. At the end, this script saves the results.
+Drop-in replacement for fedavgm/main.py.
+Produces a CSV matching the SplitFed schema (43 columns) so results are
+directly comparable. SplitFed-specific columns (smashed activations, labels)
+are written as 0.0 since FedAvgM does not use split learning.
 """
 
+import csv
 import pickle
+import time
 from pathlib import Path
+import os
 
 import flwr as fl
+from flwr.common import ndarrays_to_parameters
 import hydra
 import numpy as np
 from hydra.core.hydra_config import HydraConfig
@@ -19,41 +25,340 @@ from fedavgm.dataset import partition
 from fedavgm.server import get_evaluate_fn
 
 
-# pylint: disable=too-many-locals
+# ---------------------------------------------------------------------------
+# Metric aggregation helpers (unchanged from original)
+# ---------------------------------------------------------------------------
+
+def weighted_average_fit(metrics):
+    """Aggregate client fit metrics using number of examples as weights."""
+    total_examples = sum(num_examples for num_examples, _ in metrics)
+    if total_examples == 0:
+        return {}
+    train_loss = sum(
+        num_examples * float(m.get("train_loss", 0.0)) for num_examples, m in metrics
+    ) / total_examples
+    train_accuracy = sum(
+        num_examples * float(m.get("train_accuracy", 0.0)) for num_examples, m in metrics
+    ) / total_examples
+    return {"train_loss": float(train_loss), "train_accuracy": float(train_accuracy)}
+
+
+def weighted_average_eval(metrics):
+    """Aggregate client eval metrics using number of examples as weights."""
+    total_examples = sum(num_examples for num_examples, _ in metrics)
+    if total_examples == 0:
+        return {}
+    accuracy = sum(
+        num_examples * float(m.get("accuracy", 0.0)) for num_examples, m in metrics
+    ) / total_examples
+    return {"accuracy": float(accuracy)}
+
+
+# ---------------------------------------------------------------------------
+# History helpers
+# ---------------------------------------------------------------------------
+
+def get_history_metric(history, metric_group, metric_name):
+    group = getattr(history, metric_group, {})
+    values = group.get(metric_name, [])
+    return {server_round: value for server_round, value in values}
+
+
+def get_history_loss(history, loss_group):
+    values = getattr(history, loss_group, [])
+    return {server_round: value for server_round, value in values}
+
+
+# ---------------------------------------------------------------------------
+# Model-size helper  (used to estimate param comm MB)
+# ---------------------------------------------------------------------------
+
+def _model_param_bytes(model) -> float:
+    """Return total float32 parameter bytes for a Keras model."""
+    try:
+        total = sum(np.prod(w.shape) for w in model.get_weights())
+        return total * 4  # float32 = 4 bytes
+    except Exception:
+        return 0.0
+
+
+# ---------------------------------------------------------------------------
+# Instrumented strategy wrapper
+# ---------------------------------------------------------------------------
+
+from fedavgm.strategy import CustomFedAvgM   # noqa: E402  (import after path set)
+from flwr.server.client_proxy import ClientProxy
+from flwr.common import FitRes
+from typing import Dict, List, Optional, Tuple, Union
+
+
+class InstrumentedFedAvgM(CustomFedAvgM):
+    """Wraps CustomFedAvgM and records per-round timing + client counts."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # keyed by server_round
+        self.round_fit_wall: Dict[int, float] = {}
+        self.round_fit_clients: Dict[int, int] = {}
+        self.round_fit_failures: Dict[int, int] = {}
+        self.round_fit_client_times: Dict[int, List[float]] = {}
+
+        self.round_eval_wall: Dict[int, float] = {}
+        self.round_eval_clients: Dict[int, int] = {}
+        self.round_eval_failures: Dict[int, int] = {}
+        self.round_eval_client_times: Dict[int, List[float]] = {}
+
+        self._fit_start: Optional[float] = None
+        self._eval_start: Optional[float] = None
+
+    # Flower calls aggregate_fit / aggregate_evaluate after collecting results.
+    # We wrap them to capture wall time and client counts.
+
+    def aggregate_fit(
+        self,
+        server_round: int,
+        results: List[Tuple[ClientProxy, FitRes]],
+        failures: List,
+    ):
+        t0 = time.perf_counter()
+        out = super().aggregate_fit(server_round, results, failures)
+        wall = time.perf_counter() - t0
+
+        self.round_fit_wall[server_round] = wall
+        self.round_fit_clients[server_round] = len(results)
+        self.round_fit_failures[server_round] = len(failures)
+
+        # Client-reported train times (stored in metrics by client)
+        times = [
+            float(fit_res.metrics.get("train_time_sec", 0.0))
+            for _, fit_res in results
+            if "train_time_sec" in fit_res.metrics
+        ]
+        self.round_fit_client_times[server_round] = times
+        return out
+
+    def aggregate_evaluate(self, server_round, results, failures):
+        t0 = time.perf_counter()
+        out = super().aggregate_evaluate(server_round, results, failures)
+        wall = time.perf_counter() - t0
+
+        self.round_eval_wall[server_round] = wall
+        self.round_eval_clients[server_round] = len(results)
+        self.round_eval_failures[server_round] = len(failures)
+
+        times = [
+            float(eval_res.metrics.get("eval_time_sec", 0.0))
+            for _, eval_res in results
+            if "eval_time_sec" in eval_res.metrics
+        ]
+        self.round_eval_client_times[server_round] = times
+        return out
+
+
+# ---------------------------------------------------------------------------
+# CSV writer — produces the 43-column SplitFed-compatible schema
+# ---------------------------------------------------------------------------
+
+ALL_COLUMNS = [
+    "method", "dataset", "model", "round",
+    "train_loss", "train_accuracy", "test_loss", "test_accuracy",
+    # fit
+    "num_fit_clients", "fit_failures",
+    "fit_param_down_mb", "fit_param_up_mb", "fit_param_total_comm_mb",
+    # SplitFed-specific — always 0.0 for FedAvgM
+    "split_train_smashed_forward_mb", "split_train_smashed_backward_mb",
+    "split_train_label_mb", "split_train_total_comm_mb",
+    "fit_total_comm_mb",
+    # timing (fit)
+    "client_train_time_mean_sec", "client_train_time_max_sec",
+    "fit_total_time_mean_sec", "fit_total_time_max_sec",
+    "fit_wall_time_sec",
+    # eval
+    "num_eval_clients", "eval_failures",
+    "eval_param_down_mb", "eval_param_up_mb", "eval_param_total_comm_mb",
+    # SplitFed-specific — always 0.0 for FedAvgM
+    "split_eval_smashed_forward_mb", "split_eval_label_mb",
+    "split_eval_total_comm_mb",
+    "eval_total_comm_mb",
+    # timing (eval)
+    "client_eval_time_mean_sec", "client_eval_time_max_sec",
+    "eval_total_time_mean_sec", "eval_total_time_max_sec",
+    "eval_wall_time_sec",
+    # round totals
+    "round_param_comm_mb", "round_splitfed_comm_mb", "round_total_comm_mb",
+    "cumulative_total_comm_mb",
+    "round_wall_time_sec", "cumulative_round_wall_time_sec",
+]
+
+
+def write_round_csv(history, cfg, strategy: InstrumentedFedAvgM,
+                    strategy_name, dataset_type, model_type, param_mb):
+    """Write the full 43-column CSV."""
+    csv_path = Path(HydraConfig.get().runtime.output_dir) / "fedavgm_round_metrics.csv"
+
+    train_loss_by_round  = get_history_metric(history, "metrics_distributed_fit", "train_loss")
+    train_acc_by_round   = get_history_metric(history, "metrics_distributed_fit", "train_accuracy")
+    test_loss_by_round   = get_history_loss(history, "losses_centralized")
+    test_acc_by_round    = get_history_metric(history, "metrics_centralized", "accuracy")
+
+    method = "FedAvgM" if "fedavgm" in strategy_name.lower() or "CustomFedAvgM" in strategy_name else "FedAvg"
+
+    # FedAvgM parameter communication per client per round:
+    #   DOWN: server sends model to each selected client   → param_mb per client
+    #   UP:   each client sends model back to server       → param_mb per client
+    param_down_per_client = param_mb    # server → client (download)
+    param_up_per_client   = param_mb    # client → server (upload)
+
+    cumulative_comm = 0.0
+    cumulative_wall = 0.0
+    rows = []
+
+    for r in range(1, int(cfg.num_rounds) + 1):
+        n_fit  = strategy.round_fit_clients.get(r, cfg.num_clients)
+        n_fail = strategy.round_fit_failures.get(r, 0)
+        fit_down_mb  = param_down_per_client * n_fit
+        fit_up_mb    = param_up_per_client   * n_fit
+        fit_param_total = fit_down_mb + fit_up_mb
+        # SplitFed columns → 0 for FedAvgM
+        spl_fwd = spl_bwd = spl_lbl = spl_train_total = 0.0
+        fit_total_comm = fit_param_total   # no smashed data
+
+        ct_list = strategy.round_fit_client_times.get(r, [])
+        ct_mean = float(np.mean(ct_list)) if ct_list else 0.0
+        ct_max  = float(np.max(ct_list))  if ct_list else 0.0
+        fit_wall = strategy.round_fit_wall.get(r, 0.0)
+
+        # eval (centralized eval → 0 clients for distributed, server-side only)
+        n_eval       = strategy.round_eval_clients.get(r, 0)
+        n_eval_fail  = strategy.round_eval_failures.get(r, 0)
+        eval_down_mb = param_down_per_client * n_eval if n_eval else 0.0
+        eval_up_mb   = 0.0   # clients don't upload in evaluation
+        eval_param_total = eval_down_mb + eval_up_mb
+        spl_eval_fwd = spl_eval_lbl = spl_eval_total = 0.0
+        eval_total_comm = eval_param_total
+
+        et_list  = strategy.round_eval_client_times.get(r, [])
+        et_mean  = float(np.mean(et_list)) if et_list else 0.0
+        et_max   = float(np.max(et_list))  if et_list else 0.0
+        eval_wall = strategy.round_eval_wall.get(r, 0.0)
+
+        round_param_comm    = fit_param_total + eval_param_total
+        round_splitfed_comm = 0.0   # FedAvgM has no split-learning traffic
+        round_total_comm    = round_param_comm + round_splitfed_comm
+        cumulative_comm    += round_total_comm
+
+        round_wall          = fit_wall + eval_wall
+        cumulative_wall    += round_wall
+
+        rows.append({
+            "method":  method,
+            "dataset": dataset_type.upper() if dataset_type == "cifar10" else dataset_type,
+            "model":   model_type,
+            "round":   r,
+            "train_loss":     train_loss_by_round.get(r, ""),
+            "train_accuracy": train_acc_by_round.get(r, ""),
+            "test_loss":      test_loss_by_round.get(r, ""),
+            "test_accuracy":  test_acc_by_round.get(r, ""),
+            # fit comm
+            "num_fit_clients":          n_fit,
+            "fit_failures":             n_fail,
+            "fit_param_down_mb":        fit_down_mb,
+            "fit_param_up_mb":          fit_up_mb,
+            "fit_param_total_comm_mb":  fit_param_total,
+            # split (always 0 for FedAvgM)
+            "split_train_smashed_forward_mb":  spl_fwd,
+            "split_train_smashed_backward_mb": spl_bwd,
+            "split_train_label_mb":            spl_lbl,
+            "split_train_total_comm_mb":       spl_train_total,
+            "fit_total_comm_mb":               fit_total_comm,
+            # fit timing
+            "client_train_time_mean_sec": ct_mean,
+            "client_train_time_max_sec":  ct_max,
+            "fit_total_time_mean_sec":    ct_mean,
+            "fit_total_time_max_sec":     ct_max,
+            "fit_wall_time_sec":          fit_wall,
+            # eval comm
+            "num_eval_clients":           n_eval,
+            "eval_failures":              n_eval_fail,
+            "eval_param_down_mb":         eval_down_mb,
+            "eval_param_up_mb":           eval_up_mb,
+            "eval_param_total_comm_mb":   eval_param_total,
+            # split eval (always 0)
+            "split_eval_smashed_forward_mb": spl_eval_fwd,
+            "split_eval_label_mb":           spl_eval_lbl,
+            "split_eval_total_comm_mb":      spl_eval_total,
+            "eval_total_comm_mb":            eval_total_comm,
+            # eval timing
+            "client_eval_time_mean_sec":  et_mean,
+            "client_eval_time_max_sec":   et_max,
+            "eval_total_time_mean_sec":   et_mean,
+            "eval_total_time_max_sec":    et_max,
+            "eval_wall_time_sec":         eval_wall,
+            # round totals
+            "round_param_comm_mb":           round_param_comm,
+            "round_splitfed_comm_mb":        round_splitfed_comm,
+            "round_total_comm_mb":           round_total_comm,
+            "cumulative_total_comm_mb":      cumulative_comm,
+            "round_wall_time_sec":           round_wall,
+            "cumulative_round_wall_time_sec": cumulative_wall,
+        })
+
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=ALL_COLUMNS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f">>> Saved 43-column CSV to: {csv_path}", flush=True)
+    return csv_path
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 @hydra.main(config_path="conf", config_name="base", version_base=None)
 def main(cfg: DictConfig) -> None:
-    """Run the baseline.
-
-    Parameters
-    ----------
-    cfg : DictConfig
-        An omegaconf object that stores the hydra config.
-    """
+    """Run FedAvgM baseline and emit a SplitFed-compatible CSV."""
     np.random.seed(2020)
-
-    # 1. Print parsed config
+    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     print(OmegaConf.to_yaml(cfg))
 
-    # 2. Prepare your dataset
-    x_train, y_train, x_test, y_test, input_shape, num_classes = instantiate(
-        cfg.dataset
-    )
-
+    # 1. Dataset
+    x_train, y_train, x_test, y_test, input_shape, num_classes = instantiate(cfg.dataset)
     partitions = partition(x_train, y_train, cfg.num_clients, cfg.noniid.concentration)
-
     print(f">>> [Model]: Num. Classes {num_classes} | Input shape: {input_shape}")
 
-    # 3. Define your clients
+    # 2. Clients
     client_fn = generate_client_fn(partitions, cfg.model, num_classes)
 
-    # 4. Define your strategy
+    # 3. Strategy + evaluate_fn
     evaluate_fn = get_evaluate_fn(
         instantiate(cfg.model), x_test, y_test, cfg.num_rounds, num_classes
     )
+    initial_model = instantiate(cfg.model)
+    param_bytes   = _model_param_bytes(initial_model)
+    param_mb      = param_bytes / (1024 ** 2)
+    print(f">>> Model param size: {param_mb:.4f} MB ({param_bytes/1e6:.2f} MB SI)")
 
-    strategy = instantiate(cfg.strategy, evaluate_fn=evaluate_fn)
+    initial_parameters = ndarrays_to_parameters(initial_model.get_weights())
 
-    # 5. Start Simulation
+    # Build the instrumented strategy using the same config keys
+    strategy = InstrumentedFedAvgM(
+        fraction_fit=cfg.server.reporting_fraction,
+        fraction_evaluate=cfg.fraction_evaluate,
+        min_available_clients=cfg.num_clients,
+        evaluate_fn=evaluate_fn,
+        fit_metrics_aggregation_fn=weighted_average_fit,
+        evaluate_metrics_aggregation_fn=weighted_average_eval,
+        initial_parameters=initial_parameters,
+        server_learning_rate=cfg.server.learning_rate,
+        server_momentum=cfg.server.momentum,
+        on_fit_config_fn=__import__(
+            "fedavgm.server", fromlist=["get_on_fit_config"]
+        ).get_on_fit_config(cfg.client),
+    )
+
+    # 4. Simulation
     history = fl.simulation.start_simulation(
         client_fn=client_fn,
         num_clients=cfg.num_clients,
@@ -62,18 +367,31 @@ def main(cfg: DictConfig) -> None:
         client_resources={"num_cpus": cfg.num_cpus, "num_gpus": cfg.num_gpus},
     )
 
-    _, final_acc = history.metrics_centralized["accuracy"][-1]
-
-    # 6. Save your results
-    save_path = HydraConfig.get().runtime.output_dir
-
+    # 5. Identify model / dataset
     strategy_name = strategy.__class__.__name__
-    dataset_type = "cifar10" if cfg.dataset.input_shape == [32, 32, 3] else "fmnist"
+    dataset_type  = "cifar10" if cfg.dataset.input_shape == [32, 32, 3] else "fmnist"
+    model_target  = str(cfg.model._target_)
+    if "resnet10" in model_target.lower():
+        model_type = "ResNet10"
+    elif "tf_example" in model_target.lower():
+        model_type = "TFExampleCNN"
+    else:
+        model_type = "CNN"
+
+    # 6. Write 43-column CSV
+    write_round_csv(history, cfg, strategy, strategy_name, dataset_type, model_type, param_mb)
+
+    # 7. Pickle (original behaviour preserved)
+    final_acc = 0.0
+    if history.metrics_centralized.get("accuracy"):
+        _, final_acc = history.metrics_centralized["accuracy"][-1]
+
+    save_path   = HydraConfig.get().runtime.output_dir
 
     def format_variable(x):
         return f"{x!r}" if isinstance(x, bytes) else x
 
-    file_suffix: str = (
+    file_suffix = (
         f"_{format_variable(strategy_name)}"
         f"_{format_variable(dataset_type)}"
         f"_clients={format_variable(cfg.num_clients)}"
@@ -85,15 +403,11 @@ def main(cfg: DictConfig) -> None:
         f"_client-lr={format_variable(cfg.client.lr)}"
         f"_acc={format_variable(final_acc):.4f}"
     )
-
-    filename = "results" + file_suffix + ".pkl"
-
-    print(f">>> Saving {filename}...")
+    filename     = "results" + file_suffix + ".pkl"
     results_path = Path(save_path) / filename
-    results = {"history": history}
-
+    print(f">>> Saving {filename}...")
     with open(str(results_path), "wb") as hist_file:
-        pickle.dump(results, hist_file, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump({"history": history}, hist_file, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == "__main__":

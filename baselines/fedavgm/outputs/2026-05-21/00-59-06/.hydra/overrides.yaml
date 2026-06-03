@@ -1,0 +1,7 @@
+- strategy=fedavg
+- model=resnet10
+- num_rounds=1
+- num_clients=1
+- server.reporting_fraction=1.0
+- num_cpus=1
+- num_gpus=1

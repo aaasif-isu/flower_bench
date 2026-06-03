@@ -1,6 +1,9 @@
 """Flower strategy for HeteroFL."""
 
 import copy
+import csv
+import time
+from pathlib import Path
 from collections import OrderedDict
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -60,6 +63,61 @@ class HeteroFL(fl.server.strategy.Strategy):
         self.min_evaluate_clients = min_evaluate_clients
         self.min_available_clients = min_available_clients
         self.evaluate_fn = evaluate_fn
+
+        self.round_stats: Dict[int, Dict] = {}
+        self.cumulative_total_comm_mb = 0.0
+        self.cumulative_round_wall_time_sec = 0.0
+
+        self.metrics_csv_path = Path.cwd() / "heterofl_cifar10_resnet10_detailed.csv"
+        self.csv_fieldnames = [
+            "method",
+            "dataset",
+            "model",
+            "round",
+            "train_loss",
+            "train_accuracy",
+            "test_loss",
+            "test_accuracy",
+            "num_fit_clients",
+            "fit_failures",
+            "fit_param_down_mb",
+            "fit_param_up_mb",
+            "fit_param_total_comm_mb",
+            "split_train_smashed_forward_mb",
+            "split_train_smashed_backward_mb",
+            "split_train_label_mb",
+            "split_train_total_comm_mb",
+            "fit_total_comm_mb",
+            "client_train_time_mean_sec",
+            "client_train_time_max_sec",
+            "fit_total_time_mean_sec",
+            "fit_total_time_max_sec",
+            "fit_wall_time_sec",
+            "num_eval_clients",
+            "eval_failures",
+            "eval_param_down_mb",
+            "eval_param_up_mb",
+            "eval_param_total_comm_mb",
+            "split_eval_smashed_forward_mb",
+            "split_eval_label_mb",
+            "split_eval_total_comm_mb",
+            "eval_total_comm_mb",
+            "client_eval_time_mean_sec",
+            "client_eval_time_max_sec",
+            "eval_total_time_mean_sec",
+            "eval_total_time_max_sec",
+            "eval_wall_time_sec",
+            "round_param_comm_mb",
+            "round_splitfed_comm_mb",
+            "round_total_comm_mb",
+            "cumulative_total_comm_mb",
+            "round_wall_time_sec",
+            "cumulative_round_wall_time_sec",
+        ]
+
+        with open(self.metrics_csv_path, "w", newline="") as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=self.csv_fieldnames)
+            writer.writeheader()
         # # created client_to_model_mapping
         # self.client_to_model_rate_mapping: Dict[str, ClientProxy] = {}
 
@@ -124,6 +182,19 @@ class HeteroFL(fl.server.strategy.Strategy):
     ) -> List[Tuple[ClientProxy, FitIns]]:
         """Configure the next round of training."""
         print(f"in configure fit , server round no. = {server_round}")
+
+        self.round_stats[server_round] = {
+            "round_start_time": time.perf_counter(),
+            "fit_param_down_mb": 0.0,
+            "fit_param_up_mb": 0.0,
+            "fit_param_total_comm_mb": 0.0,
+            "fit_total_comm_mb": 0.0,
+            "fit_wall_time_sec": 0.0,
+            "num_fit_clients": 0,
+            "fit_failures": 0,
+            "client_train_times": [],
+            "client_fit_total_times": [],
+        }
         if not isinstance(client_manager, ClientManagerHeteroFL):
             raise ValueError(
                 "Not valid client manager, use ClientManagerHeterFL instead"
@@ -164,11 +235,18 @@ class HeteroFL(fl.server.strategy.Strategy):
             # local param are in the form of state_dict,
             #  so converting them only to values of tensors
             local_param_fitres = [val.cpu() for val in local_param.values()]
+            fit_parameters = ndarrays_to_parameters(local_param_fitres)
+
+            down_mb = sum(len(tensor) for tensor in fit_parameters.tensors) / (
+                1024 * 1024
+            )
+            self.round_stats[server_round]["fit_param_down_mb"] += down_mb
+
             fit_configurations.append(
                 (
                     client,
                     FitIns(
-                        ndarrays_to_parameters(local_param_fitres),
+                        fit_parameters,
                         {"lr": learning_rate, "model_rate": float(model_rate)},
                     ),
                 )
@@ -189,6 +267,44 @@ class HeteroFL(fl.server.strategy.Strategy):
         """
         print("in aggregate fit")
         gl_model = self.net.state_dict()
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {}
+
+        self.round_stats[server_round]["num_fit_clients"] = len(results)
+        self.round_stats[server_round]["fit_failures"] = len(failures)
+
+        fit_param_up_mb = 0.0
+        client_train_times = []
+        client_fit_total_times = []
+
+        for _, fit_res in results:
+            fit_param_up_mb += sum(
+                len(tensor) for tensor in fit_res.parameters.tensors
+            ) / (1024 * 1024)
+
+            if "client_train_time_sec" in fit_res.metrics:
+                client_train_times.append(float(fit_res.metrics["client_train_time_sec"]))
+
+            if "client_fit_total_time_sec" in fit_res.metrics:
+                client_fit_total_times.append(
+                    float(fit_res.metrics["client_fit_total_time_sec"])
+                )
+
+        self.round_stats[server_round]["fit_param_up_mb"] = fit_param_up_mb
+        self.round_stats[server_round]["client_train_times"] = client_train_times
+        self.round_stats[server_round]["client_fit_total_times"] = client_fit_total_times
+
+        down_mb = self.round_stats[server_round].get("fit_param_down_mb", 0.0)
+        self.round_stats[server_round]["fit_param_total_comm_mb"] = (
+            down_mb + fit_param_up_mb
+        )
+        self.round_stats[server_round]["fit_total_comm_mb"] = down_mb + fit_param_up_mb
+
+        if "round_start_time" in self.round_stats[server_round]:
+            self.round_stats[server_round]["fit_wall_time_sec"] = (
+                time.perf_counter() - self.round_stats[server_round]["round_start_time"]
+            )
 
         param_idx = []
         for res in results:
@@ -448,14 +564,134 @@ class HeteroFL(fl.server.strategy.Strategy):
     ) -> Optional[Tuple[float, Dict[str, Scalar]]]:
         """Evaluate model parameters using an evaluation function."""
         if self.evaluate_fn is None:
-            # No evaluation function provided
             return None
+
+        eval_start = time.perf_counter()
+
         parameters_ndarrays = parameters_to_ndarrays(parameters)
         eval_res = self.evaluate_fn(server_round, parameters_ndarrays, {})
+
+        eval_wall_time_sec = time.perf_counter() - eval_start
+
         if eval_res is None:
             return None
+
         loss, metrics = eval_res
+
+        if server_round > 0:
+            self._write_round_csv_row(
+                server_round=server_round,
+                test_loss=float(loss),
+                metrics=metrics,
+                eval_wall_time_sec=eval_wall_time_sec,
+            )
+
         return loss, metrics
+
+    def _write_round_csv_row(
+        self,
+        server_round: int,
+        test_loss: float,
+        metrics: Dict[str, Scalar],
+        eval_wall_time_sec: float,
+    ) -> None:
+        """Write one detailed CSV row for the completed server round."""
+        stats = self.round_stats.get(server_round, {})
+
+        round_wall_time_sec = 0.0
+        if "round_start_time" in stats:
+            round_wall_time_sec = time.perf_counter() - stats["round_start_time"]
+
+        self.cumulative_round_wall_time_sec += round_wall_time_sec
+
+        fit_param_down_mb = float(stats.get("fit_param_down_mb", 0.0))
+        fit_param_up_mb = float(stats.get("fit_param_up_mb", 0.0))
+        fit_param_total_comm_mb = fit_param_down_mb + fit_param_up_mb
+
+        eval_param_down_mb = 0.0
+        eval_param_up_mb = 0.0
+        eval_param_total_comm_mb = 0.0
+
+        round_param_comm_mb = fit_param_total_comm_mb + eval_param_total_comm_mb
+        round_splitfed_comm_mb = 0.0
+        round_total_comm_mb = round_param_comm_mb + round_splitfed_comm_mb
+
+        self.cumulative_total_comm_mb += round_total_comm_mb
+
+        client_train_times = stats.get("client_train_times", [])
+        client_fit_total_times = stats.get("client_fit_total_times", [])
+
+        client_train_time_mean_sec = (
+            sum(client_train_times) / len(client_train_times)
+            if client_train_times
+            else 0.0
+        )
+        client_train_time_max_sec = max(client_train_times) if client_train_times else 0.0
+
+        fit_total_time_mean_sec = (
+            sum(client_fit_total_times) / len(client_fit_total_times)
+            if client_fit_total_times
+            else 0.0
+        )
+        fit_total_time_max_sec = (
+            max(client_fit_total_times) if client_fit_total_times else 0.0
+        )
+
+        local_accuracy = float(metrics.get("local_accuracy", 0.0))
+        if local_accuracy > 1.0:
+            local_accuracy = local_accuracy / 100.0
+
+        row = {
+            "method": "HeteroFL",
+            "dataset": "CIFAR10",
+            "model": self.model_name,
+            "round": server_round,
+            "train_loss": float(metrics.get("local_loss", 0.0)),
+            "train_accuracy": local_accuracy,
+            "test_loss": test_loss,
+            "test_accuracy": float(metrics.get("global_accuracy", 0.0)),
+            "num_fit_clients": int(stats.get("num_fit_clients", 0)),
+            "fit_failures": int(stats.get("fit_failures", 0)),
+            "fit_param_down_mb": fit_param_down_mb,
+            "fit_param_up_mb": fit_param_up_mb,
+            "fit_param_total_comm_mb": fit_param_total_comm_mb,
+            "split_train_smashed_forward_mb": 0.0,
+            "split_train_smashed_backward_mb": 0.0,
+            "split_train_label_mb": 0.0,
+            "split_train_total_comm_mb": 0.0,
+            "fit_total_comm_mb": fit_param_total_comm_mb,
+            "client_train_time_mean_sec": client_train_time_mean_sec,
+            "client_train_time_max_sec": client_train_time_max_sec,
+            "fit_total_time_mean_sec": fit_total_time_mean_sec,
+            "fit_total_time_max_sec": fit_total_time_max_sec,
+            "fit_wall_time_sec": float(stats.get("fit_wall_time_sec", 0.0)),
+            "num_eval_clients": 0,
+            "eval_failures": 0,
+            "eval_param_down_mb": eval_param_down_mb,
+            "eval_param_up_mb": eval_param_up_mb,
+            "eval_param_total_comm_mb": eval_param_total_comm_mb,
+            "split_eval_smashed_forward_mb": 0.0,
+            "split_eval_label_mb": 0.0,
+            "split_eval_total_comm_mb": 0.0,
+            "eval_total_comm_mb": eval_param_total_comm_mb,
+            "client_eval_time_mean_sec": 0.0,
+            "client_eval_time_max_sec": 0.0,
+            "eval_total_time_mean_sec": 0.0,
+            "eval_total_time_max_sec": 0.0,
+            "eval_wall_time_sec": eval_wall_time_sec,
+            "round_param_comm_mb": round_param_comm_mb,
+            "round_splitfed_comm_mb": round_splitfed_comm_mb,
+            "round_total_comm_mb": round_total_comm_mb,
+            "cumulative_total_comm_mb": self.cumulative_total_comm_mb,
+            "round_wall_time_sec": round_wall_time_sec,
+            "cumulative_round_wall_time_sec": self.cumulative_round_wall_time_sec,
+        }
+
+        with open(self.metrics_csv_path, "a", newline="") as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=self.csv_fieldnames)
+            writer.writerow(row)
+
+        print(f"[HETEROFL CSV] wrote round {server_round} to {self.metrics_csv_path}")
 
     def num_fit_clients(self, num_available_clients: int) -> Tuple[int, int]:
         """Return sample size and required number of clients."""

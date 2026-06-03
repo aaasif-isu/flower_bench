@@ -1,6 +1,7 @@
 import argparse
 import csv
 import os
+import time
 from collections import OrderedDict
 from copy import deepcopy
 
@@ -129,6 +130,20 @@ def set_weights(net, parameters):
     net.load_state_dict(state_dict, strict=True)
 
 
+
+def arrays_size_mb(arrays):
+    """Return total size of a list of numpy arrays/tensors in MB."""
+    total_bytes = 0
+    for arr in arrays:
+        if hasattr(arr, "nbytes"):
+            total_bytes += arr.nbytes
+        elif hasattr(arr, "numel") and hasattr(arr, "element_size"):
+            total_bytes += arr.numel() * arr.element_size()
+        else:
+            total_bytes += np.asarray(arr).nbytes
+    return total_bytes / (1024 * 1024)
+
+
 def train_meta_first_order(
     net,
     supportloader,
@@ -240,8 +255,12 @@ class CifarFedMetaClient(fl.client.NumPyClient):
         set_weights(self.net, parameters)
 
     def fit(self, parameters, config):
+        fit_start = time.perf_counter()
+        fit_param_down_mb = arrays_size_mb(parameters)
+
         self.set_parameters(parameters)
 
+        train_start = time.perf_counter()
         loss, grads, num_examples = train_meta_first_order(
             self.net,
             self.supportloader,
@@ -250,13 +269,27 @@ class CifarFedMetaClient(fl.client.NumPyClient):
             self.device,
             self.gradient_steps,
         )
+        train_time_sec = time.perf_counter() - train_start
 
-        # Important:
-        # We return gradients as the "parameters" payload.
-        # The custom server strategy treats this as gradients, not weights.
-        return grads, num_examples, {"loss": loss}
+        # FedMeta returns gradients as the "parameters" payload.
+        # So the upload size is the gradient payload size.
+        fit_grad_up_mb = arrays_size_mb(grads)
+        fit_total_time_sec = time.perf_counter() - fit_start
+
+        return grads, num_examples, {
+            "loss": float(loss),
+            "client_train_time_sec": float(train_time_sec),
+            "client_fit_total_time_sec": float(fit_total_time_sec),
+            "fit_param_down_mb": float(fit_param_down_mb),
+            "fit_param_up_mb": float(fit_grad_up_mb),
+            "fit_grad_up_mb": float(fit_grad_up_mb),
+            "fit_param_total_comm_mb": float(fit_param_down_mb + fit_grad_up_mb),
+        }
 
     def evaluate(self, parameters, config):
+        eval_start = time.perf_counter()
+        eval_param_down_mb = arrays_size_mb(parameters)
+
         self.set_parameters(parameters)
 
         loss, acc = evaluate_model(
@@ -265,8 +298,14 @@ class CifarFedMetaClient(fl.client.NumPyClient):
             self.device,
         )
 
+        eval_time_sec = time.perf_counter() - eval_start
+
         return float(loss), len(self.queryloader.dataset), {
-            "accuracy": float(acc)
+            "accuracy": float(acc),
+            "client_eval_time_sec": float(eval_time_sec),
+            "eval_param_down_mb": float(eval_param_down_mb),
+            "eval_param_up_mb": 0.0,
+            "eval_param_total_comm_mb": float(eval_param_down_mb),
         }
 
 
@@ -277,7 +316,7 @@ class CifarFedMetaStrategy(FedAvg):
         outer_lr,
         weight_decay,
         testloader=None,
-        metrics_csv="fedmeta_cifar10_resnet10_round_metrics.csv",
+        metrics_csv="fedmeta_cifar10_resnet10_detailed.csv",
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -290,18 +329,89 @@ class CifarFedMetaStrategy(FedAvg):
         self.testloader = testloader
         self.metrics_csv = metrics_csv
 
-        # Create fresh CSV file before the run starts.
+        self.round_stats = {}
+        self.cumulative_total_comm_mb = 0.0
+        self.cumulative_round_wall_time_sec = 0.0
+
+        self.csv_fieldnames = [
+            "method",
+            "dataset",
+            "model",
+            "round",
+            "train_loss",
+            "train_accuracy",
+            "test_loss",
+            "test_accuracy",
+            "num_fit_clients",
+            "fit_failures",
+            "fit_param_down_mb",
+            "fit_param_up_mb",
+            "fit_param_total_comm_mb",
+            "split_train_smashed_forward_mb",
+            "split_train_smashed_backward_mb",
+            "split_train_label_mb",
+            "split_train_total_comm_mb",
+            "fit_total_comm_mb",
+            "client_train_time_mean_sec",
+            "client_train_time_max_sec",
+            "fit_total_time_mean_sec",
+            "fit_total_time_max_sec",
+            "fit_wall_time_sec",
+            "num_eval_clients",
+            "eval_failures",
+            "eval_param_down_mb",
+            "eval_param_up_mb",
+            "eval_param_total_comm_mb",
+            "split_eval_smashed_forward_mb",
+            "split_eval_label_mb",
+            "split_eval_total_comm_mb",
+            "eval_total_comm_mb",
+            "client_eval_time_mean_sec",
+            "client_eval_time_max_sec",
+            "eval_total_time_mean_sec",
+            "eval_total_time_max_sec",
+            "eval_wall_time_sec",
+            "round_param_comm_mb",
+            "round_splitfed_comm_mb",
+            "round_total_comm_mb",
+            "cumulative_total_comm_mb",
+            "round_wall_time_sec",
+            "cumulative_round_wall_time_sec",
+        ]
+
         if self.metrics_csv is not None:
             with open(self.metrics_csv, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(
-                    [
-                        "round",
-                        "avg_client_query_loss",
-                        "test_loss",
-                        "test_accuracy",
-                    ]
-                )
+                writer = csv.DictWriter(f, fieldnames=self.csv_fieldnames)
+                writer.writeheader()
+
+    def configure_fit(self, server_round, parameters, client_manager):
+        round_start = time.perf_counter()
+
+        fit_ins_list = super().configure_fit(
+            server_round,
+            parameters,
+            client_manager,
+        )
+
+        fit_param_down_mb_per_client = arrays_size_mb(parameters_to_ndarrays(parameters))
+        num_fit_clients = len(fit_ins_list)
+
+        self.round_stats[server_round] = {
+            "round_start_time": round_start,
+            "fit_param_down_mb": fit_param_down_mb_per_client * num_fit_clients,
+            "fit_param_up_mb": 0.0,
+            "fit_param_total_comm_mb": 0.0,
+            "fit_total_comm_mb": 0.0,
+            "num_fit_clients": num_fit_clients,
+            "fit_failures": 0,
+            "client_train_times": [],
+            "client_fit_total_times": [],
+            "train_losses": [],
+            "fit_wall_time_sec": 0.0,
+            "eval_wall_time_sec": 0.0,
+        }
+
+        return fit_ins_list
 
     def evaluate_global_model(self):
         """Evaluate current global model on centralized CIFAR-10 test set."""
@@ -327,6 +437,43 @@ class CifarFedMetaStrategy(FedAvg):
     def aggregate_fit(self, server_round, results, failures):
         if not results:
             return None, {}
+
+        if server_round not in self.round_stats:
+            self.round_stats[server_round] = {
+                "round_start_time": time.perf_counter(),
+                "fit_param_down_mb": 0.0,
+            }
+
+        stats = self.round_stats[server_round]
+        stats["num_fit_clients"] = len(results)
+        stats["fit_failures"] = len(failures)
+
+        fit_param_up_mb = 0.0
+        client_train_times = []
+        client_fit_total_times = []
+        losses = []
+
+        for _, fit_res in results:
+            # In this FedMeta implementation, fit_res.parameters is the gradient payload.
+            fit_param_up_mb += arrays_size_mb(parameters_to_ndarrays(fit_res.parameters))
+
+            if "client_train_time_sec" in fit_res.metrics:
+                client_train_times.append(float(fit_res.metrics["client_train_time_sec"]))
+
+            if "client_fit_total_time_sec" in fit_res.metrics:
+                client_fit_total_times.append(float(fit_res.metrics["client_fit_total_time_sec"]))
+
+            if "loss" in fit_res.metrics:
+                losses.append(float(fit_res.metrics["loss"]))
+
+        stats["fit_param_up_mb"] = fit_param_up_mb
+        stats["client_train_times"] = client_train_times
+        stats["client_fit_total_times"] = client_fit_total_times
+        stats["train_losses"] = losses
+
+        down_mb = float(stats.get("fit_param_down_mb", 0.0))
+        stats["fit_param_total_comm_mb"] = down_mb + fit_param_up_mb
+        stats["fit_total_comm_mb"] = down_mb + fit_param_up_mb
 
         grad_results = [
             (
@@ -354,10 +501,23 @@ class CifarFedMetaStrategy(FedAvg):
 
         self.current_weights = get_weights(self.net)
 
-        losses = [float(fit_res.metrics["loss"]) for _, fit_res in results]
-        avg_client_query_loss = float(sum(losses) / len(losses))
+        avg_client_query_loss = float(sum(losses) / len(losses)) if losses else 0.0
 
+        eval_start = time.perf_counter()
         test_loss, test_acc = self.evaluate_global_model()
+        eval_wall_time_sec = time.perf_counter() - eval_start
+
+        stats["eval_wall_time_sec"] = eval_wall_time_sec
+
+        if "round_start_time" in stats:
+            stats["fit_wall_time_sec"] = time.perf_counter() - stats["round_start_time"]
+
+        self._write_round_csv_row(
+            server_round=server_round,
+            train_loss=avg_client_query_loss,
+            test_loss=float(test_loss),
+            test_accuracy=float(test_acc),
+        )
 
         print(
             f"[FedMeta] round={server_round}, "
@@ -367,23 +527,113 @@ class CifarFedMetaStrategy(FedAvg):
             flush=True,
         )
 
-        if self.metrics_csv is not None:
-            with open(self.metrics_csv, "a", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(
-                    [
-                        server_round,
-                        avg_client_query_loss,
-                        test_loss,
-                        test_acc,
-                    ]
-                )
-
         return ndarrays_to_parameters(self.current_weights), {
             "avg_client_query_loss": avg_client_query_loss,
             "test_loss": test_loss,
             "test_accuracy": test_acc,
         }
+
+    def _write_round_csv_row(
+        self,
+        server_round,
+        train_loss,
+        test_loss,
+        test_accuracy,
+    ):
+        stats = self.round_stats.get(server_round, {})
+
+        round_wall_time_sec = 0.0
+        if "round_start_time" in stats:
+            round_wall_time_sec = time.perf_counter() - stats["round_start_time"]
+
+        self.cumulative_round_wall_time_sec += round_wall_time_sec
+
+        fit_param_down_mb = float(stats.get("fit_param_down_mb", 0.0))
+        fit_param_up_mb = float(stats.get("fit_param_up_mb", 0.0))
+        fit_param_total_comm_mb = fit_param_down_mb + fit_param_up_mb
+
+        # Centralized evaluation happens on server, so no client eval communication.
+        eval_param_down_mb = 0.0
+        eval_param_up_mb = 0.0
+        eval_param_total_comm_mb = 0.0
+
+        round_param_comm_mb = fit_param_total_comm_mb + eval_param_total_comm_mb
+        round_splitfed_comm_mb = 0.0
+        round_total_comm_mb = round_param_comm_mb + round_splitfed_comm_mb
+
+        self.cumulative_total_comm_mb += round_total_comm_mb
+
+        client_train_times = stats.get("client_train_times", [])
+        client_fit_total_times = stats.get("client_fit_total_times", [])
+
+        client_train_time_mean_sec = (
+            sum(client_train_times) / len(client_train_times)
+            if client_train_times
+            else 0.0
+        )
+        client_train_time_max_sec = max(client_train_times) if client_train_times else 0.0
+
+        fit_total_time_mean_sec = (
+            sum(client_fit_total_times) / len(client_fit_total_times)
+            if client_fit_total_times
+            else 0.0
+        )
+        fit_total_time_max_sec = (
+            max(client_fit_total_times) if client_fit_total_times else 0.0
+        )
+
+        row = {
+            "method": "FedMeta",
+            "dataset": "CIFAR10",
+            "model": "ResNet10",
+            "round": server_round,
+            "train_loss": float(train_loss),
+            "train_accuracy": 0.0,
+            "test_loss": float(test_loss),
+            "test_accuracy": float(test_accuracy),
+            "num_fit_clients": int(stats.get("num_fit_clients", 0)),
+            "fit_failures": int(stats.get("fit_failures", 0)),
+            "fit_param_down_mb": fit_param_down_mb,
+            "fit_param_up_mb": fit_param_up_mb,
+            "fit_param_total_comm_mb": fit_param_total_comm_mb,
+            "split_train_smashed_forward_mb": 0.0,
+            "split_train_smashed_backward_mb": 0.0,
+            "split_train_label_mb": 0.0,
+            "split_train_total_comm_mb": 0.0,
+            "fit_total_comm_mb": fit_param_total_comm_mb,
+            "client_train_time_mean_sec": client_train_time_mean_sec,
+            "client_train_time_max_sec": client_train_time_max_sec,
+            "fit_total_time_mean_sec": fit_total_time_mean_sec,
+            "fit_total_time_max_sec": fit_total_time_max_sec,
+            "fit_wall_time_sec": float(stats.get("fit_wall_time_sec", 0.0)),
+            "num_eval_clients": 0,
+            "eval_failures": 0,
+            "eval_param_down_mb": eval_param_down_mb,
+            "eval_param_up_mb": eval_param_up_mb,
+            "eval_param_total_comm_mb": eval_param_total_comm_mb,
+            "split_eval_smashed_forward_mb": 0.0,
+            "split_eval_label_mb": 0.0,
+            "split_eval_total_comm_mb": 0.0,
+            "eval_total_comm_mb": eval_param_total_comm_mb,
+            "client_eval_time_mean_sec": 0.0,
+            "client_eval_time_max_sec": 0.0,
+            "eval_total_time_mean_sec": 0.0,
+            "eval_total_time_max_sec": 0.0,
+            "eval_wall_time_sec": float(stats.get("eval_wall_time_sec", 0.0)),
+            "round_param_comm_mb": round_param_comm_mb,
+            "round_splitfed_comm_mb": round_splitfed_comm_mb,
+            "round_total_comm_mb": round_total_comm_mb,
+            "cumulative_total_comm_mb": self.cumulative_total_comm_mb,
+            "round_wall_time_sec": round_wall_time_sec,
+            "cumulative_round_wall_time_sec": self.cumulative_round_wall_time_sec,
+        }
+
+        if self.metrics_csv is not None:
+            with open(self.metrics_csv, "a", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=self.csv_fieldnames)
+                writer.writerow(row)
+
+        print(f"[FEDMETA CSV] wrote round {server_round} to {self.metrics_csv}", flush=True)
 
 
 def make_client_loaders(args):
@@ -460,60 +710,48 @@ def make_client_loaders(args):
 
 
 def plot_round_metrics(
-    csv_path="fedmeta_cifar10_resnet10_round_metrics.csv",
+    csv_path="fedmeta_cifar10_resnet10_detailed.csv",
     loss_png="fedmeta_round_loss_graph.png",
     accuracy_png="fedmeta_round_accuracy_graph.png",
 ):
-    rounds = []
-    query_losses = []
-    test_losses = []
-    test_accuracies = []
-
+    df = []
     with open(csv_path, "r") as f:
         reader = csv.DictReader(f)
-
         for row in reader:
-            rounds.append(int(row["round"]))
-            query_losses.append(float(row["avg_client_query_loss"]))
-            test_losses.append(float(row["test_loss"]))
-            test_accuracies.append(float(row["test_accuracy"]))
+            df.append(row)
 
-    # Loss graph: query loss + centralized test loss.
-    plt.figure(figsize=(8, 5))
-    plt.plot(
-        rounds,
-        query_losses,
-        marker="o",
-        label="Avg Client Query Loss",
-    )
-    plt.plot(
-        rounds,
-        test_losses,
-        marker="o",
-        label="Centralized Test Loss",
-    )
-    plt.title("FedMeta CIFAR-10 ResNet10: Loss per Round")
+    if not df:
+        print("No rows found for plotting.")
+        return
+
+    rounds = [int(row["round"]) for row in df]
+    train_losses = [float(row["train_loss"]) for row in df]
+    test_losses = [float(row["test_loss"]) for row in df]
+    test_accuracies = [float(row["test_accuracy"]) for row in df]
+    round_times = [float(row["round_wall_time_sec"]) for row in df]
+    cumulative_times = [float(row["cumulative_round_wall_time_sec"]) for row in df]
+    round_comm = [float(row["round_total_comm_mb"]) for row in df]
+    cumulative_comm = [float(row["cumulative_total_comm_mb"]) for row in df]
+    client_train_mean = [float(row["client_train_time_mean_sec"]) for row in df]
+    client_train_max = [float(row["client_train_time_max_sec"]) for row in df]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(rounds, train_losses, marker="o", label="Avg Client Query Loss")
+    plt.plot(rounds, test_losses, marker="o", label="Centralized Test Loss")
+    plt.title("FedMeta CIFAR-10 ResNet10 Loss")
     plt.xlabel("Global Round")
     plt.ylabel("Loss")
-    plt.xticks(rounds)
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
     plt.savefig(loss_png, dpi=200)
     plt.close()
 
-    # Accuracy graph: centralized test accuracy.
-    plt.figure(figsize=(8, 5))
-    plt.plot(
-        rounds,
-        test_accuracies,
-        marker="o",
-        label="Centralized Test Accuracy",
-    )
-    plt.title("FedMeta CIFAR-10 ResNet10: Accuracy per Round")
+    plt.figure(figsize=(10, 6))
+    plt.plot(rounds, test_accuracies, marker="o", label="Centralized Test Accuracy")
+    plt.title("FedMeta CIFAR-10 ResNet10 Accuracy")
     plt.xlabel("Global Round")
     plt.ylabel("Accuracy")
-    plt.xticks(rounds)
     plt.ylim(0, 1)
     plt.grid(True, alpha=0.3)
     plt.legend()
@@ -521,8 +759,39 @@ def plot_round_metrics(
     plt.savefig(accuracy_png, dpi=200)
     plt.close()
 
+    plots = [
+        ("fedmeta_round_time_graph.png", round_times, "Round Wall Time", "Seconds"),
+        ("fedmeta_cumulative_time_graph.png", cumulative_times, "Cumulative Wall Time", "Seconds"),
+        ("fedmeta_round_communication_graph.png", round_comm, "Round Communication", "MB"),
+        ("fedmeta_cumulative_communication_graph.png", cumulative_comm, "Cumulative Communication", "MB"),
+    ]
+
+    for filename, values, title, ylabel in plots:
+        plt.figure(figsize=(10, 6))
+        plt.plot(rounds, values, marker="o")
+        plt.title(f"FedMeta CIFAR-10 ResNet10 {title}")
+        plt.xlabel("Global Round")
+        plt.ylabel(ylabel)
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(filename, dpi=200)
+        plt.close()
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(rounds, client_train_mean, marker="o", label="Mean Client Train Time")
+    plt.plot(rounds, client_train_max, marker="o", label="Max Client Train Time")
+    plt.title("FedMeta CIFAR-10 ResNet10 Client Train Time")
+    plt.xlabel("Global Round")
+    plt.ylabel("Seconds")
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("fedmeta_client_train_time_graph.png", dpi=200)
+    plt.close()
+
     print(f"Saved loss graph to: {loss_png}")
     print(f"Saved accuracy graph to: {accuracy_png}")
+    print("Saved time, communication, and client train time graphs.")
 
 
 def main():
@@ -553,7 +822,7 @@ def main():
     initial_net = ResNet10()
     initial_parameters = ndarrays_to_parameters(get_weights(initial_net))
 
-    metrics_csv = "fedmeta_cifar10_resnet10_round_metrics.csv"
+    metrics_csv = "fedmeta_cifar10_resnet10_detailed.csv"
 
     strategy = CifarFedMetaStrategy(
         net=initial_net,
