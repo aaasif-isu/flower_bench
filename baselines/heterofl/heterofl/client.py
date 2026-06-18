@@ -185,6 +185,6 @@ def gen_client_fn(
             dataloader=client_dataloader,
             model_rate=model_rate,
             client_train_settings=client_train_settings,
-        ).to_client()
+        )
 
     return client_fn

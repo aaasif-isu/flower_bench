@@ -10,10 +10,17 @@ def get_on_fit_config(config: DictConfig):
     The config dict is sent to the client fit() method.
     """
 
-    def fit_config_fn(server_round: int):  # pylint: disable=unused-argument
+    def fit_config_fn(server_round: int):
         return {
+            "server_round": server_round,
             "local_epochs": config.local_epochs,
             "batch_size": config.batch_size,
+            "client_dropout_ratio": float(
+                config.get(
+                    "client_dropout_ratio",
+                    config.get("client-dropout-ratio", 0.1),
+                )
+            ),
         }
 
     return fit_config_fn

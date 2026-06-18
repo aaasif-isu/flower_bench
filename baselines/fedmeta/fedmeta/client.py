@@ -1,7 +1,6 @@
 """Define your client class and a function to construct such clients."""
 
 from collections import OrderedDict
-import time
 from typing import Callable, Dict, List, Tuple
 
 import flwr as fl
@@ -54,19 +53,15 @@ class FlowerClient(fl.client.NumPyClient):
         self, parameters: NDArrays, config: Dict[str, Scalar]
     ) -> Tuple[NDArrays, int, Dict]:
         """Implement distributed fit function for a given client."""
-        fit_start = time.perf_counter()
-
-        fit_param_down_mb = sum(p.nbytes for p in parameters) / (1024 * 1024)
-
         self.set_parameters(parameters)
         algo = config["algo"]
 
+        # Total number of data for Weighted Avg and Grad
         total_len = len(self.trainloaders["qry"][self.cid].dataset) + len(
             self.trainloaders["sup"][self.cid].dataset
         )
 
-        train_start = time.perf_counter()
-
+        # FedAvg & FedAvg(Meta) train  basic Learning
         if algo in ("fedavg", "fedavg_meta"):
             loss = train(
                 self.net,
@@ -75,22 +70,9 @@ class FlowerClient(fl.client.NumPyClient):
                 epochs=self.num_epochs,
                 learning_rate=self.learning_rate,
             )
+            return self.get_parameters({}), total_len, {"loss": loss}
 
-            train_time_sec = time.perf_counter() - train_start
-            out_params = self.get_parameters({})
-            fit_param_up_mb = sum(p.nbytes for p in out_params) / (1024 * 1024)
-            fit_total_time_sec = time.perf_counter() - fit_start
-
-            return out_params, total_len, {
-                "loss": float(loss),
-                "client_train_time_sec": float(train_time_sec),
-                "client_fit_total_time_sec": float(fit_total_time_sec),
-                "fit_param_down_mb": float(fit_param_down_mb),
-                "fit_param_up_mb": float(fit_param_up_mb),
-                "fit_grad_up_mb": 0.0,
-                "fit_param_total_comm_mb": float(fit_param_down_mb + fit_param_up_mb),
-            }
-
+        # FedMeta(MAML) & FedMeta(Meta-SGD) train inner and outer loop
         if algo in ("fedmeta_maml", "fedmeta_meta_sgd"):
             alpha = config["alpha"]
             loss, grads = train_meta(  # type: ignore
@@ -101,49 +83,22 @@ class FlowerClient(fl.client.NumPyClient):
                 self.device,
                 self.gradient_step,
             )
-
-            train_time_sec = time.perf_counter() - train_start
-            out_params = self.get_parameters({})
-            fit_param_up_mb = sum(p.nbytes for p in out_params) / (1024 * 1024)
-
-            fit_grad_up_mb = 0.0
-            for g in grads:
-                if hasattr(g, "nbytes"):
-                    fit_grad_up_mb += g.nbytes / (1024 * 1024)
-                elif hasattr(g, "numel") and hasattr(g, "element_size"):
-                    fit_grad_up_mb += (g.numel() * g.element_size()) / (1024 * 1024)
-
-            fit_up_total_mb = fit_param_up_mb + fit_grad_up_mb
-            fit_total_time_sec = time.perf_counter() - fit_start
-
-            return out_params, total_len, {
-                "loss": float(loss),
-                "grads": grads,
-                "client_train_time_sec": float(train_time_sec),
-                "client_fit_total_time_sec": float(fit_total_time_sec),
-                "fit_param_down_mb": float(fit_param_down_mb),
-                "fit_param_up_mb": float(fit_up_total_mb),
-                "fit_grad_up_mb": float(fit_grad_up_mb),
-                "fit_param_total_comm_mb": float(fit_param_down_mb + fit_up_total_mb),
-            }
-
+            return self.get_parameters({}), total_len, {"loss": loss, "grads": grads}
         raise ValueError("Unsupported algorithm")
 
     def evaluate(  # type: ignore
         self, parameters: NDArrays, config: Dict[str, Scalar]
     ) -> Tuple[float, int, Dict]:
         """Implement distributed evaluation for a given client."""
-        eval_start = time.perf_counter()
-
-        eval_param_down_mb = sum(p.nbytes for p in parameters) / (1024 * 1024)
-
         self.set_parameters(parameters)
         algo = config["algo"]
 
+        # Total number of data for Weighted Avg and Grad
         total_len = len(self.valloaders["qry"][self.cid].dataset) + len(
             self.valloaders["sup"][self.cid].dataset
         )
 
+        # FedAvg & FedAvg(Meta) train  basic Learning
         if algo in ("fedavg", "fedavg_meta"):
             loss, accuracy = test(
                 self.net,
@@ -154,18 +109,9 @@ class FlowerClient(fl.client.NumPyClient):
                 data=str(config["data"]),
                 learning_rate=self.learning_rate,
             )
+            return float(loss), total_len, {"correct": accuracy, "loss": loss}
 
-            eval_time_sec = time.perf_counter() - eval_start
-
-            return float(loss), total_len, {
-                "correct": float(accuracy),
-                "loss": float(loss),
-                "client_eval_time_sec": float(eval_time_sec),
-                "eval_param_down_mb": float(eval_param_down_mb),
-                "eval_param_up_mb": 0.0,
-                "eval_param_total_comm_mb": float(eval_param_down_mb),
-            }
-
+        # FedMeta(MAML) & FedMeta(Meta-SGD) train inner and outer loop
         if algo in ("fedmeta_maml", "fedmeta_meta_sgd"):
             alpha = config["alpha"]
             loss, accuracy = test_meta(
@@ -176,20 +122,8 @@ class FlowerClient(fl.client.NumPyClient):
                 self.device,
                 self.gradient_step,
             )
-
-            eval_time_sec = time.perf_counter() - eval_start
-
-            return float(loss), total_len, {
-                "correct": float(accuracy),
-                "loss": float(loss),
-                "client_eval_time_sec": float(eval_time_sec),
-                "eval_param_down_mb": float(eval_param_down_mb),
-                "eval_param_up_mb": 0.0,
-                "eval_param_total_comm_mb": float(eval_param_down_mb),
-            }
-
+            return float(loss), total_len, {"correct": float(accuracy), "loss": loss}
         raise ValueError("Unsupported algorithm")
-
 
 
 # pylint: disable=too-many-arguments

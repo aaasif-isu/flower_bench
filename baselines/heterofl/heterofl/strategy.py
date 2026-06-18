@@ -1,6 +1,7 @@
 """Flower strategy for HeteroFL."""
 
 import copy
+import random
 import csv
 import time
 from pathlib import Path
@@ -55,6 +56,7 @@ class HeteroFL(fl.server.strategy.Strategy):
         min_fit_clients: int = 2,
         min_evaluate_clients: int = 2,
         min_available_clients: int = 2,
+        client_dropout_ratio: float = 0.0,
     ) -> None:
         super().__init__()
         self.fraction_fit = fraction_fit
@@ -63,12 +65,14 @@ class HeteroFL(fl.server.strategy.Strategy):
         self.min_evaluate_clients = min_evaluate_clients
         self.min_available_clients = min_available_clients
         self.evaluate_fn = evaluate_fn
+        self.client_dropout_ratio = float(client_dropout_ratio)
+        self.round_dropped_clients: Dict[int, int] = {}
 
         self.round_stats: Dict[int, Dict] = {}
         self.cumulative_total_comm_mb = 0.0
         self.cumulative_round_wall_time_sec = 0.0
 
-        self.metrics_csv_path = Path.cwd() / "heterofl_cifar10_resnet10_detailed.csv"
+        self.metrics_csv_path = Path.cwd() / "heterofl_leaf_femnist_conv_dropout_detailed.csv"
         self.csv_fieldnames = [
             "method",
             "dataset",
@@ -214,8 +218,47 @@ class HeteroFL(fl.server.strategy.Strategy):
             min_num_clients=clientts_selection_config["min_num_clients"],
         )
 
+        # Server-side simulated client dropout.
+        # Do NOT crash clients; just remove some selected clients before FitIns creation.
+        dropout_ratio = float(getattr(self, "client_dropout_ratio", 0.0))
+        dropped = 0
+        original_selected = len(clients)
+
+        if dropout_ratio > 0.0 and clients:
+            kept_clients = []
+            for client in clients:
+                if random.random() < dropout_ratio:
+                    dropped += 1
+                else:
+                    kept_clients.append(client)
+
+            # Never allow a round to have zero fit clients
+            if not kept_clients and clients:
+                kept_clients.append(clients[0])
+                dropped = max(0, dropped - 1)
+
+            clients = kept_clients
+
+        self.round_dropped_clients[server_round] = dropped
+        self.round_stats[server_round]["fit_failures"] = dropped
+
+        print(
+            f"[SERVER DROPOUT] HeteroFL round {server_round}: "
+            f"dropped {dropped}/{original_selected} selected clients",
+            flush=True,
+        )
+
         # update client model rate mapping
         clnt_mngr_heterofl.update(server_round)
+
+        # Dynamic HeteroFL can assign new model rates each round.
+        # Recompute local_param_model_rate after update so keys like 1.0 exist.
+        self.local_param_model_rate = param_model_rate_mapping(
+            self.model_name,
+            self.net.state_dict(),
+            clnt_mngr_heterofl.get_all_clients_to_model_mapping(),
+            self.global_model_rate,
+        )
 
         global_parameters = get_state_dict_from_param(self.net, parameters)
 
@@ -272,7 +315,7 @@ class HeteroFL(fl.server.strategy.Strategy):
             self.round_stats[server_round] = {}
 
         self.round_stats[server_round]["num_fit_clients"] = len(results)
-        self.round_stats[server_round]["fit_failures"] = len(failures)
+        self.round_stats[server_round]["fit_failures"] = len(failures) + self.round_dropped_clients.get(server_round, 0)
 
         fit_param_up_mb = 0.0
         client_train_times = []

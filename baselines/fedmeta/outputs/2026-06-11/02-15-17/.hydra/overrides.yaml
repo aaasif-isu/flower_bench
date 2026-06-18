@@ -1,0 +1,9 @@
+- path=/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist/data
+- algo=fedmeta_maml
+- data=femnist
+- data.num_rounds=2
+- clients_per_round=10
+- data.gradient_step=1
+- data.batch_size=10
+- data.client_resources.num_cpus=1
+- data.client_resources.num_gpus=0

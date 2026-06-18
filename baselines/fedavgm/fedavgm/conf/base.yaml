@@ -15,6 +15,7 @@ client:
   batch_size: 64
   lr: 0.01
 
+  client_dropout_ratio: 0.1
 defaults:
   - _self_
   - strategy: custom-fedavgm

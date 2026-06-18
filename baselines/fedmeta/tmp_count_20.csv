@@ -1,0 +1,2 @@
+method,dataset,model,round,train_loss,test_loss,test_accuracy,num_fit_clients,fit_failures,fit_param_down_mb,fit_param_up_mb,fit_param_total_comm_mb,round_total_comm_mb,cumulative_total_comm_mb,round_wall_time_sec,cumulative_round_wall_time_sec
+FedMeta-Direct-Dropout,LEAF-FEMNIST-NIID,FemnistNetwork,1,4.1192319869995115,4.052724809490115,0.04715250965250965,10,0,251.9115447998047,503.8230895996094,755.7346343994141,755.7346343994141,755.7346343994141,8.269648133777082,8.269648133777082

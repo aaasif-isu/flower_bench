@@ -329,7 +329,13 @@ def _train_meta_one_epoch(
     """
     num_adaptation_steps = gradient_step
     train_net = deepcopy(net)
-    alpha = [alpha.to(device) for alpha in alpha]
+    # FedMeta MAML config provides alpha as a scalar float.
+    # Meta-SGD provides alpha as an iterable of tensors.
+    if isinstance(alpha, (float, int)):
+        _param_source = locals().get("net", locals().get("model"))
+        alpha = [torch.tensor(float(alpha), device=device) for _ in _param_source.parameters()]
+    else:
+        alpha = [a.to(device) for a in alpha]
     train_net.train()
     for _ in range(num_adaptation_steps):
         loss_sum = 0.0
@@ -406,7 +412,12 @@ def test_meta(
     criterion = torch.nn.CrossEntropyLoss()
     test_net = deepcopy(net)
     num_adaptation_steps = gradient_step
-    alpha = [alpha_tensor.to(device) for alpha_tensor in alpha]
+    # FedMeta MAML passes alpha as a scalar float.
+    # Meta-SGD passes alpha as an iterable of tensors.
+    if isinstance(alpha, (float, int)):
+        alpha = [torch.tensor(float(alpha), device=device) for _ in net.parameters()]
+    else:
+        alpha = [alpha_tensor.to(device) for alpha_tensor in alpha]
     test_net.train()
     for _ in range(num_adaptation_steps):
         loss_sum = 0.0

@@ -16,7 +16,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
-def _read_dataset(path: str) -> Tuple[List, DefaultDict, List]:
+def _read_dataset(path: str, keep_users=None, max_users=None) -> Tuple[List, DefaultDict, List]:
     """Read (if necessary) and returns the leaf dataset.
 
     Parameters
@@ -35,12 +35,27 @@ def _read_dataset(path: str) -> Tuple[List, DefaultDict, List]:
 
     files = [f for f in os.listdir(path) if f.endswith(".json")]
 
+    keep_users = set(keep_users) if keep_users is not None else None
+
     for file_name in files:
         with open(f"{path}/{file_name}") as file:
             dataset = json.load(file)
-        users.extend(dataset["users"])
-        data.update(dataset["user_data"])
-        num_example.extend(dataset["num_samples"])
+
+        for user, n in zip(dataset["users"], dataset["num_samples"]):
+            if keep_users is not None and user not in keep_users:
+                continue
+            if user not in dataset["user_data"]:
+                continue
+
+            users.append(user)
+            data[user] = dataset["user_data"][user]
+            num_example.append(n)
+
+            if max_users is not None and keep_users is None and len(data) >= max_users:
+                break
+
+        if max_users is not None and keep_users is None and len(data) >= max_users:
+            break
 
     users = sorted(data.keys())
     return users, data, num_example
@@ -137,8 +152,11 @@ def _partition_data(
     train_path = f"{dir_path}/train"
     test_path = f"{dir_path}/test"
 
-    train_users, train_data, _ = _read_dataset(train_path)
-    _, test_data, _ = _read_dataset(test_path)
+    max_users_env = os.environ.get("FEDMETA_MAX_USERS")
+    max_users = int(max_users_env) if max_users_env else None
+
+    train_users, train_data, _ = _read_dataset(train_path, max_users=max_users)
+    _, test_data, _ = _read_dataset(test_path, keep_users=train_users)
 
     all_dataset: Dict[str, Any] = {"users": [], "user_data": {}, "num_samples": []}
     support_dataset: Dict[str, Any] = {"users": [], "user_data": {}, "num_samples": []}

@@ -2,12 +2,116 @@
 
 from typing import Dict, List, Optional, Tuple
 
+import json
+import os
+
 import numpy as np
 import torch
 from torch.utils.data import ConcatDataset, Dataset, Subset, random_split
 from torchvision import transforms
 
 import heterofl.datasets as dt
+
+
+
+class LeafTensorDataset(Dataset):
+    """Small tensor dataset for LEAF FEMNIST clients."""
+
+    def __init__(self, xs, ys):
+        self.xs = torch.tensor(xs, dtype=torch.float32).view(-1, 1, 28, 28)
+        self.ys = torch.tensor(ys, dtype=torch.long)
+        self.target = self.ys.numpy()
+
+    def __len__(self):
+        return len(self.ys)
+
+    def __getitem__(self, idx):
+        return self.xs[idx], self.ys[idx]
+
+
+
+def _read_leaf_json_dir(json_dir, keep_users=None, max_users=None):
+    users = []
+    data = {}
+
+    for fn in sorted(os.listdir(json_dir)):
+        if not fn.endswith(".json"):
+            continue
+
+        path = os.path.join(json_dir, fn)
+        with open(path, "r") as f:
+            obj = json.load(f)
+
+        file_users = obj.get("users", [])
+        file_data = obj.get("user_data", {})
+
+        for u in file_users:
+            if keep_users is not None and u not in keep_users:
+                continue
+
+            if u not in file_data:
+                continue
+
+            if u not in data:
+                users.append(u)
+                data[u] = file_data[u]
+
+            if max_users is not None and len(users) >= max_users:
+                return users, data
+
+    return users, data
+
+
+def _partition_leaf_femnist(
+    num_clients,
+    iid=False,
+    seed=42,
+):
+    leaf_root = os.environ.get(
+        "LEAF_FEMNIST_ROOT",
+        "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist",
+    )
+
+    train_users, train_data = _read_leaf_json_dir(
+        os.path.join(leaf_root, "data", "train"),
+        max_users=num_clients,
+    )
+
+    users = train_users[:num_clients]
+
+    test_users, test_data = _read_leaf_json_dir(
+        os.path.join(leaf_root, "data", "test"),
+        keep_users=set(users),
+    )
+
+    users = [u for u in users if u in test_data]
+
+    train_client_sets = []
+    test_client_sets = []
+
+    for u in users:
+        tr = train_data[u]
+        te = test_data[u]
+        train_client_sets.append(LeafTensorDataset(tr["x"], tr["y"]))
+        test_client_sets.append(LeafTensorDataset(te["x"], te["y"]))
+
+    if iid:
+        trainset = ConcatDataset(train_client_sets)
+        testset = ConcatDataset(test_client_sets)
+
+        datasets, label_split = iid_partition(trainset, num_clients, seed=seed)
+        client_testsets, _ = iid_partition(testset, num_clients, seed=seed)
+    else:
+        trainset = ConcatDataset(train_client_sets)
+        testset = ConcatDataset(test_client_sets)
+        datasets = train_client_sets
+        client_testsets = test_client_sets
+
+        label_split = []
+        for ds in datasets:
+            label_split.append(torch.unique(torch.tensor(ds.target)).long())
+
+    return trainset, datasets, label_split, client_testsets, testset
 
 
 def _download_data(dataset_name: str, strategy_name: str) -> Tuple[Dataset, Dataset]:
@@ -76,6 +180,13 @@ def _partition_data(
     dataset_division=None,
     seed: Optional[int] = 42,
 ) -> Tuple[Dataset, List[Dataset], List[torch.tensor], List[Dataset], Dataset]:
+    if dataset_name in ("leaf_femnist", "LEAF_FEMNIST", "FEMNIST"):
+        return _partition_leaf_femnist(
+            num_clients=num_clients,
+            iid=iid,
+            seed=seed,
+        )
+
     trainset, testset = _download_data(dataset_name, strategy_name)
 
     if dataset_name in ("MNIST", "CIFAR10"):
@@ -117,6 +228,11 @@ def iid_partition(
     """IID partition of dataset among clients."""
     partition_size = int(len(dataset) / num_clients)
     lengths = [partition_size] * num_clients
+
+    # Add leftover samples so sum(lengths) == len(dataset)
+    remainder = len(dataset) - sum(lengths)
+    for i in range(remainder):
+        lengths[i % num_clients] += 1
 
     divided_dataset = random_split(
         dataset, lengths, torch.Generator().manual_seed(seed)

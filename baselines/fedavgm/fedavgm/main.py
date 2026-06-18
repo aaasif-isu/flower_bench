@@ -9,6 +9,7 @@ are written as 0.0 since FedAvgM does not use split learning.
 import csv
 import pickle
 import time
+import random
 from pathlib import Path
 import os
 
@@ -96,12 +97,16 @@ class InstrumentedFedAvgM(CustomFedAvgM):
     """Wraps CustomFedAvgM and records per-round timing + client counts."""
 
     def __init__(self, **kwargs):
+        self.client_dropout_ratio: float = float(
+            kwargs.pop("client_dropout_ratio", 0.0)
+        )
         super().__init__(**kwargs)
         # keyed by server_round
         self.round_fit_wall: Dict[int, float] = {}
         self.round_fit_clients: Dict[int, int] = {}
         self.round_fit_failures: Dict[int, int] = {}
         self.round_fit_client_times: Dict[int, List[float]] = {}
+        self.round_dropped_clients: Dict[int, int] = {}
 
         self.round_eval_wall: Dict[int, float] = {}
         self.round_eval_clients: Dict[int, int] = {}
@@ -113,6 +118,40 @@ class InstrumentedFedAvgM(CustomFedAvgM):
 
     # Flower calls aggregate_fit / aggregate_evaluate after collecting results.
     # We wrap them to capture wall time and client counts.
+
+    def configure_fit(self, server_round, parameters, client_manager):
+        """Configure fit while randomly dropping selected clients server-side."""
+        fit_config = super().configure_fit(server_round, parameters, client_manager)
+
+        dropout_ratio = float(getattr(self, "client_dropout_ratio", 0.0))
+        if dropout_ratio <= 0.0 or not fit_config:
+            self.round_dropped_clients[server_round] = 0
+            return fit_config
+
+        total_selected = len(fit_config)
+        drop_n = int(round(total_selected * dropout_ratio))
+
+        # Never allow a round to have zero clients after dropout
+        drop_n = min(drop_n, max(0, total_selected - 1))
+
+        drop_indices = set(random.sample(range(total_selected), drop_n)) if drop_n > 0 else set()
+
+        kept = [
+            client_fit_pair
+            for idx, client_fit_pair in enumerate(fit_config)
+            if idx not in drop_indices
+        ]
+        dropped = drop_n
+
+        self.round_dropped_clients[server_round] = dropped
+
+        print(
+            f"[SERVER DROPOUT] FedAvgM round {server_round}: "
+            f"dropped {dropped}/{len(fit_config)} selected clients",
+            flush=True,
+        )
+
+        return kept
 
     def aggregate_fit(
         self,
@@ -126,7 +165,7 @@ class InstrumentedFedAvgM(CustomFedAvgM):
 
         self.round_fit_wall[server_round] = wall
         self.round_fit_clients[server_round] = len(results)
-        self.round_fit_failures[server_round] = len(failures)
+        self.round_fit_failures[server_round] = len(failures) + self.round_dropped_clients.get(server_round, 0)
 
         # Client-reported train times (stored in metrics by client)
         times = [
@@ -347,24 +386,35 @@ def main(cfg: DictConfig) -> None:
         fraction_fit=cfg.server.reporting_fraction,
         fraction_evaluate=cfg.fraction_evaluate,
         min_available_clients=cfg.num_clients,
+        accept_failures=True,
         evaluate_fn=evaluate_fn,
         fit_metrics_aggregation_fn=weighted_average_fit,
         evaluate_metrics_aggregation_fn=weighted_average_eval,
         initial_parameters=initial_parameters,
         server_learning_rate=cfg.server.learning_rate,
         server_momentum=cfg.server.momentum,
+        client_dropout_ratio=cfg.client.client_dropout_ratio,
         on_fit_config_fn=__import__(
             "fedavgm.server", fromlist=["get_on_fit_config"]
         ).get_on_fit_config(cfg.client),
     )
 
     # 4. Simulation
+    ray_tmpdir = os.environ.get("RAY_TMPDIR", f"/tmp/{os.environ.get('USER', 'user')}/ray_fedavgm")
+    os.makedirs(ray_tmpdir, exist_ok=True)
+
     history = fl.simulation.start_simulation(
         client_fn=client_fn,
         num_clients=cfg.num_clients,
         config=fl.server.ServerConfig(num_rounds=cfg.num_rounds),
         strategy=strategy,
         client_resources={"num_cpus": cfg.num_cpus, "num_gpus": cfg.num_gpus},
+        ray_init_args={
+            "include_dashboard": False,
+            "_temp_dir": ray_tmpdir,
+            "ignore_reinit_error": True,
+            "num_cpus": int(os.environ.get("RAY_TOTAL_CPUS", "24")),
+        },
     )
 
     # 5. Identify model / dataset

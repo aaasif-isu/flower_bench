@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Subset, random_split
+from splitfed.leaf_femnist import load_leaf_femnist
 from torchvision import datasets, transforms
 
 
@@ -38,11 +39,11 @@ class BasicBlock(nn.Module):
 
 
 class ResNet10ClientSide(nn.Module):
-    def __init__(self):
+    def __init__(self, input_channels=3):
         super().__init__()
         self.in_planes = 64
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(input_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.layer1 = self._make_layer(64, stride=1)
 
@@ -82,9 +83,9 @@ class ResNet10ServerSide(nn.Module):
 
 
 class SplitFedResNet10(nn.Module):
-    def __init__(self, num_classes=10):
+    def __init__(self, num_classes=10, input_channels=3):
         super().__init__()
-        self.client_side = ResNet10ClientSide()
+        self.client_side = ResNet10ClientSide(input_channels=input_channels)
         self.server_side = ResNet10ServerSide(num_classes=num_classes)
 
     def forward(self, x):
@@ -125,6 +126,28 @@ def _get_partitions(
         ]
     )
 
+    dataset_name = str(dataset_name).lower()
+
+    if dataset_name in ["leaf_femnist", "femnist"]:
+        client_ids, trainloaders, testloaders = load_leaf_femnist(
+            leaf_root=leaf_root,
+            partition=partition,
+            num_clients=num_partitions,
+            batch_size=batch_size,
+            seed=seed,
+            max_iid_source_clients=max_iid_source_clients,
+        )
+
+        key = str(partition_id)
+
+        if key not in trainloaders:
+            raise ValueError(f"Client {key} not found in LEAF FEMNIST trainloaders")
+
+        trainloader = trainloaders[key]
+        testloader = testloaders.get(key, trainloader)
+
+        return trainloader, testloader
+
     full_train = datasets.CIFAR10(root=data_dir, train=True, download=False, transform=transform_train)
     full_test = datasets.CIFAR10(root=data_dir, train=False, download=False, transform=transform_test)
 
@@ -161,7 +184,37 @@ def load_data(
     batch_size: int,
     train_fraction: float,
     data_dir: str = "./data",
+    dataset_name: str = "cifar10",
+    partition: str = "niid",
+    leaf_root: str = "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist",
+    seed: int = 0,
+    max_iid_source_clients=None,
 ) -> Tuple[DataLoader, DataLoader]:
+    dataset_name = str(dataset_name).lower()
+
+    if max_iid_source_clients in [None, "", "None", "none"]:
+        max_iid_source_clients = None
+    else:
+        max_iid_source_clients = int(max_iid_source_clients)
+
+    if dataset_name in ["leaf_femnist", "femnist"]:
+        client_ids, trainloaders, testloaders = load_leaf_femnist(
+            leaf_root=leaf_root,
+            partition=partition,
+            num_clients=num_partitions,
+            batch_size=batch_size,
+            seed=seed,
+            max_iid_source_clients=max_iid_source_clients,
+        )
+
+        key = str(partition_id)
+        if key not in trainloaders:
+            raise ValueError(f"Client {key} not found in LEAF FEMNIST trainloaders")
+
+        trainloader = trainloaders[key]
+        testloader = testloaders.get(key, trainloader)
+        return trainloader, testloader
+
     train_parts, test_parts = _get_partitions(
         num_partitions=num_partitions,
         train_fraction=train_fraction,

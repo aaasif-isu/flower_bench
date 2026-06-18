@@ -1,6 +1,7 @@
 """Runs federated learning for given configuration in base.yaml."""
 
 import pickle
+import os
 from pathlib import Path
 
 import flwr as fl
@@ -47,6 +48,10 @@ def main(cfg: DictConfig) -> None:
     )
 
     model_config = preprocess_input(cfg.model, cfg.dataset)
+
+    if cfg.dataset.dataset_name in ("leaf_femnist", "LEAF_FEMNIST", "FEMNIST"):
+        model_config["data_shape"] = [1, 28, 28]
+        model_config["classes_size"] = 62
 
     model_split_rate = None
     model_mode = None
@@ -167,6 +172,7 @@ def main(cfg: DictConfig) -> None:
             ),
             evaluate_fn=evaluate_fn,
             min_available_clients=cfg.num_clients,
+            client_dropout_ratio=float(cfg.get("client_dropout_ratio", 0.0)),
         )
 
         history = fl.simulation.start_simulation(
@@ -183,8 +189,9 @@ def main(cfg: DictConfig) -> None:
         
         ray_init_args={
             "include_dashboard": False,
-            "num_cpus": 2,
-            "num_gpus": 1,
+            "_temp_dir": os.environ.get("RAY_TMPDIR", f"/tmp/{os.environ.get('USER', 'user')}/ray_heterofl"),
+            "num_cpus": int(os.environ.get("RAY_TOTAL_CPUS", "2")),
+            "num_gpus": 0,
             "ignore_reinit_error": True,
         },
     )

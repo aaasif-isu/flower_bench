@@ -1,0 +1,14 @@
+- dataset.dataset_name=leaf_femnist
+- dataset.iid=False
+- model.model_name=conv
+- num_clients=20
+- num_rounds=2
+- num_epochs=1
+- client_resources.num_cpus=1
+- client_resources.num_gpus=0
+- strategy.fraction_fit=0.5
+- strategy.fraction_evaluate=0.5
+- strategy.min_fit_clients=10
+- strategy.min_evaluate_clients=10
+- dataset.batch_size.train=32
+- dataset.batch_size.test=128

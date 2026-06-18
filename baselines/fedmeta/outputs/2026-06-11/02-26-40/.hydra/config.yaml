@@ -1,0 +1,29 @@
+path: /lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist/data
+num_epochs: 1
+clients_per_round: 10
+strategy:
+  _target_: fedmeta.strategy.FedMeta
+  fraction_fit: 1.0e-05
+  fraction_evaluate: 0.0
+  min_fit_clients: ${clients_per_round}
+  min_evaluate_clients: 0
+  min_available_clients: ${clients_per_round}
+algo:
+  algo: fedmeta_maml
+  femnist:
+    alpha: 0.001
+    beta: 0.0001
+  shakespeare:
+    alpha: 0.1
+    beta: 0.01
+data:
+  model:
+    _target_: fedmeta.models.FemnistNetwork
+  client_resources:
+    num_cpus: 1
+    num_gpus: 0
+  num_rounds: 2
+  data: femnist
+  support_ratio: 0.2
+  batch_size: 10
+  gradient_step: 1

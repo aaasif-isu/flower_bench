@@ -41,15 +41,34 @@ def weighted_fit_average(results):
 
 
 class CsvFedAvg(FedAvg):
-    def __init__(self, method_name: str, csv_path: str, batch_size: int, local_epochs: int, *args, **kwargs):
+    def __init__(self, *args, csv_path: str, method_name: str = "SplitFed", dataset_name: str = "CIFAR10", **kwargs):
+        self.dataset_name = dataset_name
+
+        # Remove SplitFed/custom run-config values before passing kwargs to Flower FedAvg
+        for key in [
+            "dataset_name",
+            "batch_size",
+            "local_epochs",
+            "train_fraction",
+            "num_clients",
+            "clients_per_round",
+            "num_server_rounds",
+            "partition",
+            "leaf_root",
+            "seed",
+            "max_iid_source_clients",
+        ]:
+            kwargs.pop(key, None)
+
         super().__init__(*args, **kwargs)
-        self.method_name = method_name
         self.csv_path = csv_path
-        self.batch_size = batch_size
-        self.local_epochs = local_epochs
-        self.fit_cache = {}
+        self.method_name = method_name
+
+        # CSV/stat tracking state
         self.round_stats = {}
-        self.written_rounds = set()          # guard: never write same round twice
+        self.fit_cache = {}
+        self.eval_cache = {}
+        self.written_rounds = set()
         self.cumulative_total_comm_mb = 0.0
         self.cumulative_round_wall_time_sec = 0.0
 
@@ -62,22 +81,19 @@ class CsvFedAvg(FedAvg):
             "split_train_label_mb", "split_train_total_comm_mb",
             "fit_total_comm_mb",
             "client_train_time_mean_sec", "client_train_time_max_sec",
-            "fit_total_time_mean_sec", "fit_total_time_max_sec", "fit_wall_time_sec",
+            "fit_total_time_mean_sec", "fit_total_time_max_sec",
+            "fit_wall_time_sec",
             "num_eval_clients", "eval_failures",
             "eval_param_down_mb", "eval_param_up_mb", "eval_param_total_comm_mb",
-            "split_eval_smashed_forward_mb", "split_eval_label_mb", "split_eval_total_comm_mb",
-            "eval_total_comm_mb",
+            "split_eval_smashed_forward_mb", "split_eval_label_mb",
+            "split_eval_total_comm_mb", "eval_total_comm_mb",
             "client_eval_time_mean_sec", "client_eval_time_max_sec",
-            "eval_total_time_mean_sec", "eval_total_time_max_sec", "eval_wall_time_sec",
-            "round_param_comm_mb", "round_splitfed_comm_mb", "round_total_comm_mb",
-            "cumulative_total_comm_mb", "round_wall_time_sec", "cumulative_round_wall_time_sec",
+            "eval_total_time_mean_sec", "eval_total_time_max_sec",
+            "eval_wall_time_sec",
+            "round_param_comm_mb", "round_splitfed_comm_mb",
+            "round_total_comm_mb", "cumulative_total_comm_mb",
+            "round_wall_time_sec", "cumulative_round_wall_time_sec",
         ]
-
-        os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-        with open(self.csv_path, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=self.csv_fieldnames)
-            writer.writeheader()
-
     def _init_round(self, server_round, round_start=None):
         if server_round not in self.round_stats:
             self.round_stats[server_round] = {
@@ -252,7 +268,7 @@ class CsvFedAvg(FedAvg):
         ce  = stats.get("client_eval_times", [])
 
         row = {
-            "method": self.method_name, "dataset": "CIFAR10", "model": "ResNet10",
+            "method": self.method_name, "dataset": str(self.dataset_name), "model": "ResNet10",
             "round": server_round,
             "train_loss": train_loss, "train_accuracy": train_accuracy,
             "test_loss": test_loss,   "test_accuracy": test_accuracy,
@@ -310,11 +326,21 @@ def server_fn(context: Context):
     batch_size        = int(context.run_config.get("batch-size", 64))
     local_epochs      = int(context.run_config.get("local-epochs", 1))
 
-    model = SplitFedResNet10(num_classes=10)
+    dataset_name = str(context.run_config.get("dataset-name", "cifar10")).lower()
+
+    if dataset_name in ["leaf_femnist", "femnist"]:
+        input_channels = 1
+        num_classes = 62
+    else:
+        input_channels = 3
+        num_classes = 10
+
+    model = SplitFedResNet10(num_classes=num_classes, input_channels=input_channels)
     initial_parameters = ndarrays_to_parameters(get_parameters(model))
 
     strategy = CsvFedAvg(
         method_name=method_name,
+        dataset_name=str(context.run_config.get("dataset-name", "CIFAR10")),
         csv_path=csv_path,
         batch_size=batch_size,
         local_epochs=local_epochs,

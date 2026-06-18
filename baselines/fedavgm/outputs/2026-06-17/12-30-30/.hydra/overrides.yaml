@@ -1,0 +1,13 @@
+- strategy=fedavg
+- model=resnet10
+- dataset=cifar10
+- num_rounds=3
+- num_clients=10
+- server.reporting_fraction=0.2
+- fraction_evaluate=0.0
+- client.local_epochs=1
+- client.batch_size=64
+- client.lr=0.01
+- client.client_dropout_ratio=0.1
+- num_cpus=24
+- num_gpus=0

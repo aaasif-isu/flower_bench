@@ -1,0 +1,7 @@
+- num_rounds=50
+- num_clients=10
+- dataset.dataset_name=leaf_femnist
+- dataset.iid=false
+- client_resources.num_cpus=1
+- client_resources.num_gpus=0
+- +client_dropout_ratio=0.1

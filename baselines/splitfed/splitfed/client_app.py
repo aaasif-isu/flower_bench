@@ -112,11 +112,25 @@ def client_fn(context: Context):
     local_epochs = int(context.run_config["local-epochs"])
     train_fraction = float(context.run_config["train-fraction"])
 
-    model = SplitFedResNet10(num_classes=10)
+    dataset_name = str(context.run_config.get("dataset-name", "cifar10")).lower()
+
+    if dataset_name in ["leaf_femnist", "femnist"]:
+        input_channels = 1
+        num_classes = 62
+    else:
+        input_channels = 3
+        num_classes = 10
+
+    model = SplitFedResNet10(num_classes=num_classes, input_channels=input_channels)
     trainloader, testloader = load_data(
         partition_id=partition_id,
         num_partitions=num_clients,
         batch_size=batch_size,
+        dataset_name=dataset_name,
+        partition=str(context.run_config.get("partition", "niid")),
+        leaf_root=str(context.run_config.get("leaf-root", "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist")),
+        seed=int(context.run_config.get("seed", 0)),
+        max_iid_source_clients=context.run_config.get("max-iid-source-clients", None),
         train_fraction=train_fraction,
     )
 

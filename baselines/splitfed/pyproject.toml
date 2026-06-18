@@ -41,9 +41,18 @@ local-epochs = 1
 batch-size = 64
 train-fraction = 0.2
 method = "SplitFed"
+dataset-name = "cifar10"
+partition = "niid"
+leaf-root = "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist"
+seed = 0
+max-iid-source-clients = 50
 csv-path = "results/splitfed_cifar10_resnet10.csv"
 
 [tool.flwr.federations.local-simulation]
-options.num-supernodes = 1
-options.backend.client-resources.num-cpus = 2
-options.backend.client-resources.num-gpus = 1.0
+options.num-supernodes = 20
+options.backend.client-resources.num-cpus = 4
+options.backend.client-resources.num-gpus = 0.0
+
+options.backend.init-args.num-cpus = 8
+options.backend.init-args.include-dashboard = false
+options.backend.init-args.object-store-memory = 4000000000

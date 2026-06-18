@@ -1,0 +1,3 @@
+- num_rounds=3
+- num_clients=10
+- +client_dropout_ratio=0.1

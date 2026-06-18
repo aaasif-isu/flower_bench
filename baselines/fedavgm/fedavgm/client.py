@@ -1,10 +1,26 @@
 """Define the Flower Client and function to instantiate it."""
 
 import math
+import gc
+import random
 
 import flwr as fl
 from hydra.utils import instantiate
 from keras.utils import to_categorical
+from keras import backend as K
+
+
+
+def should_drop_client(config: dict) -> bool:
+    """Randomly simulate client dropout for the current round."""
+    dropout_ratio = float(
+        config.get("client_dropout_ratio", config.get("client-dropout-ratio", 0.0))
+    )
+
+    if dropout_ratio <= 0.0:
+        return False
+
+    return random.random() < dropout_ratio
 
 
 class FlowerClient(fl.client.NumPyClient):
@@ -12,6 +28,10 @@ class FlowerClient(fl.client.NumPyClient):
 
     # pylint: disable=too-many-arguments
     def __init__(self, x_train, y_train, x_val, y_val, model, num_classes) -> None:
+        # Clear old Keras graphs/models before creating a new local model
+        K.clear_session()
+        gc.collect()
+
         # local model
         self.model = instantiate(model)
 
@@ -27,6 +47,7 @@ class FlowerClient(fl.client.NumPyClient):
 
     def fit(self, parameters, config):
         """Implement distributed fit function for a given client."""
+
         self.model.set_weights(parameters)
 
         history = self.model.fit(
@@ -53,7 +74,11 @@ class FlowerClient(fl.client.NumPyClient):
 
 
 def generate_client_fn(partitions, model, num_classes):
-    """Generate the client function that creates the Flower Clients."""
+    """Generate the client function that creates Flower Clients without caching.
+
+    We avoid caching because Keras/TF models can accumulate memory across many
+    client IDs inside long Ray actor runs.
+    """
 
     def client_fn(cid: str) -> FlowerClient:
         """Create a Flower client representing a single organization."""

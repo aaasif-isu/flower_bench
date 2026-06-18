@@ -1,0 +1,1 @@
+method,dataset,model,round,train_loss,test_loss,test_accuracy,num_fit_clients,fit_failures,fit_param_down_mb,fit_param_up_mb,fit_param_total_comm_mb,round_total_comm_mb,cumulative_total_comm_mb,round_wall_time_sec,cumulative_round_wall_time_sec

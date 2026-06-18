@@ -32,6 +32,9 @@ def preprocess_input(cfg_model, cfg_data):
     if cfg_data.dataset_name == "MNIST":
         model_config["data_shape"] = [1, 28, 28]
         model_config["classes_size"] = 10
+    elif cfg_data.dataset_name in ["leaf_femnist", "FEMNIST", "femnist"]:
+        model_config["data_shape"] = [1, 28, 28]
+        model_config["classes_size"] = 62
     elif cfg_data.dataset_name == "CIFAR10":
         model_config["data_shape"] = [3, 32, 32]
         model_config["classes_size"] = 10

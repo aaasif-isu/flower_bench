@@ -48,6 +48,7 @@ def main(cfg: DictConfig) -> None:
     # prepare strategy function
     strategy = instantiate(
         cfg.strategy,
+        _recursive_=False,
         evaluate_metrics_aggregation_fn=weighted_average,
         alpha=cfg.algo[cfg.data.data].alpha,
         beta=cfg.algo[cfg.data.data].beta,
@@ -67,12 +68,11 @@ def main(cfg: DictConfig) -> None:
             "num_cpus": cfg.data.client_resources.num_cpus,
             "num_gpus": cfg.data.client_resources.num_gpus,
         },
-        client_manager=FedmetaClientManager(valid_client=len(valloaders["qry"])),
         strategy=strategy,
         ray_init_args={
             "include_dashboard": False,
-            "num_cpus": 2,
-            "num_gpus": 1,
+            "num_cpus": 16,
+            "num_gpus": 0,
             "ignore_reinit_error": True,
         },
     )
@@ -100,7 +100,10 @@ def main(cfg: DictConfig) -> None:
     }
 
     save_graph_params(data_params)
-    plot_from_pkl(directory=output_path)
+    try:
+        plot_from_pkl(directory=output_path)
+    except Exception as e:
+        print(f"Skipping plot_from_pkl because metrics are incomplete: {e}")
     print("................")
 
 def plot_round_metrics(
