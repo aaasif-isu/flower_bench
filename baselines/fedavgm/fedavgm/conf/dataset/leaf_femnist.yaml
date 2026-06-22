@@ -1,0 +1,6 @@
+_target_: fedavgm.dataset.leaf_femnist
+num_classes: 62
+input_shape: [28, 28, 1]
+root: /lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist
+num_clients: ${num_clients}
+partition_name: niid

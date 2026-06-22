@@ -33,12 +33,7 @@ class FlowerClient(fl.client.NumPyClient):
         gc.collect()
 
         # local model
-        # model can be either a Hydra DictConfig or an already-built Keras model.
-        # For our GPU-safe client path, we pass an already-built fresh Keras model.
-        if hasattr(model, "fit") and hasattr(model, "get_weights"):
-            self.model = model
-        else:
-            self.model = instantiate(model)
+        self.model = instantiate(model)
 
         # local dataset
         self.x_train, self.y_train = x_train, to_categorical(
@@ -78,65 +73,19 @@ class FlowerClient(fl.client.NumPyClient):
         return float(loss), len(self.x_val), {"accuracy": float(acc)}
 
 
-
-def _fresh_client_model(base_model):
-    """Create a fresh compiled Keras model for each Ray client call.
-
-    This avoids reusing one TensorFlow/Keras graph repeatedly inside the same
-    Ray actor, which was causing actor crashes on GPU.
-    """
-    import tensorflow as tf
-    from tensorflow import keras
-
-    try:
-        for gpu in tf.config.list_physical_devices("GPU"):
-            tf.config.experimental.set_memory_growth(gpu, True)
-    except Exception:
-        pass
-
-    keras.backend.clear_session()
-
-    model = keras.models.clone_model(base_model)
-    model.set_weights(base_model.get_weights())
-
-    try:
-        opt = keras.optimizers.deserialize(
-            keras.optimizers.serialize(base_model.optimizer)
-        )
-    except Exception:
-        opt = keras.optimizers.SGD(learning_rate=0.01)
-
-    model.compile(
-        loss="categorical_crossentropy",
-        optimizer=opt,
-        metrics=["accuracy"],
-    )
-
-    return model
-
-
 def generate_client_fn(partitions, model, num_classes):
-    """Generate the client function that creates fresh Flower clients.
+    """Generate the client function that creates Flower Clients without caching.
 
-    Important for GPU stability:
-    - Do not reuse one Keras model object across many client calls.
-    - Clone/compile a fresh model per client call.
-    - Clear Keras session before cloning.
+    We avoid caching because Keras/TF models can accumulate memory across many
+    client IDs inside long Ray actor runs.
     """
 
     def client_fn(cid: str) -> FlowerClient:
         """Create a Flower client representing a single organization."""
-        import math
-
         full_x_train_cid, full_y_train_cid = partitions[int(cid)]
 
         # Use 10% of the client's training data for validation
         split_idx = math.floor(len(full_x_train_cid) * 0.9)
-
-        # Safety: if a tiny LEAF client has too little data, keep at least 1 val sample
-        if split_idx >= len(full_x_train_cid):
-            split_idx = max(1, len(full_x_train_cid) - 1)
-
         x_train_cid, y_train_cid = (
             full_x_train_cid[:split_idx],
             full_y_train_cid[:split_idx],
@@ -146,15 +95,8 @@ def generate_client_fn(partitions, model, num_classes):
             full_y_train_cid[split_idx:],
         )
 
-        client_model = _fresh_client_model(model)
-
         return FlowerClient(
-            x_train_cid,
-            y_train_cid,
-            x_val_cid,
-            y_val_cid,
-            client_model,
-            num_classes,
+            x_train_cid, y_train_cid, x_val_cid, y_val_cid, model, num_classes
         )
 
     return client_fn

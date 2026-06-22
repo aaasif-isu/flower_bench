@@ -368,10 +368,7 @@ def main(cfg: DictConfig) -> None:
     print(f">>> [Model]: Num. Classes {num_classes} | Input shape: {input_shape}")
 
     # 2. Clients
-    # Build a real Keras model object for client-side model cloning.
-    # cfg.model is only a Hydra DictConfig, not a serializable Keras model.
-    client_model = instantiate(cfg.model)
-    client_fn = generate_client_fn(partitions, client_model, num_classes)
+    client_fn = generate_client_fn(partitions, model, num_classes)
 
     # 3. Strategy + evaluate_fn
     evaluate_fn = get_evaluate_fn(

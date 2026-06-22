@@ -1,0 +1,44 @@
+num_clients: 20
+num_rounds: 3
+fraction_evaluate: 0.5
+noniid:
+  concentration: 0.1
+server:
+  momentum: 0.0
+  learning_rate: 1.0
+  reporting_fraction: 0.5
+client:
+  local_epochs: 1
+  batch_size: 64
+  lr: 0.01
+  client_dropout_ratio: 0.1
+num_cpus: 4
+num_gpus: 0.5
+strategy:
+  _target_: fedavgm.strategy.CustomFedAvgM
+  min_available_clients: ${num_clients}
+  fraction_fit: ${server.reporting_fraction}
+  fraction_evaluate: ${fraction_evaluate}
+  server_learning_rate: ${server.learning_rate}
+  server_momentum: ${server.momentum}
+  on_fit_config_fn:
+    _target_: fedavgm.server.get_on_fit_config
+    config: ${client}
+  initial_parameters:
+    _target_: fedavgm.models.model_to_parameters
+    model: ${model}
+model:
+  _target_: fedavgm.models.resnet10
+  input_shape: ${dataset.input_shape}
+  num_classes: ${dataset.num_classes}
+  learning_rate: ${client.lr}
+dataset:
+  _target_: fedavgm.dataset.leaf_femnist
+  num_classes: 62
+  input_shape:
+  - 28
+  - 28
+  - 1
+  root: /lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/data/femnist
+  num_clients: ${num_clients}
+  partition_name: niid
