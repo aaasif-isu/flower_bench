@@ -1,0 +1,4 @@
+method,dataset,model,round,train_loss,train_accuracy,test_loss,test_accuracy,num_fit_clients,fit_failures,model_mode,avg_model_rate,round_wall_time_sec,cumulative_round_wall_time_sec
+ExternalHeteroFL-Direct,CIFAR10,HeteroCifarCNN,1,2.0480861483764645,0.25596,1.9243915981292725,0.2564,5,0,a1-b1-c1,0.65,22.716731786727905,22.716731786727905
+ExternalHeteroFL-Direct,CIFAR10,HeteroCifarCNN,2,1.836207816848755,0.31288,1.5890426137924194,0.4053,5,0,a1-b1-c1,0.5,8.409059524536133,31.125791311264038
+ExternalHeteroFL-Direct,CIFAR10,HeteroCifarCNN,3,1.6640842694854736,0.38032,1.4503402725219727,0.4547,5,0,a1-b1-c1,0.6,8.87291669845581,39.99870800971985

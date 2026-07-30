@@ -47,6 +47,7 @@ leaf-root = "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/external/leaf/da
 seed = 0
 max-iid-source-clients = 50
 csv-path = "results/splitfed_cifar10_resnet10.csv"
+client-dropout-ratio = 0.1
 
 [tool.flwr.federations.local-simulation]
 options.num-supernodes = 20

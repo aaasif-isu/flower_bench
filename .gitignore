@@ -201,3 +201,22 @@ pyrightconfig.json
 
 # pylint cache
 .pylint.d/
+
+# External baseline generated files
+baselines/external_cama/**/.venv/
+baselines/external_cama/**/__pycache__/
+baselines/external_cama/**/outputs/
+baselines/external_cama/**/*.log
+baselines/external_cama/**/*.pkl
+
+baselines/external_fedprox/**/.venv/
+baselines/external_fedprox/**/__pycache__/
+baselines/external_fedprox/**/outputs/
+
+baselines/external_hetrofl/**/.venv/
+baselines/external_hetrofl/**/__pycache__/
+baselines/external_hetrofl/**/outputs/
+
+# Temporary files
+*.bak
+*.bak_*

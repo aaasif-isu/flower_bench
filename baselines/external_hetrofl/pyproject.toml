@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "external-hetrofl"
+version = "0.1.0"
+description = "External HeteroFL baseline integrated into FlowerBench"
+dependencies = [
+    "flwr[simulation]",
+    "torch",
+    "torchvision",
+    "numpy",
+    "pandas",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["heterofl"]
+
+[tool.flwr.app]
+publisher = "flowerbench"
+
+[tool.flwr.app.components]
+serverapp = "heterofl.server_app:app"
+clientapp = "heterofl.client_app:app"
+
+[tool.flwr.app.config]
+dataset = "CIFAR10"
+num-clients = 10
+clients-per-round = 5
+num-server-rounds = 3
+local-epochs = 1
+batch-size = 64
+model-mode = "a1-b1-c1"
+csv-path = "results/external_hetrofl_cifar10_smoke.csv"
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 2

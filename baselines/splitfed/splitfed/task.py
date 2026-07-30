@@ -108,7 +108,7 @@ def _get_partitions(
     num_partitions: int,
     train_fraction: float,
     data_dir: str = "./data",
-):
+    dataset_name="cifar10"):
     """Cache CIFAR-10 partitions so every client does not reload/re-split data."""
     transform_train = transforms.Compose(
         [
@@ -219,7 +219,7 @@ def load_data(
         num_partitions=num_partitions,
         train_fraction=train_fraction,
         data_dir=data_dir,
-    )
+        dataset_name=dataset_name)
 
     trainloader = DataLoader(
         train_parts[partition_id],

@@ -1,6 +1,7 @@
 import os
 import csv
 import time
+import random
 from typing import List, Tuple
 
 import pandas as pd
@@ -41,7 +42,7 @@ def weighted_fit_average(results):
 
 
 class CsvFedAvg(FedAvg):
-    def __init__(self, *args, csv_path: str, method_name: str = "SplitFed", dataset_name: str = "CIFAR10", **kwargs):
+    def __init__(self, *args, csv_path: str, method_name: str = "SplitFed", dataset_name: str = "CIFAR10", client_dropout_ratio: float = 0.0, **kwargs):
         self.dataset_name = dataset_name
 
         # Remove SplitFed/custom run-config values before passing kwargs to Flower FedAvg
@@ -63,6 +64,7 @@ class CsvFedAvg(FedAvg):
         super().__init__(*args, **kwargs)
         self.csv_path = csv_path
         self.method_name = method_name
+        self.client_dropout_ratio = float(client_dropout_ratio)
 
         # CSV/stat tracking state
         self.round_stats = {}
@@ -121,6 +123,30 @@ class CsvFedAvg(FedAvg):
     def configure_fit(self, server_round, parameters, client_manager):
         round_start = time.perf_counter()
         fit_ins_list = super().configure_fit(server_round, parameters, client_manager)
+
+        # Random client dropout simulation:
+        # each sampled client has probability client_dropout_ratio of dropping out
+        if self.client_dropout_ratio > 0.0 and len(fit_ins_list) > 0:
+            original_num_clients = len(fit_ins_list)
+            kept_fit_ins_list = [
+                fit_ins for fit_ins in fit_ins_list
+                if random.random() >= self.client_dropout_ratio
+            ]
+
+            # Safety: never allow a round with zero fit clients
+            if len(kept_fit_ins_list) == 0:
+                kept_fit_ins_list = [random.choice(fit_ins_list)]
+
+            dropped_clients = original_num_clients - len(kept_fit_ins_list)
+
+            print(
+                f"[CLIENT DROPOUT] Round {server_round}: "
+                f"dropped {dropped_clients}/{original_num_clients} clients "
+                f"dropout_ratio={self.client_dropout_ratio}"
+            )
+
+            fit_ins_list = kept_fit_ins_list
+
         self._init_round(server_round, round_start)
         param_down_per_client_mb = arrays_size_mb(parameters_to_ndarrays(parameters))
         self.round_stats[server_round]["fit_param_down_mb"] = param_down_per_client_mb * len(fit_ins_list)
@@ -325,6 +351,7 @@ def server_fn(context: Context):
     csv_path          = str(context.run_config["csv-path"])
     batch_size        = int(context.run_config.get("batch-size", 64))
     local_epochs      = int(context.run_config.get("local-epochs", 1))
+    client_dropout_ratio = float(context.run_config.get("client-dropout-ratio", 0.0))
 
     dataset_name = str(context.run_config.get("dataset-name", "cifar10")).lower()
 
@@ -344,6 +371,7 @@ def server_fn(context: Context):
         csv_path=csv_path,
         batch_size=batch_size,
         local_epochs=local_epochs,
+        client_dropout_ratio=client_dropout_ratio,
         fraction_fit=clients_per_round / num_clients,
         fraction_evaluate=clients_per_round / num_clients,
         min_fit_clients=clients_per_round,
