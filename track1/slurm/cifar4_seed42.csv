@@ -1,0 +1,17 @@
+algorithm,partition_file,label
+fedavg,track1/partitions/cifar10_iid_seed42.npz,iid
+fedavg,track1/partitions/cifar10_alpha1_seed42.npz,alpha1
+fedavg,track1/partitions/cifar10_alpha03_seed42.npz,alpha03
+fedavg,track1/partitions/cifar10_alpha01_seed42.npz,alpha01
+fedprox,track1/partitions/cifar10_iid_seed42.npz,iid
+fedprox,track1/partitions/cifar10_alpha1_seed42.npz,alpha1
+fedprox,track1/partitions/cifar10_alpha03_seed42.npz,alpha03
+fedprox,track1/partitions/cifar10_alpha01_seed42.npz,alpha01
+fedavgm,track1/partitions/cifar10_iid_seed42.npz,iid
+fedavgm,track1/partitions/cifar10_alpha1_seed42.npz,alpha1
+fedavgm,track1/partitions/cifar10_alpha03_seed42.npz,alpha03
+fedavgm,track1/partitions/cifar10_alpha01_seed42.npz,alpha01
+fedadam,track1/partitions/cifar10_iid_seed42.npz,iid
+fedadam,track1/partitions/cifar10_alpha1_seed42.npz,alpha1
+fedadam,track1/partitions/cifar10_alpha03_seed42.npz,alpha03
+fedadam,track1/partitions/cifar10_alpha01_seed42.npz,alpha01
