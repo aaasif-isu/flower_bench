@@ -220,3 +220,11 @@ baselines/external_hetrofl/**/outputs/
 # Temporary files
 *.bak
 *.bak_*
+
+# External algorithm reference repositories
+track1/external/FedNova/
+track1/external/SCAFFOLD-PyTorch/
+
+# Slurm runtime logs
+track1/logs/slurm/*.out
+track1/logs/slurm/*.err
