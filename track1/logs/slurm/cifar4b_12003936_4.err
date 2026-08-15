@@ -1,0 +1,4 @@
+/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/.venv_fedprox/lib/python3.10/site-packages/torch/cuda/__init__.py:182: UserWarning: CUDA initialization: CUDA driver initialization failed, you might not have a CUDA gpu. (Triggered internally at /pytorch/c10/cuda/CUDAFunctions.cpp:109.)
+  return torch._C._cuda_getDeviceCount() > 0
+/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/.venv_fedprox/lib/python3.10/site-packages/torch/utils/data/dataloader.py:666: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  warnings.warn(warn_msg)

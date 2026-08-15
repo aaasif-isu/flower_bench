@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/track1/cifar/run_fedavgm.py", line 440, in <module>
+    main()
+  File "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/track1/cifar/run_fedavgm.py", line 277, in main
+    schedule = load_schedule(args.schedule_file)
+  File "/lustre/hdd/LAS/jannesar-lab/aadishah/flower_bench/track1/cifar/run_fedavgm.py", line 35, in load_schedule
+    with open(path, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'track1/schedules/cifar10_100c_10cpr_500r_seed43\r.json'

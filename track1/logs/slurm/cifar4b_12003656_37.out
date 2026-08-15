@@ -1,0 +1,10 @@
+========================================
+JOB:       12003704
+TASK:      37
+ALGORITHM: fedprox
+PARTITION: alpha1
+SEED:      45
+GPU:       0
+========================================
+Device: cuda
+GPU: NVIDIA A100-SXM4-80GB

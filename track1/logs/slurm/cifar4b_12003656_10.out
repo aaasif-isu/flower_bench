@@ -1,0 +1,10 @@
+========================================
+JOB:       12003674
+TASK:      10
+ALGORITHM: fedavgm
+PARTITION: alpha03
+SEED:      43
+GPU:       0
+========================================
+Device: cuda
+GPU: NVIDIA A100-SXM4-80GB

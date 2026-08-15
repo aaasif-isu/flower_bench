@@ -24,6 +24,11 @@ CONFIG=track1/slurm/cifar4_seeds43_46.csv
 ROW=$(sed -n "$((SLURM_ARRAY_TASK_ID + 2))p" "$CONFIG")
 IFS=',' read -r ALGO PARTITION_FILE LABEL SEED <<< "$ROW"
 
+ALGO="${ALGO//$'\r'/}"
+PARTITION_FILE="${PARTITION_FILE//$'\r'/}"
+LABEL="${LABEL//$'\r'/}"
+SEED="${SEED//$'\r'/}"
+
 SCHEDULE="track1/schedules/cifar10_100c_10cpr_500r_seed${SEED}.json"
 
 OUTDIR="track1/results/cifar10/final_seed${SEED}"
