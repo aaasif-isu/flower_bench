@@ -1,0 +1,3 @@
+round,train_loss,train_accuracy,test_loss,test_accuracy,num_fit_clients,num_fit_examples,mean_local_steps,c_global_norm,mean_c_delta_norm,run_completed
+1,4.0580458093615945,0.04238980187375211,nan,nan,20,6511,10.7,0.10820634190987341,3.1103799330958464,False
+2,3.8412779538797497,0.054259876249405044,nan,nan,20,6303,10.45,0.18870122808944986,3.8082477296051636,False
