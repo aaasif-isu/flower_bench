@@ -1,0 +1,6 @@
+algorithm,dataset,partition,local_setting,target,success_rate,rounds_to_target_median,total_bytes_to_target_median,local_steps_to_target_median,rank_rounds,rank_bytes,rank_local_steps,rank_range,final_utility_mean,final_utility_std
+fedadam,FEMNIST,natural,epochs1,0.03,1.0,1.0,1056593600.0,214.0,1.0,1.0,1.0,0.0,0.0573110634616107,0.0
+fedavg,FEMNIST,natural,epochs1,0.03,1.0,1.0,1056593600.0,214.0,1.0,1.0,1.0,0.0,0.0498250761765037,0.0
+fedavgm,FEMNIST,natural,epochs1,0.03,1.0,1.0,1056593600.0,214.0,1.0,1.0,1.0,0.0,0.0498250761765037,0.0
+fednova,FEMNIST,natural,epochs1,0.03,1.0,1.0,1056593600.0,214.0,1.0,1.0,1.0,0.0,0.0497686491366662,0.0
+fedprox,FEMNIST,natural,epochs1,0.03,1.0,1.0,1056593600.0,214.0,1.0,1.0,1.0,0.0,0.0498250761765037,0.0

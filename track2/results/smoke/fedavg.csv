@@ -1,0 +1,2 @@
+target,target_reached,rounds_to_target,upload_bytes_to_target,download_bytes_to_target,total_bytes_to_target,local_steps_to_target,final_utility,source_csv
+0.03,1,1,528296800,528296800,1056593600,214,0.049825076176503724,track1/results/femnist/track2_accounting_smoke.csv
