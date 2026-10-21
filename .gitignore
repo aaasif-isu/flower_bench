@@ -228,3 +228,4 @@ track1/external/SCAFFOLD-PyTorch/
 # Slurm runtime logs
 track1/logs/slurm/*.out
 track1/logs/slurm/*.err
+.conda_track4/
