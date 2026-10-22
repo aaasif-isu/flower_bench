@@ -6,13 +6,13 @@ import subprocess
 import sys
 from datetime import datetime
 
-ROUND_START_PATTERN = re.compile(r"\[ROUND\s+(\d+)\]")
+ROUND_START_PATTERN = re.compile(r"Round\s+(\d+)\s*\|\s*selected=", re.IGNORECASE)
 
 METRIC_PATTERNS = {
     "train_loss": re.compile(r"train_loss[=:]\s*([0-9.]+)", re.IGNORECASE),
-    "train_accuracy": re.compile(r"train_accuracy[=:]\s*([0-9.]+)", re.IGNORECASE),
+    "train_accuracy": re.compile(r"(?:train_accuracy|train_acc)[=:]\s*([0-9.]+)", re.IGNORECASE),
     "test_loss": re.compile(r"test_loss[=:]\s*([0-9.]+)", re.IGNORECASE),
-    "test_accuracy": re.compile(r"test_accuracy[=:]\s*([0-9.]+)", re.IGNORECASE),
+    "test_accuracy": re.compile(r"(?:test_accuracy|test_acc)[=:]\s*([0-9.]+)", re.IGNORECASE),
 }
 
 ROUND_METRIC_PATTERN = re.compile(r"Round\s+(\d+)", re.IGNORECASE)
