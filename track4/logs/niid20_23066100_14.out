@@ -1,0 +1,1007 @@
+GPU: NVIDIA A100-SXM4-40GB; CUDA_VISIBLE_DEVICES=0
+/sw/rh9.4/user/python/conda-env/pytorch-2.8-cu128/bin/python -u track1/cifar/run_fedavgm.py --partition-file track4/partitions/dirichlet_50c_seed44.npz --schedule-file track4/schedules/50c_10cpr_seed44.json --output /work/nvme/bioh/ashah28/flower_bench/track4/results/production/fedavgm_niid20_50c_10cpr_seed44.partial.csv --data-dir track1/data --num-clients 50 --rounds 500 --local-epochs 1 --batch-size 64 --lr 0.01 --momentum 0.9 --weight-decay 0.0 --training-seed 44 --server-momentum 0.9 --server-lr 1.0
+Device: cuda
+GPU: NVIDIA A100-SXM4-40GB
+Round 0 | test_loss=3.0412 test_acc=0.1228
+Round 1 | selected=[18, 11, 35, 29, 4, 26, 5, 27, 46, 8]
+Round 1 | train_loss=1.4321 train_acc=0.5684 test_loss=2.5266 test_acc=0.1223
+Round 2 | selected=[45, 41, 18, 48, 29, 46, 44, 25, 16, 47]
+Round 2 | train_loss=1.5409 train_acc=0.5010 test_loss=3.4821 test_acc=0.1697
+Round 3 | selected=[30, 4, 34, 7, 33, 38, 41, 48, 8, 27]
+Round 3 | train_loss=1.9041 train_acc=0.4619 test_loss=3.4381 test_acc=0.2000
+Round 4 | selected=[28, 29, 15, 43, 37, 6, 13, 32, 19, 12]
+Round 4 | train_loss=1.5887 train_acc=0.4827 test_loss=13.9090 test_acc=0.1347
+Round 5 | selected=[5, 46, 15, 39, 13, 41, 21, 24, 29, 34]
+Round 5 | train_loss=1.7582 train_acc=0.4588 test_loss=12.1850 test_acc=0.2079
+Round 6 | selected=[48, 19, 21, 34, 12, 31, 17, 5, 23, 26]
+Round 6 | train_loss=1.7373 train_acc=0.4543 test_loss=5.8842 test_acc=0.2291
+Round 7 | selected=[47, 28, 48, 20, 36, 11, 15, 14, 9, 10]
+Round 7 | train_loss=1.6009 train_acc=0.5175 test_loss=2.8600 test_acc=0.2580
+Round 8 | selected=[6, 18, 45, 31, 28, 5, 38, 20, 19, 40]
+Round 8 | train_loss=1.3762 train_acc=0.5448 test_loss=2.7298 test_acc=0.2143
+Round 9 | selected=[31, 33, 9, 7, 40, 34, 43, 11, 0, 1]
+Round 9 | train_loss=1.4994 train_acc=0.4962 test_loss=2.6720 test_acc=0.2374
+Round 10 | selected=[19, 37, 39, 8, 23, 3, 9, 33, 35, 16]
+Round 10 | train_loss=1.5105 train_acc=0.4832 test_loss=2.1353 test_acc=0.2483
+Round 11 | selected=[12, 23, 30, 31, 47, 9, 6, 38, 37, 14]
+Round 11 | train_loss=1.5508 train_acc=0.4781 test_loss=2.4449 test_acc=0.2577
+Round 12 | selected=[8, 5, 14, 4, 30, 48, 41, 16, 42, 6]
+Round 12 | train_loss=1.6094 train_acc=0.4581 test_loss=2.1864 test_acc=0.2666
+Round 13 | selected=[17, 24, 41, 38, 2, 39, 15, 46, 45, 27]
+Round 13 | train_loss=1.6513 train_acc=0.4541 test_loss=2.0436 test_acc=0.2990
+Round 14 | selected=[38, 30, 43, 9, 42, 23, 3, 14, 1, 40]
+Round 14 | train_loss=1.4885 train_acc=0.5064 test_loss=2.2522 test_acc=0.2552
+Round 15 | selected=[31, 13, 6, 46, 35, 22, 8, 39, 48, 30]
+Round 15 | train_loss=1.6664 train_acc=0.4278 test_loss=2.3632 test_acc=0.2754
+Round 16 | selected=[14, 7, 13, 40, 27, 9, 35, 11, 17, 46]
+Round 16 | train_loss=1.3826 train_acc=0.5508 test_loss=2.2138 test_acc=0.2745
+Round 17 | selected=[5, 10, 30, 15, 21, 4, 32, 33, 19, 6]
+Round 17 | train_loss=1.5988 train_acc=0.4367 test_loss=2.5707 test_acc=0.2473
+Round 18 | selected=[22, 47, 26, 0, 8, 49, 39, 3, 21, 18]
+Round 18 | train_loss=1.5963 train_acc=0.4610 test_loss=2.2332 test_acc=0.2561
+Round 19 | selected=[31, 17, 27, 37, 36, 6, 32, 39, 13, 48]
+Round 19 | train_loss=1.8273 train_acc=0.3804 test_loss=2.2253 test_acc=0.2267
+Round 20 | selected=[0, 7, 24, 32, 10, 13, 43, 35, 45, 6]
+Round 20 | train_loss=1.5714 train_acc=0.4614 test_loss=2.1215 test_acc=0.2913
+Round 21 | selected=[39, 19, 26, 25, 7, 8, 15, 48, 33, 30]
+Round 21 | train_loss=1.6493 train_acc=0.4167 test_loss=2.1593 test_acc=0.2812
+Round 22 | selected=[11, 15, 49, 9, 20, 42, 3, 44, 45, 48]
+Round 22 | train_loss=1.5399 train_acc=0.4842 test_loss=2.1772 test_acc=0.3087
+Round 23 | selected=[29, 31, 0, 26, 25, 36, 34, 8, 27, 1]
+Round 23 | train_loss=1.8227 train_acc=0.4073 test_loss=1.8721 test_acc=0.3166
+Round 24 | selected=[8, 44, 47, 11, 30, 38, 4, 40, 19, 5]
+Round 24 | train_loss=1.5359 train_acc=0.5066 test_loss=1.9904 test_acc=0.2623
+Round 25 | selected=[34, 16, 22, 42, 6, 19, 15, 30, 8, 37]
+Round 25 | train_loss=1.6754 train_acc=0.4031 test_loss=1.9546 test_acc=0.2715
+Round 26 | selected=[21, 39, 45, 46, 23, 11, 29, 5, 22, 19]
+Round 26 | train_loss=1.5047 train_acc=0.4834 test_loss=1.8417 test_acc=0.3298
+Round 27 | selected=[31, 20, 49, 26, 48, 9, 38, 6, 13, 0]
+Round 27 | train_loss=1.6254 train_acc=0.4388 test_loss=1.8665 test_acc=0.3169
+Round 28 | selected=[43, 32, 48, 34, 16, 7, 14, 23, 35, 11]
+Round 28 | train_loss=1.5199 train_acc=0.4785 test_loss=1.8367 test_acc=0.3417
+Round 29 | selected=[41, 36, 13, 15, 17, 12, 27, 31, 32, 20]
+Round 29 | train_loss=1.5027 train_acc=0.4927 test_loss=1.9668 test_acc=0.2903
+Round 30 | selected=[14, 32, 40, 31, 15, 12, 41, 1, 24, 5]
+Round 30 | train_loss=1.5396 train_acc=0.4459 test_loss=2.0313 test_acc=0.3070
+Round 31 | selected=[26, 5, 28, 44, 34, 12, 0, 6, 35, 32]
+Round 31 | train_loss=1.5334 train_acc=0.4566 test_loss=1.7186 test_acc=0.3848
+Round 32 | selected=[41, 14, 31, 36, 3, 42, 38, 22, 24, 2]
+Round 32 | train_loss=1.4285 train_acc=0.5120 test_loss=1.8590 test_acc=0.3450
+Round 33 | selected=[45, 36, 6, 5, 15, 43, 3, 23, 37, 17]
+Round 33 | train_loss=1.6069 train_acc=0.4282 test_loss=1.6440 test_acc=0.3774
+Round 34 | selected=[25, 45, 2, 49, 29, 43, 36, 30, 17, 24]
+Round 34 | train_loss=1.4429 train_acc=0.5015 test_loss=1.7289 test_acc=0.3594
+Round 35 | selected=[2, 9, 24, 48, 41, 33, 45, 44, 20, 36]
+Round 35 | train_loss=1.3420 train_acc=0.5496 test_loss=1.8731 test_acc=0.3471
+Round 36 | selected=[36, 15, 24, 5, 10, 22, 37, 21, 39, 1]
+Round 36 | train_loss=1.4537 train_acc=0.4865 test_loss=1.6784 test_acc=0.3532
+Round 37 | selected=[28, 9, 48, 22, 5, 29, 13, 19, 39, 11]
+Round 37 | train_loss=1.3485 train_acc=0.5369 test_loss=1.6403 test_acc=0.3778
+Round 38 | selected=[12, 45, 44, 30, 20, 42, 19, 17, 22, 9]
+Round 38 | train_loss=1.3254 train_acc=0.5351 test_loss=1.7808 test_acc=0.3305
+Round 39 | selected=[45, 1, 10, 26, 18, 49, 14, 27, 11, 25]
+Round 39 | train_loss=1.4270 train_acc=0.5122 test_loss=1.6130 test_acc=0.3776
+Round 40 | selected=[39, 32, 41, 46, 38, 44, 19, 26, 4, 22]
+Round 40 | train_loss=1.2567 train_acc=0.5761 test_loss=1.5980 test_acc=0.3969
+Round 41 | selected=[48, 35, 25, 27, 32, 21, 31, 44, 2, 18]
+Round 41 | train_loss=1.3455 train_acc=0.5596 test_loss=1.6786 test_acc=0.3698
+Round 42 | selected=[44, 6, 36, 38, 8, 11, 16, 1, 20, 42]
+Round 42 | train_loss=1.3734 train_acc=0.5225 test_loss=1.6859 test_acc=0.3644
+Round 43 | selected=[31, 44, 28, 47, 0, 23, 17, 7, 42, 18]
+Round 43 | train_loss=1.3044 train_acc=0.5453 test_loss=1.6005 test_acc=0.3877
+Round 44 | selected=[42, 43, 3, 12, 13, 6, 24, 23, 0, 18]
+Round 44 | train_loss=1.2053 train_acc=0.5865 test_loss=1.7270 test_acc=0.3589
+Round 45 | selected=[22, 2, 47, 46, 6, 31, 18, 29, 19, 20]
+Round 45 | train_loss=1.2722 train_acc=0.5696 test_loss=1.8141 test_acc=0.3432
+Round 46 | selected=[1, 24, 27, 13, 28, 33, 15, 18, 37, 19]
+Round 46 | train_loss=1.3485 train_acc=0.5102 test_loss=1.7124 test_acc=0.3637
+Round 47 | selected=[43, 16, 13, 24, 35, 48, 23, 6, 28, 2]
+Round 47 | train_loss=1.3282 train_acc=0.5447 test_loss=1.6471 test_acc=0.4010
+Round 48 | selected=[47, 18, 28, 41, 6, 42, 37, 14, 29, 21]
+Round 48 | train_loss=1.2686 train_acc=0.5661 test_loss=1.6760 test_acc=0.3944
+Round 49 | selected=[2, 3, 17, 34, 31, 45, 39, 15, 22, 41]
+Round 49 | train_loss=1.3113 train_acc=0.5242 test_loss=1.7254 test_acc=0.3816
+Round 50 | selected=[26, 23, 12, 9, 40, 7, 34, 49, 14, 21]
+Round 50 | train_loss=1.2028 train_acc=0.5997 test_loss=1.7469 test_acc=0.3473
+Round 51 | selected=[2, 5, 9, 40, 34, 48, 15, 42, 8, 3]
+Round 51 | train_loss=1.2572 train_acc=0.5563 test_loss=1.6655 test_acc=0.3723
+Round 52 | selected=[19, 48, 49, 0, 43, 1, 16, 42, 39, 14]
+Round 52 | train_loss=1.2275 train_acc=0.5626 test_loss=1.5904 test_acc=0.3909
+Round 53 | selected=[31, 12, 8, 33, 37, 41, 13, 11, 40, 5]
+Round 53 | train_loss=1.2740 train_acc=0.5477 test_loss=1.7650 test_acc=0.3869
+Round 54 | selected=[6, 10, 40, 1, 41, 31, 28, 7, 42, 43]
+Round 54 | train_loss=1.3484 train_acc=0.5286 test_loss=1.6999 test_acc=0.4112
+Round 55 | selected=[9, 45, 25, 1, 33, 46, 32, 23, 29, 35]
+Round 55 | train_loss=1.2860 train_acc=0.5486 test_loss=1.7551 test_acc=0.3950
+Round 56 | selected=[9, 23, 42, 5, 8, 35, 25, 12, 20, 34]
+Round 56 | train_loss=1.3768 train_acc=0.5187 test_loss=1.6415 test_acc=0.3736
+Round 57 | selected=[21, 3, 45, 1, 6, 11, 38, 17, 33, 22]
+Round 57 | train_loss=1.4312 train_acc=0.5138 test_loss=1.5566 test_acc=0.4108
+Round 58 | selected=[37, 31, 49, 19, 18, 8, 38, 15, 9, 28]
+Round 58 | train_loss=1.2012 train_acc=0.5724 test_loss=1.6901 test_acc=0.3808
+Round 59 | selected=[15, 46, 5, 8, 32, 20, 41, 38, 7, 31]
+Round 59 | train_loss=1.3121 train_acc=0.5447 test_loss=1.9462 test_acc=0.3369
+Round 60 | selected=[3, 20, 4, 39, 14, 5, 9, 37, 19, 27]
+Round 60 | train_loss=1.4339 train_acc=0.5070 test_loss=1.8650 test_acc=0.3575
+Round 61 | selected=[22, 1, 46, 5, 47, 31, 10, 11, 39, 9]
+Round 61 | train_loss=1.4150 train_acc=0.5219 test_loss=1.6366 test_acc=0.3879
+Round 62 | selected=[42, 32, 41, 11, 14, 43, 31, 0, 47, 35]
+Round 62 | train_loss=1.3042 train_acc=0.5539 test_loss=1.7165 test_acc=0.3423
+Round 63 | selected=[7, 12, 30, 0, 19, 46, 44, 17, 36, 26]
+Round 63 | train_loss=1.2636 train_acc=0.5717 test_loss=1.7093 test_acc=0.3771
+Round 64 | selected=[4, 35, 46, 47, 1, 38, 29, 18, 27, 42]
+Round 64 | train_loss=1.2980 train_acc=0.5683 test_loss=1.6289 test_acc=0.3790
+Round 65 | selected=[37, 42, 40, 43, 4, 34, 27, 41, 23, 8]
+Round 65 | train_loss=1.4527 train_acc=0.4858 test_loss=1.6356 test_acc=0.4081
+Round 66 | selected=[1, 20, 18, 16, 19, 6, 5, 15, 39, 0]
+Round 66 | train_loss=1.2600 train_acc=0.5739 test_loss=1.5986 test_acc=0.4027
+Round 67 | selected=[21, 45, 1, 23, 26, 25, 44, 36, 4, 11]
+Round 67 | train_loss=1.3046 train_acc=0.5628 test_loss=1.5155 test_acc=0.4334
+Round 68 | selected=[31, 7, 0, 3, 18, 35, 39, 19, 28, 38]
+Round 68 | train_loss=1.1478 train_acc=0.6152 test_loss=1.5317 test_acc=0.4442
+Round 69 | selected=[8, 32, 48, 7, 49, 43, 24, 44, 30, 18]
+Round 69 | train_loss=1.1696 train_acc=0.6100 test_loss=1.6010 test_acc=0.4162
+Round 70 | selected=[0, 33, 3, 26, 24, 42, 30, 45, 41, 23]
+Round 70 | train_loss=1.2563 train_acc=0.5526 test_loss=1.7357 test_acc=0.3681
+Round 71 | selected=[20, 10, 38, 12, 31, 13, 17, 5, 46, 15]
+Round 71 | train_loss=1.2425 train_acc=0.5489 test_loss=1.5839 test_acc=0.4288
+Round 72 | selected=[29, 21, 41, 36, 2, 32, 46, 27, 5, 48]
+Round 72 | train_loss=1.3407 train_acc=0.5374 test_loss=1.5783 test_acc=0.4438
+Round 73 | selected=[25, 14, 0, 39, 3, 31, 30, 27, 33, 22]
+Round 73 | train_loss=1.2748 train_acc=0.5535 test_loss=1.6157 test_acc=0.4221
+Round 74 | selected=[44, 26, 18, 5, 1, 49, 47, 42, 9, 30]
+Round 74 | train_loss=1.2573 train_acc=0.5640 test_loss=1.7718 test_acc=0.3848
+Round 75 | selected=[42, 13, 44, 12, 5, 31, 48, 41, 21, 19]
+Round 75 | train_loss=1.2549 train_acc=0.5764 test_loss=1.6009 test_acc=0.4131
+Round 76 | selected=[43, 9, 45, 13, 6, 2, 44, 15, 0, 5]
+Round 76 | train_loss=1.2491 train_acc=0.5687 test_loss=1.5300 test_acc=0.4569
+Round 77 | selected=[28, 35, 23, 42, 4, 16, 5, 29, 33, 44]
+Round 77 | train_loss=1.2163 train_acc=0.5881 test_loss=1.6099 test_acc=0.3905
+Round 78 | selected=[3, 1, 15, 49, 16, 47, 38, 39, 37, 29]
+Round 78 | train_loss=1.1966 train_acc=0.5716 test_loss=1.6391 test_acc=0.3955
+Round 79 | selected=[42, 35, 4, 41, 37, 23, 25, 21, 6, 26]
+Round 79 | train_loss=1.2371 train_acc=0.5670 test_loss=1.6354 test_acc=0.4133
+Round 80 | selected=[0, 3, 6, 23, 35, 9, 11, 46, 42, 37]
+Round 80 | train_loss=1.1268 train_acc=0.6185 test_loss=1.5128 test_acc=0.4323
+Round 81 | selected=[11, 45, 6, 15, 27, 31, 26, 39, 30, 8]
+Round 81 | train_loss=1.2243 train_acc=0.5783 test_loss=1.4911 test_acc=0.4498
+Round 82 | selected=[39, 10, 25, 35, 22, 46, 34, 23, 49, 36]
+Round 82 | train_loss=1.1205 train_acc=0.6033 test_loss=1.4523 test_acc=0.4575
+Round 83 | selected=[20, 9, 8, 5, 48, 4, 21, 39, 19, 25]
+Round 83 | train_loss=1.1097 train_acc=0.6154 test_loss=1.6315 test_acc=0.4169
+Round 84 | selected=[47, 0, 25, 10, 4, 2, 31, 21, 35, 27]
+Round 84 | train_loss=1.1781 train_acc=0.5874 test_loss=1.5548 test_acc=0.4109
+Round 85 | selected=[49, 6, 36, 35, 37, 11, 4, 13, 47, 9]
+Round 85 | train_loss=1.1372 train_acc=0.5985 test_loss=1.7250 test_acc=0.4131
+Round 86 | selected=[22, 21, 18, 5, 35, 42, 38, 24, 19, 3]
+Round 86 | train_loss=1.2287 train_acc=0.5827 test_loss=1.6912 test_acc=0.3974
+Round 87 | selected=[48, 25, 19, 45, 29, 39, 44, 43, 13, 49]
+Round 87 | train_loss=1.2114 train_acc=0.5896 test_loss=1.4525 test_acc=0.4644
+Round 88 | selected=[7, 20, 4, 37, 47, 9, 40, 45, 29, 43]
+Round 88 | train_loss=1.0956 train_acc=0.6365 test_loss=1.6050 test_acc=0.4313
+Round 89 | selected=[8, 27, 13, 30, 22, 28, 23, 24, 38, 14]
+Round 89 | train_loss=1.3045 train_acc=0.5529 test_loss=1.4686 test_acc=0.4552
+Round 90 | selected=[41, 15, 16, 33, 3, 45, 0, 36, 5, 7]
+Round 90 | train_loss=1.1326 train_acc=0.5996 test_loss=1.4365 test_acc=0.4801
+Round 91 | selected=[24, 6, 16, 41, 49, 33, 1, 31, 47, 20]
+Round 91 | train_loss=1.2215 train_acc=0.5615 test_loss=1.6906 test_acc=0.3851
+Round 92 | selected=[22, 11, 8, 12, 39, 6, 7, 5, 25, 47]
+Round 92 | train_loss=1.2954 train_acc=0.5291 test_loss=1.8080 test_acc=0.3595
+Round 93 | selected=[4, 2, 16, 1, 36, 42, 18, 5, 26, 23]
+Round 93 | train_loss=1.1032 train_acc=0.6047 test_loss=1.4369 test_acc=0.4417
+Round 94 | selected=[26, 23, 42, 39, 10, 43, 32, 29, 5, 41]
+Round 94 | train_loss=1.0535 train_acc=0.6298 test_loss=1.4455 test_acc=0.4495
+Round 95 | selected=[17, 25, 49, 42, 6, 19, 45, 4, 9, 20]
+Round 95 | train_loss=1.0933 train_acc=0.6258 test_loss=1.5338 test_acc=0.4211
+Round 96 | selected=[19, 1, 21, 9, 34, 41, 16, 38, 24, 15]
+Round 96 | train_loss=1.1568 train_acc=0.5892 test_loss=1.3990 test_acc=0.4806
+Round 97 | selected=[9, 16, 40, 15, 10, 14, 35, 1, 23, 33]
+Round 97 | train_loss=1.0976 train_acc=0.6149 test_loss=1.4362 test_acc=0.4612
+Round 98 | selected=[35, 21, 6, 15, 48, 24, 7, 45, 41, 38]
+Round 98 | train_loss=1.0908 train_acc=0.6143 test_loss=1.5211 test_acc=0.4478
+Round 99 | selected=[14, 37, 30, 45, 43, 16, 31, 39, 8, 22]
+Round 99 | train_loss=1.2959 train_acc=0.5204 test_loss=1.3911 test_acc=0.4639
+Round 100 | selected=[22, 16, 5, 3, 29, 32, 45, 17, 35, 48]
+Round 100 | train_loss=1.1156 train_acc=0.5996 test_loss=1.3503 test_acc=0.4793
+Round 101 | selected=[0, 47, 10, 5, 45, 42, 25, 23, 4, 17]
+Round 101 | train_loss=1.0215 train_acc=0.6490 test_loss=1.4928 test_acc=0.4449
+Round 102 | selected=[38, 46, 17, 47, 13, 25, 35, 24, 34, 0]
+Round 102 | train_loss=1.0923 train_acc=0.6173 test_loss=1.4524 test_acc=0.4850
+Round 103 | selected=[22, 42, 11, 7, 19, 16, 32, 21, 43, 12]
+Round 103 | train_loss=0.9858 train_acc=0.6570 test_loss=1.3560 test_acc=0.5098
+Round 104 | selected=[18, 13, 10, 38, 3, 1, 46, 34, 22, 11]
+Round 104 | train_loss=0.9848 train_acc=0.6728 test_loss=1.3409 test_acc=0.5094
+Round 105 | selected=[19, 10, 36, 15, 9, 1, 47, 25, 11, 48]
+Round 105 | train_loss=0.9738 train_acc=0.6611 test_loss=1.4373 test_acc=0.4870
+Round 106 | selected=[12, 39, 14, 18, 32, 3, 19, 48, 34, 26]
+Round 106 | train_loss=1.0050 train_acc=0.6559 test_loss=1.4004 test_acc=0.4862
+Round 107 | selected=[17, 28, 31, 6, 36, 38, 16, 25, 4, 49]
+Round 107 | train_loss=1.0859 train_acc=0.6139 test_loss=1.2788 test_acc=0.5163
+Round 108 | selected=[32, 30, 1, 35, 14, 2, 7, 8, 34, 0]
+Round 108 | train_loss=0.9510 train_acc=0.6790 test_loss=1.4973 test_acc=0.4660
+Round 109 | selected=[20, 49, 45, 6, 8, 44, 33, 37, 42, 16]
+Round 109 | train_loss=1.0778 train_acc=0.6241 test_loss=1.5124 test_acc=0.4686
+Round 110 | selected=[24, 40, 23, 1, 44, 37, 7, 43, 26, 28]
+Round 110 | train_loss=1.0753 train_acc=0.6321 test_loss=1.3034 test_acc=0.4990
+Round 111 | selected=[5, 19, 30, 0, 45, 14, 40, 26, 20, 27]
+Round 111 | train_loss=0.9151 train_acc=0.6938 test_loss=1.3142 test_acc=0.5272
+Round 112 | selected=[7, 41, 25, 11, 28, 23, 15, 16, 30, 36]
+Round 112 | train_loss=1.1019 train_acc=0.6222 test_loss=1.3145 test_acc=0.5057
+Round 113 | selected=[33, 15, 16, 22, 12, 8, 25, 21, 10, 36]
+Round 113 | train_loss=1.0701 train_acc=0.6096 test_loss=1.2971 test_acc=0.5267
+Round 114 | selected=[13, 14, 7, 6, 25, 9, 40, 19, 41, 8]
+Round 114 | train_loss=0.9036 train_acc=0.6990 test_loss=1.4159 test_acc=0.4854
+Round 115 | selected=[47, 33, 35, 5, 41, 49, 34, 31, 27, 17]
+Round 115 | train_loss=0.9536 train_acc=0.6656 test_loss=1.4044 test_acc=0.5131
+Round 116 | selected=[2, 16, 25, 24, 47, 35, 46, 37, 45, 28]
+Round 116 | train_loss=1.1269 train_acc=0.6073 test_loss=1.3005 test_acc=0.5039
+Round 117 | selected=[15, 48, 3, 2, 25, 37, 31, 10, 43, 46]
+Round 117 | train_loss=1.0153 train_acc=0.6348 test_loss=1.4139 test_acc=0.4868
+Round 118 | selected=[10, 8, 42, 34, 19, 48, 16, 1, 30, 6]
+Round 118 | train_loss=1.0157 train_acc=0.6362 test_loss=1.3783 test_acc=0.4891
+Round 119 | selected=[30, 31, 46, 45, 21, 10, 23, 11, 40, 26]
+Round 119 | train_loss=1.0279 train_acc=0.6417 test_loss=1.2183 test_acc=0.5445
+Round 120 | selected=[13, 18, 19, 17, 15, 37, 2, 28, 24, 10]
+Round 120 | train_loss=0.9261 train_acc=0.6826 test_loss=1.2246 test_acc=0.5495
+Round 121 | selected=[17, 47, 13, 19, 12, 30, 46, 33, 22, 8]
+Round 121 | train_loss=0.9498 train_acc=0.6665 test_loss=1.2947 test_acc=0.5154
+Round 122 | selected=[38, 27, 4, 43, 17, 33, 41, 46, 31, 45]
+Round 122 | train_loss=0.9182 train_acc=0.6835 test_loss=1.1751 test_acc=0.5592
+Round 123 | selected=[13, 12, 8, 36, 19, 22, 41, 9, 18, 24]
+Round 123 | train_loss=0.8644 train_acc=0.7016 test_loss=1.1408 test_acc=0.5891
+Round 124 | selected=[49, 41, 44, 13, 26, 19, 30, 2, 5, 0]
+Round 124 | train_loss=0.8497 train_acc=0.7159 test_loss=1.1433 test_acc=0.5781
+Round 125 | selected=[10, 34, 14, 5, 25, 20, 38, 7, 24, 19]
+Round 125 | train_loss=0.8006 train_acc=0.7195 test_loss=1.3217 test_acc=0.5399
+Round 126 | selected=[34, 28, 8, 22, 17, 32, 24, 26, 11, 35]
+Round 126 | train_loss=0.9318 train_acc=0.6838 test_loss=1.2563 test_acc=0.5386
+Round 127 | selected=[46, 28, 2, 41, 30, 29, 38, 12, 44, 25]
+Round 127 | train_loss=0.8523 train_acc=0.7056 test_loss=1.1249 test_acc=0.5835
+Round 128 | selected=[30, 3, 47, 37, 21, 49, 44, 23, 22, 15]
+Round 128 | train_loss=0.9262 train_acc=0.6837 test_loss=1.1218 test_acc=0.5705
+Round 129 | selected=[33, 1, 25, 42, 39, 40, 49, 27, 45, 35]
+Round 129 | train_loss=0.8687 train_acc=0.6950 test_loss=1.3187 test_acc=0.5070
+Round 130 | selected=[17, 7, 33, 4, 10, 37, 21, 8, 43, 42]
+Round 130 | train_loss=0.9284 train_acc=0.6610 test_loss=1.1535 test_acc=0.5808
+Round 131 | selected=[1, 19, 35, 45, 37, 38, 43, 44, 7, 26]
+Round 131 | train_loss=0.7774 train_acc=0.7267 test_loss=1.1919 test_acc=0.5731
+Round 132 | selected=[45, 49, 21, 5, 36, 39, 24, 12, 42, 31]
+Round 132 | train_loss=0.8573 train_acc=0.7041 test_loss=1.2202 test_acc=0.5697
+Round 133 | selected=[24, 0, 43, 38, 36, 23, 34, 47, 17, 25]
+Round 133 | train_loss=0.8684 train_acc=0.6986 test_loss=1.2728 test_acc=0.5459
+Round 134 | selected=[44, 34, 28, 42, 22, 37, 49, 47, 21, 8]
+Round 134 | train_loss=0.9462 train_acc=0.6689 test_loss=1.1238 test_acc=0.5839
+Round 135 | selected=[4, 27, 20, 15, 13, 37, 46, 42, 45, 22]
+Round 135 | train_loss=0.8319 train_acc=0.7132 test_loss=1.3117 test_acc=0.5406
+Round 136 | selected=[33, 47, 41, 0, 20, 32, 34, 6, 26, 17]
+Round 136 | train_loss=0.8891 train_acc=0.6905 test_loss=1.4425 test_acc=0.4920
+Round 137 | selected=[27, 37, 18, 6, 2, 26, 1, 19, 23, 13]
+Round 137 | train_loss=0.9930 train_acc=0.6669 test_loss=1.2708 test_acc=0.5079
+Round 138 | selected=[11, 6, 16, 4, 37, 14, 49, 32, 23, 26]
+Round 138 | train_loss=0.8673 train_acc=0.6881 test_loss=1.1730 test_acc=0.5604
+Round 139 | selected=[34, 44, 39, 8, 42, 10, 48, 30, 43, 3]
+Round 139 | train_loss=0.8841 train_acc=0.6925 test_loss=1.1769 test_acc=0.5723
+Round 140 | selected=[29, 0, 35, 24, 23, 14, 33, 27, 18, 6]
+Round 140 | train_loss=0.8659 train_acc=0.7093 test_loss=1.2201 test_acc=0.5596
+Round 141 | selected=[21, 43, 13, 30, 2, 4, 11, 45, 46, 9]
+Round 141 | train_loss=0.8156 train_acc=0.7256 test_loss=1.1383 test_acc=0.5836
+Round 142 | selected=[10, 8, 49, 0, 19, 11, 6, 42, 16, 43]
+Round 142 | train_loss=0.8078 train_acc=0.7186 test_loss=1.0387 test_acc=0.6170
+Round 143 | selected=[2, 23, 17, 21, 24, 42, 14, 27, 16, 39]
+Round 143 | train_loss=0.8610 train_acc=0.6967 test_loss=1.1392 test_acc=0.5757
+Round 144 | selected=[1, 39, 12, 20, 33, 30, 45, 37, 28, 36]
+Round 144 | train_loss=0.9126 train_acc=0.6670 test_loss=1.0580 test_acc=0.6156
+Round 145 | selected=[24, 14, 0, 44, 11, 25, 18, 47, 7, 4]
+Round 145 | train_loss=0.8212 train_acc=0.7166 test_loss=1.0266 test_acc=0.6310
+Round 146 | selected=[16, 40, 48, 43, 47, 26, 29, 38, 14, 4]
+Round 146 | train_loss=0.7405 train_acc=0.7522 test_loss=1.0569 test_acc=0.6164
+Round 147 | selected=[28, 17, 27, 12, 37, 20, 39, 25, 45, 29]
+Round 147 | train_loss=0.8374 train_acc=0.7101 test_loss=1.1458 test_acc=0.5913
+Round 148 | selected=[34, 0, 35, 38, 6, 32, 3, 43, 30, 37]
+Round 148 | train_loss=0.7793 train_acc=0.7265 test_loss=1.0555 test_acc=0.6222
+Round 149 | selected=[39, 40, 19, 36, 3, 23, 9, 49, 24, 16]
+Round 149 | train_loss=0.7549 train_acc=0.7408 test_loss=0.9888 test_acc=0.6425
+Round 150 | selected=[46, 4, 2, 15, 25, 39, 10, 32, 1, 14]
+Round 150 | train_loss=0.7494 train_acc=0.7406 test_loss=1.0431 test_acc=0.6217
+Round 151 | selected=[45, 47, 19, 3, 0, 8, 36, 38, 48, 1]
+Round 151 | train_loss=0.7123 train_acc=0.7535 test_loss=1.1371 test_acc=0.5836
+Round 152 | selected=[45, 19, 2, 0, 4, 38, 39, 41, 22, 44]
+Round 152 | train_loss=0.6631 train_acc=0.7724 test_loss=1.0368 test_acc=0.6152
+Round 153 | selected=[15, 32, 4, 19, 26, 33, 39, 2, 3, 30]
+Round 153 | train_loss=0.7081 train_acc=0.7559 test_loss=0.9701 test_acc=0.6485
+Round 154 | selected=[14, 9, 26, 17, 7, 10, 33, 13, 19, 28]
+Round 154 | train_loss=0.6468 train_acc=0.7794 test_loss=1.1056 test_acc=0.5900
+Round 155 | selected=[38, 48, 41, 37, 30, 43, 17, 21, 47, 25]
+Round 155 | train_loss=0.7409 train_acc=0.7339 test_loss=0.9706 test_acc=0.6490
+Round 156 | selected=[28, 1, 42, 37, 44, 7, 45, 6, 41, 12]
+Round 156 | train_loss=0.6948 train_acc=0.7555 test_loss=1.1559 test_acc=0.5966
+Round 157 | selected=[0, 20, 7, 19, 41, 18, 49, 4, 46, 13]
+Round 157 | train_loss=0.5794 train_acc=0.8071 test_loss=1.2796 test_acc=0.5677
+Round 158 | selected=[17, 32, 30, 0, 25, 14, 39, 19, 23, 47]
+Round 158 | train_loss=0.7498 train_acc=0.7395 test_loss=1.0561 test_acc=0.6345
+Round 159 | selected=[41, 4, 7, 5, 44, 48, 11, 27, 23, 2]
+Round 159 | train_loss=0.6614 train_acc=0.7814 test_loss=1.2074 test_acc=0.6068
+Round 160 | selected=[8, 47, 36, 43, 14, 21, 12, 27, 40, 32]
+Round 160 | train_loss=0.6612 train_acc=0.7757 test_loss=1.1357 test_acc=0.6127
+Round 161 | selected=[38, 0, 25, 45, 41, 1, 9, 30, 36, 4]
+Round 161 | train_loss=0.6629 train_acc=0.7730 test_loss=1.0306 test_acc=0.6276
+Round 162 | selected=[3, 28, 21, 31, 6, 7, 47, 46, 42, 36]
+Round 162 | train_loss=0.7115 train_acc=0.7495 test_loss=1.2044 test_acc=0.5779
+Round 163 | selected=[6, 12, 14, 31, 10, 45, 25, 41, 18, 28]
+Round 163 | train_loss=0.7180 train_acc=0.7395 test_loss=1.2975 test_acc=0.5512
+Round 164 | selected=[42, 12, 29, 5, 3, 16, 13, 25, 48, 23]
+Round 164 | train_loss=0.8024 train_acc=0.7236 test_loss=1.0889 test_acc=0.6008
+Round 165 | selected=[32, 12, 29, 19, 4, 17, 48, 8, 49, 40]
+Round 165 | train_loss=0.6122 train_acc=0.7922 test_loss=1.2843 test_acc=0.5801
+Round 166 | selected=[10, 41, 11, 26, 40, 4, 39, 16, 42, 37]
+Round 166 | train_loss=0.7263 train_acc=0.7430 test_loss=1.0343 test_acc=0.6393
+Round 167 | selected=[13, 48, 17, 0, 15, 44, 25, 6, 16, 5]
+Round 167 | train_loss=0.7469 train_acc=0.7436 test_loss=0.8821 test_acc=0.6917
+Round 168 | selected=[10, 33, 21, 28, 44, 49, 0, 34, 45, 2]
+Round 168 | train_loss=0.6261 train_acc=0.7852 test_loss=1.3372 test_acc=0.5514
+Round 169 | selected=[36, 17, 24, 31, 9, 0, 37, 32, 19, 42]
+Round 169 | train_loss=0.6516 train_acc=0.7665 test_loss=1.1972 test_acc=0.5760
+Round 170 | selected=[40, 38, 45, 41, 26, 30, 19, 7, 49, 48]
+Round 170 | train_loss=0.6550 train_acc=0.7794 test_loss=1.1114 test_acc=0.5928
+Round 171 | selected=[5, 7, 19, 44, 32, 20, 15, 25, 2, 28]
+Round 171 | train_loss=0.6791 train_acc=0.7623 test_loss=1.0453 test_acc=0.6269
+Round 172 | selected=[26, 21, 45, 34, 27, 8, 10, 48, 29, 39]
+Round 172 | train_loss=0.7760 train_acc=0.7343 test_loss=0.9979 test_acc=0.6292
+Round 173 | selected=[17, 38, 13, 35, 5, 16, 44, 3, 31, 20]
+Round 173 | train_loss=0.6381 train_acc=0.7790 test_loss=1.1698 test_acc=0.5843
+Round 174 | selected=[6, 24, 38, 25, 34, 19, 44, 8, 48, 27]
+Round 174 | train_loss=0.7319 train_acc=0.7322 test_loss=1.0061 test_acc=0.6505
+Round 175 | selected=[37, 0, 27, 35, 29, 4, 8, 6, 34, 49]
+Round 175 | train_loss=0.6499 train_acc=0.7811 test_loss=1.0103 test_acc=0.6322
+Round 176 | selected=[12, 4, 13, 17, 46, 35, 30, 26, 39, 0]
+Round 176 | train_loss=0.6019 train_acc=0.7930 test_loss=1.0796 test_acc=0.6248
+Round 177 | selected=[4, 39, 42, 49, 15, 17, 5, 27, 28, 23]
+Round 177 | train_loss=0.6499 train_acc=0.7762 test_loss=1.0458 test_acc=0.6397
+Round 178 | selected=[20, 39, 3, 31, 32, 24, 6, 13, 37, 18]
+Round 178 | train_loss=0.7236 train_acc=0.7460 test_loss=1.0051 test_acc=0.6307
+Round 179 | selected=[3, 0, 38, 21, 20, 45, 10, 44, 29, 31]
+Round 179 | train_loss=0.6214 train_acc=0.7768 test_loss=1.1085 test_acc=0.6056
+Round 180 | selected=[15, 27, 0, 12, 14, 31, 20, 10, 46, 48]
+Round 180 | train_loss=0.6666 train_acc=0.7662 test_loss=1.1572 test_acc=0.5906
+Round 181 | selected=[24, 20, 47, 49, 8, 43, 19, 31, 37, 5]
+Round 181 | train_loss=0.7169 train_acc=0.7490 test_loss=1.1845 test_acc=0.5970
+Round 182 | selected=[40, 14, 15, 0, 42, 29, 28, 12, 35, 46]
+Round 182 | train_loss=0.5860 train_acc=0.7974 test_loss=1.1172 test_acc=0.6087
+Round 183 | selected=[21, 23, 11, 43, 33, 27, 36, 34, 13, 41]
+Round 183 | train_loss=0.6632 train_acc=0.7687 test_loss=1.0546 test_acc=0.6359
+Round 184 | selected=[48, 32, 42, 16, 26, 40, 15, 4, 44, 24]
+Round 184 | train_loss=0.7191 train_acc=0.7500 test_loss=1.1338 test_acc=0.6042
+Round 185 | selected=[21, 20, 37, 27, 0, 47, 36, 39, 3, 17]
+Round 185 | train_loss=0.6829 train_acc=0.7589 test_loss=0.9761 test_acc=0.6393
+Round 186 | selected=[37, 40, 21, 41, 27, 22, 47, 0, 25, 15]
+Round 186 | train_loss=0.6667 train_acc=0.7667 test_loss=1.1306 test_acc=0.6001
+Round 187 | selected=[48, 32, 12, 2, 26, 18, 22, 6, 7, 15]
+Round 187 | train_loss=0.6764 train_acc=0.7755 test_loss=1.3291 test_acc=0.5591
+Round 188 | selected=[0, 4, 25, 1, 16, 2, 10, 35, 23, 8]
+Round 188 | train_loss=0.7094 train_acc=0.7578 test_loss=1.1731 test_acc=0.5941
+Round 189 | selected=[20, 5, 3, 13, 31, 0, 14, 26, 44, 39]
+Round 189 | train_loss=0.6302 train_acc=0.7826 test_loss=0.9388 test_acc=0.6598
+Round 190 | selected=[18, 11, 43, 35, 14, 10, 16, 3, 12, 9]
+Round 190 | train_loss=0.5772 train_acc=0.8031 test_loss=1.5352 test_acc=0.5223
+Round 191 | selected=[2, 43, 6, 34, 44, 21, 35, 27, 14, 5]
+Round 191 | train_loss=0.6399 train_acc=0.7765 test_loss=1.4283 test_acc=0.5568
+Round 192 | selected=[48, 9, 30, 38, 24, 13, 27, 43, 36, 18]
+Round 192 | train_loss=0.5937 train_acc=0.7954 test_loss=1.1114 test_acc=0.5916
+Round 193 | selected=[17, 35, 23, 16, 38, 36, 37, 19, 12, 25]
+Round 193 | train_loss=0.6494 train_acc=0.7726 test_loss=1.1995 test_acc=0.5719
+Round 194 | selected=[39, 10, 7, 38, 17, 26, 27, 25, 9, 44]
+Round 194 | train_loss=0.6941 train_acc=0.7505 test_loss=1.0837 test_acc=0.6455
+Round 195 | selected=[9, 41, 13, 10, 4, 27, 12, 20, 43, 44]
+Round 195 | train_loss=0.5496 train_acc=0.8107 test_loss=1.2262 test_acc=0.5847
+Round 196 | selected=[2, 18, 47, 22, 13, 44, 4, 7, 5, 26]
+Round 196 | train_loss=0.6904 train_acc=0.7696 test_loss=1.1334 test_acc=0.6150
+Round 197 | selected=[5, 35, 43, 45, 10, 46, 32, 29, 44, 16]
+Round 197 | train_loss=0.6570 train_acc=0.7704 test_loss=1.0297 test_acc=0.6284
+Round 198 | selected=[39, 27, 12, 17, 10, 28, 9, 0, 5, 2]
+Round 198 | train_loss=0.6245 train_acc=0.7723 test_loss=0.9687 test_acc=0.6609
+Round 199 | selected=[41, 33, 49, 30, 43, 45, 10, 5, 16, 18]
+Round 199 | train_loss=0.6111 train_acc=0.7923 test_loss=1.2527 test_acc=0.5627
+Round 200 | selected=[31, 41, 4, 15, 34, 49, 32, 16, 14, 8]
+Round 200 | train_loss=0.7099 train_acc=0.7460 test_loss=1.0443 test_acc=0.6227
+Round 201 | selected=[37, 4, 32, 39, 47, 1, 14, 28, 12, 42]
+Round 201 | train_loss=0.6890 train_acc=0.7544 test_loss=0.9034 test_acc=0.6784
+Round 202 | selected=[49, 23, 37, 46, 47, 32, 36, 26, 5, 4]
+Round 202 | train_loss=0.5702 train_acc=0.8080 test_loss=1.0852 test_acc=0.6229
+Round 203 | selected=[29, 34, 1, 28, 20, 19, 5, 39, 48, 33]
+Round 203 | train_loss=0.6873 train_acc=0.7591 test_loss=0.9313 test_acc=0.6740
+Round 204 | selected=[6, 31, 33, 23, 8, 32, 13, 47, 9, 21]
+Round 204 | train_loss=0.6242 train_acc=0.7836 test_loss=0.9118 test_acc=0.6658
+Round 205 | selected=[17, 8, 37, 31, 6, 34, 26, 45, 35, 15]
+Round 205 | train_loss=0.6383 train_acc=0.7704 test_loss=1.1217 test_acc=0.6139
+Round 206 | selected=[21, 5, 14, 16, 38, 48, 32, 22, 28, 23]
+Round 206 | train_loss=0.6765 train_acc=0.7664 test_loss=0.8963 test_acc=0.6762
+Round 207 | selected=[40, 42, 1, 13, 25, 30, 15, 37, 24, 21]
+Round 207 | train_loss=0.6659 train_acc=0.7651 test_loss=1.0185 test_acc=0.6390
+Round 208 | selected=[39, 42, 41, 26, 32, 43, 13, 1, 33, 15]
+Round 208 | train_loss=0.5911 train_acc=0.7947 test_loss=1.1722 test_acc=0.5865
+Round 209 | selected=[30, 7, 19, 38, 35, 24, 1, 43, 45, 15]
+Round 209 | train_loss=0.5450 train_acc=0.8019 test_loss=1.2773 test_acc=0.5850
+Round 210 | selected=[46, 14, 40, 11, 30, 49, 36, 7, 10, 18]
+Round 210 | train_loss=0.5928 train_acc=0.7954 test_loss=1.0615 test_acc=0.6241
+Round 211 | selected=[20, 17, 16, 5, 18, 29, 12, 24, 10, 35]
+Round 211 | train_loss=0.6709 train_acc=0.7597 test_loss=0.9777 test_acc=0.6533
+Round 212 | selected=[22, 28, 5, 26, 6, 19, 29, 14, 37, 49]
+Round 212 | train_loss=0.6853 train_acc=0.7641 test_loss=1.0705 test_acc=0.6112
+Round 213 | selected=[34, 29, 8, 38, 21, 46, 3, 14, 28, 12]
+Round 213 | train_loss=0.5838 train_acc=0.8054 test_loss=1.2959 test_acc=0.5492
+Round 214 | selected=[33, 17, 31, 32, 18, 42, 47, 6, 29, 0]
+Round 214 | train_loss=0.7008 train_acc=0.7457 test_loss=1.1412 test_acc=0.5876
+Round 215 | selected=[37, 28, 43, 19, 26, 21, 31, 38, 6, 9]
+Round 215 | train_loss=0.6107 train_acc=0.7788 test_loss=0.9913 test_acc=0.6463
+Round 216 | selected=[17, 49, 36, 29, 43, 18, 15, 41, 42, 0]
+Round 216 | train_loss=0.5650 train_acc=0.8057 test_loss=0.9183 test_acc=0.6831
+Round 217 | selected=[16, 13, 34, 46, 30, 32, 19, 31, 33, 24]
+Round 217 | train_loss=0.6182 train_acc=0.7817 test_loss=0.9656 test_acc=0.6547
+Round 218 | selected=[30, 5, 41, 12, 44, 34, 48, 33, 8, 42]
+Round 218 | train_loss=0.6670 train_acc=0.7722 test_loss=0.9034 test_acc=0.6846
+Round 219 | selected=[38, 15, 14, 31, 41, 2, 42, 23, 39, 45]
+Round 219 | train_loss=0.5592 train_acc=0.8026 test_loss=1.0730 test_acc=0.6240
+Round 220 | selected=[2, 20, 27, 13, 23, 37, 24, 47, 43, 22]
+Round 220 | train_loss=0.6071 train_acc=0.7896 test_loss=0.9802 test_acc=0.6437
+Round 221 | selected=[2, 13, 49, 47, 19, 42, 11, 18, 10, 4]
+Round 221 | train_loss=0.5025 train_acc=0.8279 test_loss=1.0207 test_acc=0.6423
+Round 222 | selected=[7, 0, 22, 1, 33, 31, 2, 24, 46, 6]
+Round 222 | train_loss=0.6354 train_acc=0.7745 test_loss=1.1027 test_acc=0.6404
+Round 223 | selected=[18, 32, 3, 47, 6, 38, 16, 24, 17, 9]
+Round 223 | train_loss=0.5404 train_acc=0.8173 test_loss=0.9496 test_acc=0.6833
+Round 224 | selected=[9, 41, 13, 15, 26, 39, 34, 16, 47, 44]
+Round 224 | train_loss=0.5961 train_acc=0.7989 test_loss=0.8345 test_acc=0.7027
+Round 225 | selected=[26, 0, 28, 22, 6, 24, 29, 15, 2, 21]
+Round 225 | train_loss=0.6249 train_acc=0.7793 test_loss=0.9116 test_acc=0.6834
+Round 226 | selected=[47, 29, 26, 11, 9, 31, 49, 44, 24, 39]
+Round 226 | train_loss=0.5367 train_acc=0.8136 test_loss=0.9236 test_acc=0.6866
+Round 227 | selected=[43, 38, 2, 49, 4, 41, 5, 27, 24, 40]
+Round 227 | train_loss=0.4771 train_acc=0.8378 test_loss=0.8905 test_acc=0.7011
+Round 228 | selected=[0, 6, 22, 40, 11, 49, 2, 10, 34, 29]
+Round 228 | train_loss=0.5003 train_acc=0.8249 test_loss=0.8210 test_acc=0.7172
+Round 229 | selected=[4, 13, 17, 26, 16, 21, 36, 8, 44, 0]
+Round 229 | train_loss=0.5073 train_acc=0.8260 test_loss=0.7619 test_acc=0.7301
+Round 230 | selected=[9, 11, 36, 27, 40, 44, 8, 16, 35, 34]
+Round 230 | train_loss=0.4601 train_acc=0.8444 test_loss=0.9459 test_acc=0.6673
+Round 231 | selected=[49, 43, 29, 24, 48, 46, 7, 32, 23, 37]
+Round 231 | train_loss=0.5381 train_acc=0.8134 test_loss=0.7749 test_acc=0.7255
+Round 232 | selected=[34, 7, 20, 42, 29, 3, 49, 39, 5, 37]
+Round 232 | train_loss=0.5055 train_acc=0.8300 test_loss=0.9458 test_acc=0.6735
+Round 233 | selected=[0, 49, 8, 48, 7, 26, 47, 15, 39, 2]
+Round 233 | train_loss=0.5213 train_acc=0.8200 test_loss=1.2171 test_acc=0.6006
+Round 234 | selected=[6, 14, 46, 45, 21, 29, 28, 41, 15, 33]
+Round 234 | train_loss=0.5255 train_acc=0.8202 test_loss=1.0273 test_acc=0.6547
+Round 235 | selected=[1, 22, 26, 12, 47, 45, 30, 48, 36, 38]
+Round 235 | train_loss=0.5153 train_acc=0.8247 test_loss=0.7583 test_acc=0.7317
+Round 236 | selected=[35, 42, 29, 49, 7, 36, 3, 21, 48, 38]
+Round 236 | train_loss=0.4278 train_acc=0.8528 test_loss=0.7795 test_acc=0.7396
+Round 237 | selected=[49, 43, 1, 34, 10, 23, 33, 19, 30, 21]
+Round 237 | train_loss=0.4528 train_acc=0.8434 test_loss=0.8210 test_acc=0.7325
+Round 238 | selected=[13, 29, 21, 43, 24, 6, 30, 7, 15, 37]
+Round 238 | train_loss=0.4977 train_acc=0.8254 test_loss=0.7390 test_acc=0.7401
+Round 239 | selected=[15, 45, 4, 31, 1, 19, 3, 29, 34, 24]
+Round 239 | train_loss=0.4719 train_acc=0.8413 test_loss=0.7430 test_acc=0.7419
+Round 240 | selected=[35, 39, 3, 9, 41, 4, 38, 10, 2, 32]
+Round 240 | train_loss=0.3895 train_acc=0.8650 test_loss=0.7777 test_acc=0.7299
+Round 241 | selected=[22, 46, 24, 12, 7, 18, 42, 1, 41, 33]
+Round 241 | train_loss=0.4347 train_acc=0.8504 test_loss=0.8049 test_acc=0.7215
+Round 242 | selected=[15, 26, 22, 20, 13, 33, 36, 44, 12, 46]
+Round 242 | train_loss=0.4557 train_acc=0.8391 test_loss=0.7328 test_acc=0.7513
+Round 243 | selected=[38, 46, 2, 35, 13, 24, 17, 48, 36, 31]
+Round 243 | train_loss=0.3959 train_acc=0.8649 test_loss=0.8352 test_acc=0.7189
+Round 244 | selected=[34, 49, 12, 39, 48, 41, 10, 14, 8, 24]
+Round 244 | train_loss=0.4709 train_acc=0.8359 test_loss=0.7648 test_acc=0.7360
+Round 245 | selected=[34, 30, 26, 11, 7, 13, 18, 0, 27, 39]
+Round 245 | train_loss=0.4059 train_acc=0.8605 test_loss=0.6627 test_acc=0.7684
+Round 246 | selected=[20, 22, 26, 44, 1, 30, 49, 45, 46, 31]
+Round 246 | train_loss=0.4269 train_acc=0.8553 test_loss=0.7131 test_acc=0.7405
+Round 247 | selected=[48, 2, 12, 21, 14, 8, 34, 19, 5, 35]
+Round 247 | train_loss=0.4077 train_acc=0.8633 test_loss=0.7633 test_acc=0.7345
+Round 248 | selected=[41, 6, 27, 45, 49, 28, 0, 14, 22, 46]
+Round 248 | train_loss=0.3859 train_acc=0.8621 test_loss=0.6850 test_acc=0.7609
+Round 249 | selected=[37, 26, 9, 44, 17, 46, 3, 30, 11, 15]
+Round 249 | train_loss=0.3908 train_acc=0.8673 test_loss=0.6415 test_acc=0.7728
+Round 250 | selected=[43, 20, 44, 35, 16, 48, 23, 38, 3, 19]
+Round 250 | train_loss=0.3532 train_acc=0.8792 test_loss=0.7285 test_acc=0.7469
+Round 251 | selected=[39, 2, 12, 49, 1, 34, 46, 48, 9, 21]
+Round 251 | train_loss=0.4236 train_acc=0.8508 test_loss=0.6249 test_acc=0.7835
+Round 252 | selected=[10, 4, 5, 12, 21, 17, 6, 38, 16, 43]
+Round 252 | train_loss=0.3698 train_acc=0.8710 test_loss=0.7020 test_acc=0.7524
+Round 253 | selected=[6, 12, 25, 1, 7, 33, 16, 4, 3, 8]
+Round 253 | train_loss=0.4596 train_acc=0.8443 test_loss=0.8328 test_acc=0.7244
+Round 254 | selected=[42, 28, 18, 39, 10, 2, 25, 46, 48, 7]
+Round 254 | train_loss=0.4457 train_acc=0.8386 test_loss=0.7442 test_acc=0.7403
+Round 255 | selected=[31, 22, 9, 5, 28, 21, 24, 48, 4, 33]
+Round 255 | train_loss=0.4261 train_acc=0.8509 test_loss=0.7105 test_acc=0.7569
+Round 256 | selected=[24, 36, 47, 34, 45, 13, 31, 2, 42, 22]
+Round 256 | train_loss=0.4207 train_acc=0.8515 test_loss=0.7542 test_acc=0.7328
+Round 257 | selected=[25, 32, 4, 41, 48, 15, 27, 8, 5, 45]
+Round 257 | train_loss=0.4242 train_acc=0.8550 test_loss=0.6579 test_acc=0.7692
+Round 258 | selected=[41, 0, 46, 3, 26, 25, 29, 16, 27, 36]
+Round 258 | train_loss=0.4272 train_acc=0.8463 test_loss=0.7017 test_acc=0.7496
+Round 259 | selected=[7, 49, 44, 43, 47, 23, 20, 42, 29, 45]
+Round 259 | train_loss=0.3594 train_acc=0.8777 test_loss=1.0052 test_acc=0.6875
+Round 260 | selected=[9, 32, 3, 16, 13, 6, 8, 48, 14, 33]
+Round 260 | train_loss=0.4872 train_acc=0.8347 test_loss=0.8637 test_acc=0.7195
+Round 261 | selected=[7, 49, 1, 43, 35, 31, 3, 26, 28, 36]
+Round 261 | train_loss=0.4376 train_acc=0.8479 test_loss=0.7458 test_acc=0.7393
+Round 262 | selected=[8, 9, 47, 21, 4, 0, 14, 38, 30, 12]
+Round 262 | train_loss=0.3630 train_acc=0.8741 test_loss=0.6680 test_acc=0.7703
+Round 263 | selected=[30, 41, 27, 40, 36, 11, 15, 39, 28, 19]
+Round 263 | train_loss=0.3526 train_acc=0.8793 test_loss=0.7672 test_acc=0.7436
+Round 264 | selected=[10, 12, 26, 39, 6, 2, 23, 42, 1, 43]
+Round 264 | train_loss=0.4544 train_acc=0.8313 test_loss=0.8119 test_acc=0.7120
+Round 265 | selected=[19, 1, 8, 34, 6, 24, 45, 29, 26, 35]
+Round 265 | train_loss=0.4074 train_acc=0.8512 test_loss=0.8201 test_acc=0.7074
+Round 266 | selected=[27, 14, 16, 40, 17, 21, 29, 12, 0, 49]
+Round 266 | train_loss=0.4038 train_acc=0.8622 test_loss=0.8731 test_acc=0.6838
+Round 267 | selected=[15, 21, 14, 49, 32, 29, 27, 48, 20, 10]
+Round 267 | train_loss=0.4019 train_acc=0.8592 test_loss=0.9012 test_acc=0.6782
+Round 268 | selected=[2, 31, 29, 42, 26, 7, 37, 27, 9, 11]
+Round 268 | train_loss=0.4429 train_acc=0.8416 test_loss=0.7508 test_acc=0.7414
+Round 269 | selected=[13, 33, 10, 37, 28, 7, 24, 2, 31, 16]
+Round 269 | train_loss=0.4219 train_acc=0.8541 test_loss=0.7729 test_acc=0.7346
+Round 270 | selected=[2, 44, 32, 23, 17, 30, 35, 28, 11, 39]
+Round 270 | train_loss=0.3964 train_acc=0.8644 test_loss=0.7252 test_acc=0.7474
+Round 271 | selected=[42, 19, 32, 25, 14, 24, 13, 37, 34, 49]
+Round 271 | train_loss=0.4056 train_acc=0.8583 test_loss=0.8761 test_acc=0.7230
+Round 272 | selected=[41, 47, 35, 29, 15, 14, 4, 23, 22, 45]
+Round 272 | train_loss=0.4224 train_acc=0.8506 test_loss=0.7813 test_acc=0.7426
+Round 273 | selected=[42, 4, 7, 2, 48, 45, 25, 38, 6, 14]
+Round 273 | train_loss=0.3845 train_acc=0.8690 test_loss=0.8251 test_acc=0.7296
+Round 274 | selected=[4, 13, 3, 18, 17, 14, 2, 9, 46, 26]
+Round 274 | train_loss=0.3337 train_acc=0.8878 test_loss=0.8200 test_acc=0.7088
+Round 275 | selected=[7, 15, 3, 23, 48, 13, 34, 31, 6, 36]
+Round 275 | train_loss=0.4216 train_acc=0.8496 test_loss=0.6925 test_acc=0.7565
+Round 276 | selected=[41, 47, 27, 5, 13, 19, 2, 40, 12, 25]
+Round 276 | train_loss=0.3645 train_acc=0.8797 test_loss=0.6587 test_acc=0.7744
+Round 277 | selected=[17, 1, 43, 47, 20, 45, 41, 15, 12, 49]
+Round 277 | train_loss=0.3740 train_acc=0.8690 test_loss=0.6232 test_acc=0.7843
+Round 278 | selected=[47, 27, 24, 21, 29, 31, 43, 0, 44, 2]
+Round 278 | train_loss=0.3729 train_acc=0.8654 test_loss=0.5809 test_acc=0.7988
+Round 279 | selected=[28, 47, 14, 35, 46, 34, 2, 7, 13, 49]
+Round 279 | train_loss=0.3214 train_acc=0.8910 test_loss=0.6625 test_acc=0.7677
+Round 280 | selected=[43, 7, 19, 3, 22, 15, 36, 13, 38, 10]
+Round 280 | train_loss=0.3036 train_acc=0.8939 test_loss=0.7461 test_acc=0.7379
+Round 281 | selected=[49, 10, 35, 41, 0, 43, 34, 20, 1, 39]
+Round 281 | train_loss=0.3353 train_acc=0.8828 test_loss=0.6604 test_acc=0.7739
+Round 282 | selected=[2, 16, 29, 37, 0, 23, 44, 33, 39, 21]
+Round 282 | train_loss=0.3834 train_acc=0.8665 test_loss=0.5554 test_acc=0.8087
+Round 283 | selected=[47, 28, 2, 38, 46, 44, 32, 17, 3, 14]
+Round 283 | train_loss=0.3072 train_acc=0.8921 test_loss=0.6658 test_acc=0.7786
+Round 284 | selected=[9, 47, 34, 49, 4, 46, 43, 15, 11, 45]
+Round 284 | train_loss=0.3093 train_acc=0.8954 test_loss=0.5776 test_acc=0.8012
+Round 285 | selected=[42, 38, 30, 3, 33, 32, 21, 4, 25, 36]
+Round 285 | train_loss=0.3360 train_acc=0.8834 test_loss=0.5441 test_acc=0.8071
+Round 286 | selected=[40, 30, 48, 42, 32, 14, 17, 44, 9, 6]
+Round 286 | train_loss=0.3342 train_acc=0.8878 test_loss=0.5930 test_acc=0.7912
+Round 287 | selected=[18, 48, 38, 40, 30, 16, 8, 4, 45, 35]
+Round 287 | train_loss=0.2916 train_acc=0.9002 test_loss=0.6691 test_acc=0.7640
+Round 288 | selected=[32, 6, 29, 25, 42, 4, 10, 16, 41, 49]
+Round 288 | train_loss=0.3462 train_acc=0.8756 test_loss=0.5811 test_acc=0.7881
+Round 289 | selected=[10, 19, 9, 35, 5, 21, 15, 17, 28, 3]
+Round 289 | train_loss=0.2904 train_acc=0.9016 test_loss=0.6690 test_acc=0.7619
+Round 290 | selected=[41, 48, 37, 30, 44, 21, 19, 29, 17, 47]
+Round 290 | train_loss=0.3019 train_acc=0.8950 test_loss=0.6103 test_acc=0.7850
+Round 291 | selected=[19, 14, 12, 17, 0, 13, 24, 35, 36, 44]
+Round 291 | train_loss=0.2753 train_acc=0.9060 test_loss=0.5542 test_acc=0.8104
+Round 292 | selected=[15, 29, 35, 14, 24, 48, 12, 42, 45, 18]
+Round 292 | train_loss=0.2817 train_acc=0.9047 test_loss=0.7000 test_acc=0.7577
+Round 293 | selected=[15, 48, 42, 29, 14, 13, 2, 7, 0, 3]
+Round 293 | train_loss=0.3248 train_acc=0.8847 test_loss=0.6421 test_acc=0.7794
+Round 294 | selected=[42, 41, 16, 37, 48, 34, 27, 1, 26, 29]
+Round 294 | train_loss=0.3287 train_acc=0.8861 test_loss=0.7669 test_acc=0.7265
+Round 295 | selected=[5, 45, 18, 19, 2, 8, 4, 14, 0, 23]
+Round 295 | train_loss=0.2892 train_acc=0.8976 test_loss=0.6270 test_acc=0.7780
+Round 296 | selected=[7, 36, 5, 42, 8, 44, 24, 37, 34, 40]
+Round 296 | train_loss=0.3220 train_acc=0.8886 test_loss=0.6043 test_acc=0.7956
+Round 297 | selected=[4, 35, 41, 46, 29, 1, 8, 34, 21, 23]
+Round 297 | train_loss=0.2826 train_acc=0.9044 test_loss=0.6052 test_acc=0.7923
+Round 298 | selected=[10, 17, 23, 48, 34, 22, 16, 46, 2, 27]
+Round 298 | train_loss=0.3115 train_acc=0.8919 test_loss=0.5672 test_acc=0.8034
+Round 299 | selected=[41, 16, 23, 46, 1, 34, 18, 20, 17, 40]
+Round 299 | train_loss=0.2721 train_acc=0.9054 test_loss=0.6020 test_acc=0.7889
+Round 300 | selected=[3, 4, 22, 30, 29, 2, 44, 46, 19, 25]
+Round 300 | train_loss=0.2749 train_acc=0.9076 test_loss=0.6276 test_acc=0.7773
+Round 301 | selected=[9, 19, 39, 28, 47, 27, 32, 8, 41, 42]
+Round 301 | train_loss=0.2801 train_acc=0.9019 test_loss=0.7353 test_acc=0.7502
+Round 302 | selected=[7, 43, 15, 32, 40, 28, 6, 37, 30, 16]
+Round 302 | train_loss=0.3473 train_acc=0.8757 test_loss=0.6029 test_acc=0.7971
+Round 303 | selected=[7, 19, 33, 3, 38, 49, 15, 21, 46, 0]
+Round 303 | train_loss=0.2267 train_acc=0.9220 test_loss=0.6524 test_acc=0.7838
+Round 304 | selected=[1, 21, 33, 38, 8, 3, 14, 31, 16, 19]
+Round 304 | train_loss=0.3197 train_acc=0.8865 test_loss=0.6511 test_acc=0.7797
+Round 305 | selected=[18, 6, 45, 33, 44, 24, 39, 5, 48, 13]
+Round 305 | train_loss=0.2737 train_acc=0.9035 test_loss=0.6912 test_acc=0.7600
+Round 306 | selected=[15, 6, 11, 0, 32, 42, 18, 41, 25, 29]
+Round 306 | train_loss=0.2904 train_acc=0.8970 test_loss=0.5631 test_acc=0.8082
+Round 307 | selected=[26, 27, 32, 12, 42, 4, 14, 25, 19, 23]
+Round 307 | train_loss=0.2786 train_acc=0.9070 test_loss=0.6675 test_acc=0.7824
+Round 308 | selected=[34, 17, 45, 35, 33, 7, 42, 22, 18, 46]
+Round 308 | train_loss=0.2552 train_acc=0.9119 test_loss=0.6893 test_acc=0.7678
+Round 309 | selected=[31, 30, 45, 6, 13, 26, 2, 5, 41, 40]
+Round 309 | train_loss=0.3028 train_acc=0.8942 test_loss=0.8030 test_acc=0.7367
+Round 310 | selected=[36, 43, 21, 22, 35, 48, 47, 6, 13, 24]
+Round 310 | train_loss=0.2958 train_acc=0.8943 test_loss=0.7658 test_acc=0.7351
+Round 311 | selected=[36, 34, 32, 16, 23, 2, 22, 5, 8, 12]
+Round 311 | train_loss=0.3259 train_acc=0.8862 test_loss=0.5946 test_acc=0.7942
+Round 312 | selected=[45, 21, 0, 16, 36, 33, 23, 40, 19, 34]
+Round 312 | train_loss=0.2504 train_acc=0.9123 test_loss=0.6794 test_acc=0.7791
+Round 313 | selected=[43, 33, 31, 17, 27, 22, 9, 19, 5, 44]
+Round 313 | train_loss=0.2715 train_acc=0.9071 test_loss=0.7211 test_acc=0.7686
+Round 314 | selected=[12, 7, 8, 11, 13, 21, 46, 9, 14, 42]
+Round 314 | train_loss=0.2642 train_acc=0.9126 test_loss=0.6702 test_acc=0.7854
+Round 315 | selected=[33, 49, 45, 23, 2, 21, 17, 44, 11, 1]
+Round 315 | train_loss=0.3085 train_acc=0.8899 test_loss=0.6606 test_acc=0.7848
+Round 316 | selected=[48, 32, 39, 6, 11, 43, 9, 30, 28, 36]
+Round 316 | train_loss=0.3205 train_acc=0.8879 test_loss=0.5818 test_acc=0.8047
+Round 317 | selected=[6, 35, 9, 32, 27, 36, 41, 47, 11, 49]
+Round 317 | train_loss=0.2513 train_acc=0.9127 test_loss=0.6346 test_acc=0.7811
+Round 318 | selected=[24, 16, 15, 39, 26, 20, 36, 49, 40, 13]
+Round 318 | train_loss=0.3027 train_acc=0.8976 test_loss=0.6110 test_acc=0.7867
+Round 319 | selected=[21, 19, 37, 42, 34, 20, 6, 31, 26, 36]
+Round 319 | train_loss=0.2852 train_acc=0.9029 test_loss=0.5781 test_acc=0.7986
+Round 320 | selected=[20, 16, 24, 13, 5, 6, 49, 17, 21, 46]
+Round 320 | train_loss=0.2979 train_acc=0.8978 test_loss=0.5340 test_acc=0.8111
+Round 321 | selected=[11, 37, 9, 5, 25, 42, 30, 0, 8, 16]
+Round 321 | train_loss=0.2834 train_acc=0.9073 test_loss=0.6099 test_acc=0.7865
+Round 322 | selected=[29, 6, 17, 44, 40, 43, 2, 23, 32, 10]
+Round 322 | train_loss=0.2539 train_acc=0.9074 test_loss=0.6043 test_acc=0.7954
+Round 323 | selected=[35, 4, 23, 27, 31, 1, 22, 15, 43, 9]
+Round 323 | train_loss=0.2857 train_acc=0.8998 test_loss=0.5550 test_acc=0.8146
+Round 324 | selected=[39, 30, 46, 24, 37, 32, 41, 40, 28, 26]
+Round 324 | train_loss=0.2708 train_acc=0.9067 test_loss=0.6815 test_acc=0.7791
+Round 325 | selected=[17, 48, 16, 14, 46, 23, 4, 7, 8, 30]
+Round 325 | train_loss=0.2958 train_acc=0.8994 test_loss=0.6262 test_acc=0.7924
+Round 326 | selected=[5, 8, 17, 31, 23, 41, 42, 47, 16, 39]
+Round 326 | train_loss=0.2946 train_acc=0.8955 test_loss=0.7398 test_acc=0.7556
+Round 327 | selected=[38, 10, 40, 24, 31, 1, 14, 41, 29, 42]
+Round 327 | train_loss=0.2671 train_acc=0.9045 test_loss=0.7641 test_acc=0.7483
+Round 328 | selected=[4, 29, 37, 13, 31, 16, 35, 27, 22, 7]
+Round 328 | train_loss=0.3004 train_acc=0.8972 test_loss=0.6063 test_acc=0.7936
+Round 329 | selected=[15, 36, 42, 5, 29, 7, 22, 39, 21, 46]
+Round 329 | train_loss=0.2488 train_acc=0.9156 test_loss=0.7186 test_acc=0.7707
+Round 330 | selected=[45, 32, 27, 17, 38, 40, 14, 5, 42, 35]
+Round 330 | train_loss=0.2274 train_acc=0.9219 test_loss=0.7325 test_acc=0.7703
+Round 331 | selected=[15, 28, 21, 2, 14, 41, 0, 12, 49, 24]
+Round 331 | train_loss=0.2681 train_acc=0.9040 test_loss=0.6067 test_acc=0.8038
+Round 332 | selected=[22, 13, 33, 36, 20, 15, 6, 2, 34, 26]
+Round 332 | train_loss=0.2645 train_acc=0.9061 test_loss=0.6700 test_acc=0.7757
+Round 333 | selected=[20, 40, 12, 0, 23, 32, 27, 47, 13, 34]
+Round 333 | train_loss=0.2532 train_acc=0.9124 test_loss=0.5863 test_acc=0.7981
+Round 334 | selected=[21, 31, 27, 32, 24, 36, 43, 20, 2, 26]
+Round 334 | train_loss=0.2512 train_acc=0.9137 test_loss=0.5196 test_acc=0.8223
+Round 335 | selected=[8, 4, 28, 12, 29, 27, 31, 42, 18, 30]
+Round 335 | train_loss=0.2338 train_acc=0.9190 test_loss=0.6562 test_acc=0.7852
+Round 336 | selected=[14, 21, 40, 47, 32, 37, 16, 43, 25, 17]
+Round 336 | train_loss=0.2735 train_acc=0.9063 test_loss=0.5673 test_acc=0.8038
+Round 337 | selected=[15, 38, 30, 17, 19, 32, 14, 46, 20, 11]
+Round 337 | train_loss=0.2127 train_acc=0.9254 test_loss=0.5359 test_acc=0.8230
+Round 338 | selected=[2, 6, 1, 15, 35, 19, 34, 46, 20, 40]
+Round 338 | train_loss=0.2182 train_acc=0.9248 test_loss=0.5919 test_acc=0.8083
+Round 339 | selected=[24, 23, 8, 3, 20, 9, 27, 21, 35, 48]
+Round 339 | train_loss=0.2458 train_acc=0.9144 test_loss=0.5329 test_acc=0.8224
+Round 340 | selected=[5, 7, 45, 40, 14, 31, 17, 30, 36, 11]
+Round 340 | train_loss=0.2191 train_acc=0.9237 test_loss=0.5400 test_acc=0.8171
+Round 341 | selected=[31, 46, 4, 15, 25, 20, 32, 21, 0, 38]
+Round 341 | train_loss=0.2234 train_acc=0.9234 test_loss=0.5155 test_acc=0.8243
+Round 342 | selected=[25, 37, 15, 32, 27, 33, 40, 42, 44, 17]
+Round 342 | train_loss=0.2311 train_acc=0.9213 test_loss=0.4972 test_acc=0.8275
+Round 343 | selected=[41, 44, 40, 14, 32, 5, 22, 1, 27, 47]
+Round 343 | train_loss=0.2116 train_acc=0.9237 test_loss=0.5106 test_acc=0.8267
+Round 344 | selected=[33, 7, 41, 14, 26, 23, 15, 29, 20, 3]
+Round 344 | train_loss=0.2147 train_acc=0.9272 test_loss=0.5500 test_acc=0.8124
+Round 345 | selected=[1, 48, 42, 38, 41, 6, 21, 43, 2, 25]
+Round 345 | train_loss=0.2330 train_acc=0.9187 test_loss=0.5672 test_acc=0.8101
+Round 346 | selected=[29, 24, 33, 39, 8, 46, 28, 38, 40, 21]
+Round 346 | train_loss=0.2068 train_acc=0.9292 test_loss=0.4911 test_acc=0.8317
+Round 347 | selected=[37, 21, 31, 32, 0, 23, 20, 19, 9, 36]
+Round 347 | train_loss=0.2019 train_acc=0.9313 test_loss=0.4793 test_acc=0.8388
+Round 348 | selected=[6, 29, 21, 15, 0, 10, 24, 33, 13, 41]
+Round 348 | train_loss=0.2246 train_acc=0.9204 test_loss=0.6504 test_acc=0.7858
+Round 349 | selected=[12, 31, 13, 21, 10, 29, 43, 18, 30, 48]
+Round 349 | train_loss=0.2184 train_acc=0.9253 test_loss=0.6454 test_acc=0.7764
+Round 350 | selected=[29, 30, 47, 37, 18, 32, 22, 26, 13, 42]
+Round 350 | train_loss=0.2010 train_acc=0.9292 test_loss=0.6996 test_acc=0.7652
+Round 351 | selected=[4, 19, 34, 3, 44, 20, 1, 43, 45, 14]
+Round 351 | train_loss=0.2061 train_acc=0.9289 test_loss=0.5540 test_acc=0.8199
+Round 352 | selected=[19, 5, 9, 2, 45, 14, 1, 20, 37, 49]
+Round 352 | train_loss=0.1935 train_acc=0.9343 test_loss=0.5440 test_acc=0.8200
+Round 353 | selected=[10, 11, 38, 17, 47, 5, 21, 8, 24, 44]
+Round 353 | train_loss=0.2326 train_acc=0.9178 test_loss=0.5249 test_acc=0.8300
+Round 354 | selected=[34, 2, 29, 21, 37, 31, 4, 45, 42, 30]
+Round 354 | train_loss=0.2231 train_acc=0.9247 test_loss=0.4953 test_acc=0.8359
+Round 355 | selected=[38, 16, 11, 17, 8, 36, 3, 49, 39, 27]
+Round 355 | train_loss=0.1975 train_acc=0.9299 test_loss=0.5658 test_acc=0.8093
+Round 356 | selected=[19, 31, 33, 28, 5, 41, 45, 48, 0, 7]
+Round 356 | train_loss=0.1974 train_acc=0.9305 test_loss=0.5191 test_acc=0.8274
+Round 357 | selected=[24, 38, 30, 43, 2, 1, 7, 17, 34, 23]
+Round 357 | train_loss=0.1866 train_acc=0.9346 test_loss=0.5604 test_acc=0.8113
+Round 358 | selected=[8, 22, 28, 11, 39, 23, 43, 47, 49, 48]
+Round 358 | train_loss=0.2378 train_acc=0.9160 test_loss=0.4763 test_acc=0.8409
+Round 359 | selected=[3, 22, 46, 45, 36, 23, 49, 6, 11, 42]
+Round 359 | train_loss=0.1937 train_acc=0.9308 test_loss=0.5113 test_acc=0.8290
+Round 360 | selected=[35, 11, 48, 19, 32, 40, 28, 1, 29, 46]
+Round 360 | train_loss=0.1999 train_acc=0.9301 test_loss=0.4892 test_acc=0.8312
+Round 361 | selected=[45, 43, 17, 30, 15, 8, 49, 25, 26, 23]
+Round 361 | train_loss=0.1996 train_acc=0.9323 test_loss=0.5319 test_acc=0.8243
+Round 362 | selected=[15, 39, 34, 21, 19, 30, 38, 5, 46, 26]
+Round 362 | train_loss=0.1737 train_acc=0.9428 test_loss=0.5854 test_acc=0.8137
+Round 363 | selected=[22, 18, 3, 9, 28, 45, 23, 8, 19, 41]
+Round 363 | train_loss=0.1678 train_acc=0.9400 test_loss=0.4647 test_acc=0.8464
+Round 364 | selected=[30, 6, 18, 46, 17, 33, 43, 34, 35, 41]
+Round 364 | train_loss=0.1528 train_acc=0.9486 test_loss=0.5036 test_acc=0.8359
+Round 365 | selected=[35, 46, 32, 8, 43, 2, 25, 27, 1, 9]
+Round 365 | train_loss=0.1778 train_acc=0.9398 test_loss=0.5145 test_acc=0.8319
+Round 366 | selected=[49, 7, 28, 8, 45, 4, 3, 37, 36, 13]
+Round 366 | train_loss=0.1781 train_acc=0.9397 test_loss=0.4496 test_acc=0.8467
+Round 367 | selected=[45, 28, 30, 39, 20, 3, 29, 7, 18, 14]
+Round 367 | train_loss=0.1575 train_acc=0.9498 test_loss=0.5504 test_acc=0.8132
+Round 368 | selected=[24, 20, 7, 18, 43, 12, 47, 29, 19, 2]
+Round 368 | train_loss=0.1582 train_acc=0.9462 test_loss=0.6701 test_acc=0.7804
+Round 369 | selected=[25, 38, 42, 13, 6, 12, 35, 2, 45, 22]
+Round 369 | train_loss=0.2225 train_acc=0.9205 test_loss=0.5174 test_acc=0.8180
+Round 370 | selected=[11, 8, 33, 35, 37, 20, 41, 47, 49, 30]
+Round 370 | train_loss=0.1573 train_acc=0.9444 test_loss=0.7431 test_acc=0.7776
+Round 371 | selected=[19, 27, 15, 41, 35, 26, 0, 1, 18, 8]
+Round 371 | train_loss=0.1927 train_acc=0.9331 test_loss=0.5846 test_acc=0.8156
+Round 372 | selected=[44, 26, 18, 2, 46, 28, 9, 0, 45, 48]
+Round 372 | train_loss=0.1741 train_acc=0.9400 test_loss=0.8271 test_acc=0.7480
+Round 373 | selected=[11, 19, 8, 13, 39, 40, 24, 17, 16, 15]
+Round 373 | train_loss=0.2183 train_acc=0.9230 test_loss=0.5725 test_acc=0.8145
+Round 374 | selected=[26, 11, 27, 49, 42, 6, 3, 38, 8, 32]
+Round 374 | train_loss=0.1846 train_acc=0.9350 test_loss=0.6371 test_acc=0.7894
+Round 375 | selected=[26, 23, 21, 4, 44, 38, 29, 24, 37, 48]
+Round 375 | train_loss=0.1974 train_acc=0.9317 test_loss=0.5499 test_acc=0.8126
+Round 376 | selected=[27, 33, 44, 5, 36, 13, 10, 16, 34, 9]
+Round 376 | train_loss=0.2175 train_acc=0.9240 test_loss=0.4381 test_acc=0.8509
+Round 377 | selected=[7, 2, 35, 6, 0, 37, 32, 33, 44, 10]
+Round 377 | train_loss=0.1723 train_acc=0.9376 test_loss=0.5543 test_acc=0.8208
+Round 378 | selected=[39, 21, 49, 2, 43, 42, 23, 7, 28, 29]
+Round 378 | train_loss=0.2042 train_acc=0.9313 test_loss=0.4682 test_acc=0.8453
+Round 379 | selected=[26, 16, 22, 34, 24, 0, 42, 35, 39, 49]
+Round 379 | train_loss=0.1823 train_acc=0.9359 test_loss=0.6278 test_acc=0.7946
+Round 380 | selected=[45, 38, 28, 8, 33, 1, 41, 35, 22, 30]
+Round 380 | train_loss=0.1778 train_acc=0.9368 test_loss=0.6477 test_acc=0.7813
+Round 381 | selected=[42, 5, 24, 45, 12, 14, 35, 49, 3, 23]
+Round 381 | train_loss=0.1744 train_acc=0.9418 test_loss=0.4930 test_acc=0.8328
+Round 382 | selected=[16, 3, 5, 38, 22, 48, 24, 40, 35, 44]
+Round 382 | train_loss=0.1776 train_acc=0.9392 test_loss=0.4720 test_acc=0.8412
+Round 383 | selected=[36, 28, 14, 20, 16, 13, 44, 48, 30, 2]
+Round 383 | train_loss=0.1670 train_acc=0.9425 test_loss=0.5679 test_acc=0.8163
+Round 384 | selected=[48, 21, 30, 43, 37, 18, 49, 0, 24, 25]
+Round 384 | train_loss=0.1806 train_acc=0.9377 test_loss=0.5293 test_acc=0.8270
+Round 385 | selected=[16, 37, 5, 21, 42, 15, 43, 7, 20, 34]
+Round 385 | train_loss=0.1690 train_acc=0.9432 test_loss=0.5300 test_acc=0.8305
+Round 386 | selected=[15, 27, 22, 42, 5, 31, 10, 36, 19, 26]
+Round 386 | train_loss=0.1826 train_acc=0.9390 test_loss=0.5837 test_acc=0.8104
+Round 387 | selected=[44, 30, 13, 45, 0, 21, 18, 31, 25, 32]
+Round 387 | train_loss=0.1921 train_acc=0.9351 test_loss=0.5014 test_acc=0.8339
+Round 388 | selected=[32, 25, 43, 18, 46, 20, 10, 29, 34, 17]
+Round 388 | train_loss=0.1635 train_acc=0.9432 test_loss=0.6417 test_acc=0.8058
+Round 389 | selected=[21, 46, 28, 7, 17, 44, 41, 15, 29, 30]
+Round 389 | train_loss=0.1765 train_acc=0.9371 test_loss=0.5147 test_acc=0.8348
+Round 390 | selected=[16, 34, 44, 30, 20, 31, 3, 12, 1, 6]
+Round 390 | train_loss=0.1955 train_acc=0.9331 test_loss=0.5559 test_acc=0.8178
+Round 391 | selected=[24, 19, 31, 42, 27, 8, 21, 32, 3, 5]
+Round 391 | train_loss=0.1536 train_acc=0.9465 test_loss=0.5850 test_acc=0.8157
+Round 392 | selected=[35, 33, 24, 31, 22, 49, 7, 21, 26, 11]
+Round 392 | train_loss=0.1727 train_acc=0.9383 test_loss=0.5526 test_acc=0.8190
+Round 393 | selected=[23, 39, 5, 27, 14, 48, 10, 35, 26, 12]
+Round 393 | train_loss=0.1681 train_acc=0.9424 test_loss=0.4704 test_acc=0.8459
+Round 394 | selected=[19, 29, 49, 28, 46, 35, 23, 3, 15, 48]
+Round 394 | train_loss=0.1319 train_acc=0.9538 test_loss=0.5739 test_acc=0.8175
+Round 395 | selected=[10, 31, 7, 48, 5, 2, 6, 17, 44, 9]
+Round 395 | train_loss=0.1646 train_acc=0.9399 test_loss=0.5695 test_acc=0.8185
+Round 396 | selected=[9, 46, 48, 23, 29, 35, 41, 34, 10, 27]
+Round 396 | train_loss=0.1427 train_acc=0.9495 test_loss=0.4683 test_acc=0.8445
+Round 397 | selected=[24, 26, 29, 47, 22, 31, 27, 32, 44, 13]
+Round 397 | train_loss=0.1655 train_acc=0.9428 test_loss=0.5287 test_acc=0.8263
+Round 398 | selected=[6, 9, 35, 25, 3, 16, 31, 49, 17, 10]
+Round 398 | train_loss=0.1674 train_acc=0.9400 test_loss=0.5902 test_acc=0.8069
+Round 399 | selected=[32, 16, 34, 13, 44, 35, 12, 26, 3, 15]
+Round 399 | train_loss=0.1543 train_acc=0.9483 test_loss=0.4793 test_acc=0.8439
+Round 400 | selected=[8, 16, 17, 18, 43, 33, 31, 47, 44, 11]
+Round 400 | train_loss=0.1625 train_acc=0.9414 test_loss=0.4579 test_acc=0.8475
+Round 401 | selected=[34, 0, 41, 11, 12, 23, 35, 25, 40, 29]
+Round 401 | train_loss=0.1457 train_acc=0.9514 test_loss=0.4477 test_acc=0.8501
+Round 402 | selected=[18, 31, 19, 22, 11, 37, 36, 44, 38, 5]
+Round 402 | train_loss=0.1221 train_acc=0.9572 test_loss=0.5344 test_acc=0.8279
+Round 403 | selected=[46, 44, 13, 17, 48, 40, 22, 34, 12, 0]
+Round 403 | train_loss=0.1509 train_acc=0.9468 test_loss=0.4662 test_acc=0.8476
+Round 404 | selected=[19, 7, 1, 37, 47, 8, 17, 32, 31, 3]
+Round 404 | train_loss=0.1668 train_acc=0.9402 test_loss=0.4920 test_acc=0.8380
+Round 405 | selected=[8, 33, 21, 44, 47, 43, 1, 22, 29, 13]
+Round 405 | train_loss=0.1543 train_acc=0.9481 test_loss=0.7054 test_acc=0.7768
+Round 406 | selected=[16, 31, 43, 36, 5, 42, 45, 4, 41, 32]
+Round 406 | train_loss=0.1636 train_acc=0.9438 test_loss=0.4957 test_acc=0.8361
+Round 407 | selected=[45, 31, 0, 49, 8, 13, 34, 22, 20, 21]
+Round 407 | train_loss=0.1340 train_acc=0.9540 test_loss=0.4564 test_acc=0.8518
+Round 408 | selected=[16, 19, 9, 43, 42, 36, 20, 38, 4, 5]
+Round 408 | train_loss=0.1282 train_acc=0.9553 test_loss=0.5456 test_acc=0.8358
+Round 409 | selected=[19, 45, 46, 7, 36, 39, 31, 8, 4, 16]
+Round 409 | train_loss=0.1386 train_acc=0.9500 test_loss=0.4815 test_acc=0.8494
+Round 410 | selected=[45, 22, 1, 24, 41, 46, 43, 4, 39, 37]
+Round 410 | train_loss=0.1405 train_acc=0.9522 test_loss=0.4803 test_acc=0.8485
+Round 411 | selected=[15, 8, 49, 1, 30, 45, 21, 22, 38, 23]
+Round 411 | train_loss=0.1275 train_acc=0.9561 test_loss=0.5937 test_acc=0.8095
+Round 412 | selected=[17, 37, 44, 11, 24, 13, 35, 49, 4, 46]
+Round 412 | train_loss=0.1245 train_acc=0.9580 test_loss=0.5023 test_acc=0.8365
+Round 413 | selected=[17, 40, 33, 9, 35, 3, 45, 49, 22, 39]
+Round 413 | train_loss=0.1227 train_acc=0.9575 test_loss=0.5157 test_acc=0.8369
+Round 414 | selected=[22, 30, 13, 31, 9, 45, 34, 16, 5, 7]
+Round 414 | train_loss=0.1270 train_acc=0.9543 test_loss=0.4860 test_acc=0.8485
+Round 415 | selected=[21, 9, 40, 39, 46, 37, 11, 31, 32, 27]
+Round 415 | train_loss=0.1214 train_acc=0.9581 test_loss=0.4468 test_acc=0.8523
+Round 416 | selected=[7, 1, 0, 8, 36, 35, 18, 25, 16, 21]
+Round 416 | train_loss=0.1240 train_acc=0.9567 test_loss=0.4993 test_acc=0.8359
+Round 417 | selected=[6, 12, 44, 7, 35, 30, 47, 1, 43, 22]
+Round 417 | train_loss=0.1246 train_acc=0.9575 test_loss=0.5435 test_acc=0.8269
+Round 418 | selected=[21, 7, 2, 41, 39, 13, 44, 10, 11, 29]
+Round 418 | train_loss=0.1202 train_acc=0.9601 test_loss=0.5512 test_acc=0.8200
+Round 419 | selected=[22, 47, 44, 10, 33, 37, 6, 0, 4, 16]
+Round 419 | train_loss=0.1387 train_acc=0.9509 test_loss=0.4710 test_acc=0.8433
+Round 420 | selected=[29, 35, 13, 25, 33, 46, 15, 28, 14, 1]
+Round 420 | train_loss=0.1448 train_acc=0.9496 test_loss=0.4447 test_acc=0.8506
+Round 421 | selected=[14, 10, 23, 49, 13, 36, 41, 8, 0, 15]
+Round 421 | train_loss=0.1069 train_acc=0.9635 test_loss=0.4751 test_acc=0.8399
+Round 422 | selected=[24, 29, 0, 13, 23, 8, 22, 21, 2, 37]
+Round 422 | train_loss=0.1140 train_acc=0.9616 test_loss=0.4660 test_acc=0.8450
+Round 423 | selected=[37, 31, 44, 10, 33, 49, 12, 43, 35, 32]
+Round 423 | train_loss=0.1049 train_acc=0.9668 test_loss=0.4426 test_acc=0.8526
+Round 424 | selected=[34, 33, 38, 21, 37, 10, 5, 31, 20, 36]
+Round 424 | train_loss=0.1181 train_acc=0.9584 test_loss=0.4178 test_acc=0.8600
+Round 425 | selected=[1, 31, 35, 0, 21, 36, 30, 46, 16, 39]
+Round 425 | train_loss=0.0982 train_acc=0.9662 test_loss=0.4632 test_acc=0.8564
+Round 426 | selected=[25, 28, 47, 18, 46, 38, 30, 27, 16, 44]
+Round 426 | train_loss=0.1107 train_acc=0.9602 test_loss=0.5043 test_acc=0.8484
+Round 427 | selected=[33, 40, 22, 39, 6, 30, 43, 20, 9, 7]
+Round 427 | train_loss=0.1143 train_acc=0.9599 test_loss=0.4926 test_acc=0.8517
+Round 428 | selected=[8, 14, 19, 24, 28, 44, 22, 15, 1, 49]
+Round 428 | train_loss=0.1160 train_acc=0.9621 test_loss=0.4701 test_acc=0.8575
+Round 429 | selected=[31, 2, 47, 14, 36, 15, 10, 41, 40, 12]
+Round 429 | train_loss=0.1077 train_acc=0.9644 test_loss=0.4888 test_acc=0.8468
+Round 430 | selected=[16, 8, 34, 22, 5, 40, 45, 18, 11, 48]
+Round 430 | train_loss=0.0992 train_acc=0.9655 test_loss=0.4969 test_acc=0.8473
+Round 431 | selected=[8, 13, 26, 9, 30, 1, 41, 34, 47, 45]
+Round 431 | train_loss=0.1169 train_acc=0.9591 test_loss=0.4592 test_acc=0.8534
+Round 432 | selected=[21, 13, 12, 7, 40, 25, 22, 43, 26, 16]
+Round 432 | train_loss=0.1103 train_acc=0.9622 test_loss=0.4579 test_acc=0.8550
+Round 433 | selected=[19, 23, 10, 34, 21, 25, 36, 28, 11, 39]
+Round 433 | train_loss=0.1108 train_acc=0.9632 test_loss=0.4674 test_acc=0.8523
+Round 434 | selected=[31, 11, 39, 16, 47, 42, 26, 10, 28, 14]
+Round 434 | train_loss=0.1228 train_acc=0.9574 test_loss=0.4936 test_acc=0.8464
+Round 435 | selected=[42, 5, 11, 22, 12, 30, 27, 46, 13, 23]
+Round 435 | train_loss=0.0979 train_acc=0.9658 test_loss=0.4820 test_acc=0.8529
+Round 436 | selected=[15, 10, 48, 9, 27, 40, 44, 30, 14, 33]
+Round 436 | train_loss=0.1056 train_acc=0.9620 test_loss=0.4244 test_acc=0.8690
+Round 437 | selected=[24, 19, 7, 29, 17, 43, 20, 18, 6, 31]
+Round 437 | train_loss=0.1122 train_acc=0.9627 test_loss=0.4216 test_acc=0.8647
+Round 438 | selected=[33, 14, 11, 27, 17, 3, 37, 49, 15, 38]
+Round 438 | train_loss=0.0942 train_acc=0.9664 test_loss=0.4600 test_acc=0.8519
+Round 439 | selected=[34, 37, 18, 6, 31, 44, 42, 29, 32, 3]
+Round 439 | train_loss=0.1084 train_acc=0.9635 test_loss=0.4649 test_acc=0.8469
+Round 440 | selected=[49, 19, 36, 32, 0, 37, 5, 43, 40, 33]
+Round 440 | train_loss=0.0885 train_acc=0.9679 test_loss=0.4421 test_acc=0.8618
+Round 441 | selected=[44, 24, 31, 47, 45, 4, 13, 22, 20, 46]
+Round 441 | train_loss=0.0923 train_acc=0.9694 test_loss=0.4497 test_acc=0.8623
+Round 442 | selected=[40, 4, 41, 38, 33, 9, 15, 27, 36, 29]
+Round 442 | train_loss=0.0839 train_acc=0.9730 test_loss=0.4273 test_acc=0.8640
+Round 443 | selected=[37, 13, 19, 12, 46, 39, 4, 29, 16, 22]
+Round 443 | train_loss=0.0834 train_acc=0.9755 test_loss=0.4969 test_acc=0.8513
+Round 444 | selected=[49, 45, 7, 18, 44, 43, 3, 32, 4, 35]
+Round 444 | train_loss=0.0735 train_acc=0.9752 test_loss=0.4568 test_acc=0.8571
+Round 445 | selected=[23, 24, 46, 40, 16, 49, 41, 21, 37, 19]
+Round 445 | train_loss=0.0857 train_acc=0.9717 test_loss=0.4521 test_acc=0.8578
+Round 446 | selected=[4, 13, 7, 31, 44, 17, 40, 36, 27, 8]
+Round 446 | train_loss=0.0768 train_acc=0.9743 test_loss=0.4632 test_acc=0.8551
+Round 447 | selected=[38, 46, 47, 14, 41, 44, 32, 45, 6, 20]
+Round 447 | train_loss=0.0803 train_acc=0.9717 test_loss=0.4662 test_acc=0.8578
+Round 448 | selected=[18, 13, 25, 40, 43, 33, 47, 15, 2, 8]
+Round 448 | train_loss=0.0948 train_acc=0.9689 test_loss=0.4562 test_acc=0.8524
+Round 449 | selected=[48, 49, 43, 26, 6, 47, 4, 16, 45, 33]
+Round 449 | train_loss=0.1030 train_acc=0.9635 test_loss=0.4729 test_acc=0.8496
+Round 450 | selected=[32, 2, 49, 48, 14, 28, 36, 17, 46, 0]
+Round 450 | train_loss=0.1035 train_acc=0.9631 test_loss=0.4490 test_acc=0.8640
+Round 451 | selected=[17, 47, 22, 25, 33, 27, 40, 38, 2, 37]
+Round 451 | train_loss=0.0879 train_acc=0.9704 test_loss=0.4989 test_acc=0.8448
+Round 452 | selected=[10, 46, 36, 37, 15, 11, 43, 9, 27, 29]
+Round 452 | train_loss=0.0849 train_acc=0.9727 test_loss=0.5061 test_acc=0.8470
+Round 453 | selected=[31, 30, 23, 26, 20, 35, 45, 41, 39, 37]
+Round 453 | train_loss=0.0831 train_acc=0.9720 test_loss=0.5436 test_acc=0.8364
+Round 454 | selected=[48, 41, 6, 14, 39, 37, 36, 40, 15, 12]
+Round 454 | train_loss=0.0873 train_acc=0.9688 test_loss=0.5129 test_acc=0.8423
+Round 455 | selected=[2, 41, 30, 34, 31, 23, 47, 4, 26, 6]
+Round 455 | train_loss=0.0953 train_acc=0.9671 test_loss=0.4621 test_acc=0.8613
+Round 456 | selected=[8, 7, 11, 12, 23, 30, 40, 29, 41, 18]
+Round 456 | train_loss=0.0703 train_acc=0.9772 test_loss=0.4967 test_acc=0.8442
+Round 457 | selected=[39, 19, 11, 36, 25, 45, 33, 35, 22, 29]
+Round 457 | train_loss=0.0844 train_acc=0.9710 test_loss=0.4705 test_acc=0.8539
+Round 458 | selected=[47, 35, 34, 23, 44, 33, 28, 46, 26, 8]
+Round 458 | train_loss=0.0780 train_acc=0.9752 test_loss=0.4388 test_acc=0.8687
+Round 459 | selected=[35, 21, 20, 44, 8, 2, 36, 12, 34, 11]
+Round 459 | train_loss=0.0737 train_acc=0.9759 test_loss=0.4462 test_acc=0.8670
+Round 460 | selected=[48, 45, 29, 26, 17, 4, 23, 31, 44, 12]
+Round 460 | train_loss=0.0901 train_acc=0.9685 test_loss=0.4579 test_acc=0.8585
+Round 461 | selected=[13, 0, 38, 36, 20, 30, 7, 42, 5, 46]
+Round 461 | train_loss=0.0741 train_acc=0.9735 test_loss=0.4676 test_acc=0.8578
+Round 462 | selected=[7, 13, 26, 34, 33, 0, 43, 48, 20, 25]
+Round 462 | train_loss=0.0898 train_acc=0.9691 test_loss=0.4641 test_acc=0.8609
+Round 463 | selected=[26, 47, 46, 32, 43, 10, 25, 14, 41, 3]
+Round 463 | train_loss=0.0838 train_acc=0.9706 test_loss=0.4972 test_acc=0.8515
+Round 464 | selected=[25, 26, 49, 23, 6, 19, 29, 20, 35, 22]
+Round 464 | train_loss=0.0806 train_acc=0.9714 test_loss=0.5262 test_acc=0.8420
+Round 465 | selected=[33, 27, 30, 10, 46, 0, 14, 28, 43, 45]
+Round 465 | train_loss=0.0791 train_acc=0.9725 test_loss=0.4387 test_acc=0.8690
+Round 466 | selected=[8, 3, 35, 39, 21, 10, 11, 23, 40, 30]
+Round 466 | train_loss=0.0709 train_acc=0.9773 test_loss=0.4403 test_acc=0.8652
+Round 467 | selected=[42, 36, 30, 39, 2, 13, 44, 12, 35, 19]
+Round 467 | train_loss=0.0636 train_acc=0.9794 test_loss=0.4387 test_acc=0.8692
+Round 468 | selected=[23, 25, 16, 18, 32, 27, 11, 5, 46, 43]
+Round 468 | train_loss=0.0775 train_acc=0.9732 test_loss=0.4250 test_acc=0.8708
+Round 469 | selected=[2, 25, 15, 18, 19, 38, 21, 7, 49, 33]
+Round 469 | train_loss=0.0616 train_acc=0.9791 test_loss=0.4838 test_acc=0.8544
+Round 470 | selected=[37, 28, 39, 43, 45, 30, 18, 32, 26, 38]
+Round 470 | train_loss=0.0544 train_acc=0.9832 test_loss=0.6245 test_acc=0.8235
+Round 471 | selected=[31, 42, 24, 41, 5, 12, 33, 38, 25, 18]
+Round 471 | train_loss=0.0813 train_acc=0.9715 test_loss=0.4833 test_acc=0.8552
+Round 472 | selected=[31, 10, 42, 35, 40, 18, 49, 44, 37, 36]
+Round 472 | train_loss=0.0614 train_acc=0.9788 test_loss=0.4972 test_acc=0.8464
+Round 473 | selected=[26, 31, 20, 37, 12, 11, 32, 22, 28, 0]
+Round 473 | train_loss=0.0779 train_acc=0.9748 test_loss=0.4567 test_acc=0.8624
+Round 474 | selected=[12, 25, 0, 42, 11, 26, 23, 22, 31, 28]
+Round 474 | train_loss=0.0805 train_acc=0.9725 test_loss=0.4477 test_acc=0.8662
+Round 475 | selected=[3, 46, 22, 45, 11, 28, 13, 18, 41, 5]
+Round 475 | train_loss=0.0614 train_acc=0.9791 test_loss=0.4302 test_acc=0.8683
+Round 476 | selected=[10, 2, 17, 38, 5, 33, 49, 14, 32, 39]
+Round 476 | train_loss=0.0736 train_acc=0.9742 test_loss=0.4250 test_acc=0.8715
+Round 477 | selected=[40, 41, 9, 8, 5, 6, 19, 7, 32, 18]
+Round 477 | train_loss=0.0680 train_acc=0.9763 test_loss=0.4398 test_acc=0.8655
+Round 478 | selected=[16, 49, 25, 45, 20, 34, 44, 0, 10, 6]
+Round 478 | train_loss=0.0859 train_acc=0.9690 test_loss=0.4336 test_acc=0.8673
+Round 479 | selected=[44, 47, 0, 21, 35, 42, 1, 20, 16, 39]
+Round 479 | train_loss=0.0771 train_acc=0.9720 test_loss=0.5100 test_acc=0.8515
+Round 480 | selected=[37, 6, 40, 41, 12, 31, 21, 20, 49, 14]
+Round 480 | train_loss=0.0681 train_acc=0.9758 test_loss=0.5112 test_acc=0.8524
+Round 481 | selected=[23, 40, 0, 16, 33, 20, 38, 47, 35, 14]
+Round 481 | train_loss=0.0545 train_acc=0.9821 test_loss=0.4623 test_acc=0.8639
+Round 482 | selected=[18, 36, 15, 46, 27, 33, 29, 20, 14, 22]
+Round 482 | train_loss=0.0636 train_acc=0.9768 test_loss=0.5109 test_acc=0.8551
+Round 483 | selected=[49, 10, 16, 8, 44, 37, 17, 21, 1, 47]
+Round 483 | train_loss=0.0888 train_acc=0.9681 test_loss=0.4643 test_acc=0.8636
+Round 484 | selected=[30, 35, 14, 29, 33, 12, 17, 22, 37, 8]
+Round 484 | train_loss=0.0666 train_acc=0.9797 test_loss=0.5000 test_acc=0.8570
+Round 485 | selected=[43, 11, 41, 40, 22, 12, 1, 36, 21, 26]
+Round 485 | train_loss=0.0690 train_acc=0.9772 test_loss=0.5951 test_acc=0.8344
+Round 486 | selected=[12, 48, 49, 40, 26, 27, 8, 33, 35, 10]
+Round 486 | train_loss=0.0749 train_acc=0.9722 test_loss=0.5168 test_acc=0.8568
+Round 487 | selected=[45, 26, 7, 34, 49, 48, 38, 15, 9, 6]
+Round 487 | train_loss=0.0787 train_acc=0.9724 test_loss=0.5223 test_acc=0.8469
+Round 488 | selected=[44, 17, 4, 1, 0, 23, 37, 22, 14, 19]
+Round 488 | train_loss=0.0668 train_acc=0.9755 test_loss=0.5794 test_acc=0.8442
+Round 489 | selected=[49, 38, 10, 13, 5, 14, 27, 25, 42, 41]
+Round 489 | train_loss=0.0678 train_acc=0.9761 test_loss=0.5466 test_acc=0.8447
+Round 490 | selected=[33, 16, 15, 37, 27, 13, 20, 18, 36, 4]
+Round 490 | train_loss=0.0542 train_acc=0.9811 test_loss=0.6570 test_acc=0.8180
+Round 491 | selected=[39, 6, 45, 13, 2, 30, 29, 10, 14, 41]
+Round 491 | train_loss=0.0817 train_acc=0.9706 test_loss=0.5153 test_acc=0.8488
+Round 492 | selected=[28, 23, 44, 31, 45, 9, 32, 14, 30, 36]
+Round 492 | train_loss=0.0763 train_acc=0.9723 test_loss=0.4971 test_acc=0.8609
+Round 493 | selected=[49, 27, 29, 36, 48, 8, 45, 26, 38, 19]
+Round 493 | train_loss=0.0677 train_acc=0.9778 test_loss=0.6137 test_acc=0.8313
+Round 494 | selected=[36, 9, 11, 35, 34, 48, 42, 24, 25, 17]
+Round 494 | train_loss=0.0886 train_acc=0.9692 test_loss=0.5037 test_acc=0.8527
+Round 495 | selected=[7, 16, 35, 0, 12, 30, 21, 48, 45, 14]
+Round 495 | train_loss=0.0679 train_acc=0.9775 test_loss=0.4603 test_acc=0.8666
+Round 496 | selected=[16, 1, 49, 28, 14, 48, 9, 10, 17, 46]
+Round 496 | train_loss=0.0798 train_acc=0.9718 test_loss=0.5708 test_acc=0.8372
+Round 497 | selected=[29, 40, 9, 15, 17, 25, 26, 7, 8, 13]
+Round 497 | train_loss=0.0711 train_acc=0.9746 test_loss=0.5004 test_acc=0.8522
+Round 498 | selected=[44, 4, 18, 36, 22, 28, 42, 9, 39, 35]
+Round 498 | train_loss=0.0640 train_acc=0.9775 test_loss=0.4901 test_acc=0.8575
+Round 499 | selected=[19, 41, 42, 7, 9, 4, 26, 36, 34, 45]
+Round 499 | train_loss=0.0552 train_acc=0.9814 test_loss=0.6111 test_acc=0.8388
+Round 500 | selected=[25, 47, 16, 11, 39, 24, 4, 48, 31, 40]
+Round 500 | train_loss=0.1173 train_acc=0.9606 test_loss=0.4625 test_acc=0.8634
+Saved: /work/nvme/bioh/ashah28/flower_bench/track4/results/production/fedavgm_niid20_50c_10cpr_seed44.partial.csv
+Completed: /work/nvme/bioh/ashah28/flower_bench/track4/results/production/fedavgm_niid20_50c_10cpr_seed44.csv

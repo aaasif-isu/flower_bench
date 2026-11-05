@@ -1,0 +1,1006 @@
+GPU: NVIDIA A100-SXM4-40GB; CUDA_VISIBLE_DEVICES=0
+/sw/rh9.4/user/python/conda-env/pytorch-2.8-cu128/bin/python -u track1/cifar/run_scaffold.py --partition-file track4/partitions/dirichlet_50c_seed43.npz --schedule-file track4/schedules/50c_5cpr_seed43.json --output /work/nvme/bioh/ashah28/flower_bench/track4/results/production/scaffold_niid10_50c_5cpr_seed43.partial.csv --data-dir track1/data --num-clients 50 --rounds 500 --local-epochs 1 --batch-size 64 --lr 0.01 --momentum 0.9 --weight-decay 0.0 --training-seed 43
+Device: cuda
+GPU: NVIDIA A100-SXM4-40GB
+Round 0 | test_loss=2.8588 test_acc=0.1082
+Round 1 | selected=[2, 28, 19, 30, 23]
+Round 1 | train_loss=1.8797 train_acc=0.3884 test_loss=2.4036 test_acc=0.1428 steps=16.0 c_global_norm=0.3571 c_delta_norm=6.9432
+Round 2 | selected=[41, 10, 27, 37, 45]
+Round 2 | train_loss=1.6847 train_acc=0.4618 test_loss=2.9485 test_acc=0.1817 steps=16.0 c_global_norm=0.6862 c_delta_norm=8.6436
+Round 3 | selected=[7, 21, 46, 29, 19]
+Round 3 | train_loss=2.0453 train_acc=0.4158 test_loss=2.9334 test_acc=0.1711 steps=16.0 c_global_norm=1.0099 c_delta_norm=14.3484
+Round 4 | selected=[12, 0, 22, 42, 20]
+Round 4 | train_loss=1.4854 train_acc=0.5046 test_loss=3.6153 test_acc=0.2055 steps=16.0 c_global_norm=1.4814 c_delta_norm=7.9573
+Round 5 | selected=[0, 39, 23, 26, 19]
+Round 5 | train_loss=2.3283 train_acc=0.3878 test_loss=4.1273 test_acc=0.2006 steps=16.0 c_global_norm=2.7465 c_delta_norm=47.8856
+Round 6 | selected=[45, 48, 32, 49, 27]
+Round 6 | train_loss=2.8133 train_acc=0.3306 test_loss=5.9897 test_acc=0.1188 steps=16.0 c_global_norm=3.7561 c_delta_norm=24.9887
+Round 7 | selected=[6, 5, 39, 48, 35]
+Round 7 | train_loss=3.1070 train_acc=0.2720 test_loss=4.0174 test_acc=0.0984 steps=16.0 c_global_norm=4.3796 c_delta_norm=36.2709
+Round 8 | selected=[33, 22, 28, 2, 25]
+Round 8 | train_loss=2.2449 train_acc=0.3988 test_loss=12.1144 test_acc=0.1299 steps=16.0 c_global_norm=6.4573 c_delta_norm=33.8678
+Round 9 | selected=[24, 23, 1, 36, 16]
+Round 9 | train_loss=2.4441 train_acc=0.3442 test_loss=3.9868 test_acc=0.2032 steps=16.0 c_global_norm=9.4245 c_delta_norm=53.7154
+Round 10 | selected=[34, 15, 29, 19, 4]
+Round 10 | train_loss=2.5365 train_acc=0.3370 test_loss=2.4823 test_acc=0.1000 steps=16.0 c_global_norm=6.6025 c_delta_norm=155.9723
+Round 11 | selected=[3, 15, 26, 37, 6]
+Round 11 | train_loss=3.9693 train_acc=0.1958 test_loss=2.9893 test_acc=0.1000 steps=16.0 c_global_norm=10.0272 c_delta_norm=93.7527
+Round 12 | selected=[8, 3, 21, 15, 10]
+Round 12 | train_loss=5.1640 train_acc=0.2056 test_loss=5.8552 test_acc=0.1013 steps=16.0 c_global_norm=16.6022 c_delta_norm=251.1783
+Round 13 | selected=[29, 18, 0, 41, 47]
+Round 13 | train_loss=3.8301 train_acc=0.1770 test_loss=6.7558 test_acc=0.1249 steps=16.0 c_global_norm=19.1035 c_delta_norm=118.7674
+Round 14 | selected=[6, 43, 36, 30, 47]
+Round 14 | train_loss=3.7753 train_acc=0.2044 test_loss=4.1971 test_acc=0.0944 steps=16.0 c_global_norm=19.8801 c_delta_norm=214.0986
+Round 15 | selected=[7, 13, 0, 47, 19]
+Round 15 | train_loss=6.9103 train_acc=0.1596 test_loss=395.6345 test_acc=0.0932 steps=16.0 c_global_norm=90.9047 c_delta_norm=963.6295
+Round 16 | selected=[34, 42, 39, 24, 40]
+Round 16 | train_loss=4.3956 train_acc=0.2776 test_loss=906.5062 test_acc=0.1023 steps=16.0 c_global_norm=120.6784 c_delta_norm=318.4320
+Round 17 | selected=[3, 37, 14, 43, 48]
+Round 17 | train_loss=3.7508 train_acc=0.2788 test_loss=1112.3092 test_acc=0.1120 steps=16.0 c_global_norm=174.2167 c_delta_norm=611.9658
+Round 18 | selected=[20, 31, 32, 44, 38]
+Round 18 | train_loss=3.0427 train_acc=0.3964 test_loss=5326.3596 test_acc=0.1014 steps=16.0 c_global_norm=250.3627 c_delta_norm=762.2284
+Round 19 | selected=[22, 45, 42, 11, 43]
+Round 19 | train_loss=4.4948 train_acc=0.3472 test_loss=663.8573 test_acc=0.1176 steps=16.0 c_global_norm=285.5017 c_delta_norm=1124.4533
+Round 20 | selected=[26, 23, 37, 25, 34]
+Round 20 | train_loss=5.2111 train_acc=0.2916 test_loss=354.1024 test_acc=0.1207 steps=16.0 c_global_norm=325.1463 c_delta_norm=1126.6038
+Round 21 | selected=[13, 17, 43, 40, 11]
+Round 21 | train_loss=28.9931 train_acc=0.1992 test_loss=57.9990 test_acc=0.1001 steps=16.0 c_global_norm=305.4730 c_delta_norm=2741.5697
+Round 22 | selected=[12, 33, 13, 42, 47]
+Round 22 | train_loss=71.3088 train_acc=0.1914 test_loss=40.5880 test_acc=0.1000 steps=16.0 c_global_norm=319.7418 c_delta_norm=3583.4298
+Round 23 | selected=[23, 35, 45, 17, 18]
+Round 23 | train_loss=88.7984 train_acc=0.2724 test_loss=272.6600 test_acc=0.1000 steps=16.0 c_global_norm=239.5192 c_delta_norm=3788.2909
+Round 24 | selected=[10, 26, 35, 12, 18]
+Round 24 | train_loss=144.4502 train_acc=0.3730 test_loss=21181.1487 test_acc=0.1000 steps=16.0 c_global_norm=505.9832 c_delta_norm=5620.6624
+Round 25 | selected=[24, 18, 36, 47, 44]
+Round 25 | train_loss=510.8216 train_acc=0.3162 test_loss=1044.6144 test_acc=0.1000 steps=16.0 c_global_norm=216.6072 c_delta_norm=11944.7888
+Round 26 | selected=[20, 7, 45, 30, 10]
+Round 26 | train_loss=562.3635 train_acc=0.2342 test_loss=429.2029 test_acc=0.1000 steps=16.0 c_global_norm=289.5601 c_delta_norm=6350.4986
+Round 27 | selected=[34, 21, 35, 25, 4]
+Round 27 | train_loss=307.8357 train_acc=0.2396 test_loss=632.6427 test_acc=0.1053 steps=16.0 c_global_norm=839.0274 c_delta_norm=8175.1442
+Round 28 | selected=[37, 20, 1, 32, 8]
+Round 28 | train_loss=489.5162 train_acc=0.2644 test_loss=112552.5841 test_acc=0.1000 steps=16.0 c_global_norm=1552.3038 c_delta_norm=8462.4336
+Round 29 | selected=[8, 42, 4, 24, 12]
+Round 29 | train_loss=751.2139 train_acc=0.1942 test_loss=1267.9215 test_acc=0.1014 steps=16.0 c_global_norm=2208.5128 c_delta_norm=19643.1356
+Round 30 | selected=[21, 38, 2, 44, 31]
+Round 30 | train_loss=718.3529 train_acc=0.2670 test_loss=2260644.3120 test_acc=0.1000 steps=16.0 c_global_norm=3466.4414 c_delta_norm=13157.0624
+Round 31 | selected=[12, 0, 39, 14, 1]
+Round 31 | train_loss=3056.9503 train_acc=0.1822 test_loss=5939.3632 test_acc=0.1000 steps=16.0 c_global_norm=1113.3357 c_delta_norm=41823.8565
+Round 32 | selected=[4, 0, 23, 31, 7]
+Round 32 | train_loss=3338.7136 train_acc=0.1192 test_loss=2892.3268 test_acc=0.1000 steps=16.0 c_global_norm=805.7857 c_delta_norm=31565.5320
+Round 33 | selected=[45, 29, 22, 46, 42]
+Round 33 | train_loss=5517.9061 train_acc=0.3024 test_loss=10840.3221 test_acc=0.1000 steps=16.0 c_global_norm=1504.8971 c_delta_norm=34280.6199
+Round 34 | selected=[31, 7, 36, 42, 45]
+Round 34 | train_loss=46997.9158 train_acc=0.2012 test_loss=35156.7311 test_acc=0.1000 steps=16.0 c_global_norm=2564.0135 c_delta_norm=174014.2009
+Round 35 | selected=[32, 29, 31, 4, 38]
+Round 35 | train_loss=86901.1741 train_acc=0.2282 test_loss=198322.7717 test_acc=0.1000 steps=16.0 c_global_norm=7993.1507 c_delta_norm=132905.6041
+Round 36 | selected=[31, 40, 36, 38, 49]
+Round 36 | train_loss=358447.3016 train_acc=0.1840 test_loss=618599.6635 test_acc=0.1000 steps=16.0 c_global_norm=37992.2015 c_delta_norm=504066.4619
+Round 37 | selected=[19, 36, 0, 8, 46]
+Round 37 | train_loss=396752.0859 train_acc=0.2314 test_loss=67417932.5440 test_acc=0.1000 steps=16.0 c_global_norm=66396.9304 c_delta_norm=295502.4235
+Round 38 | selected=[13, 38, 34, 10, 15]
+Round 38 | train_loss=680079.2863 train_acc=0.2678 test_loss=9786573445.5296 test_acc=0.1000 steps=16.0 c_global_norm=90401.5631 c_delta_norm=264547.0091
+Round 39 | selected=[18, 10, 3, 42, 38]
+Round 39 | train_loss=2626620.1759 train_acc=0.2246 test_loss=5239976.6216 test_acc=0.1120 steps=16.0 c_global_norm=115625.9448 c_delta_norm=846990.4323
+Round 40 | selected=[5, 10, 20, 11, 3]
+Round 40 | train_loss=2835951.7198 train_acc=0.2294 test_loss=7641395.6864 test_acc=0.1000 steps=16.0 c_global_norm=221830.7753 c_delta_norm=1732845.3113
+Round 41 | selected=[0, 8, 31, 47, 19]
+Round 41 | train_loss=22848711.2055 train_acc=0.1964 test_loss=5308665.9392 test_acc=0.1000 steps=16.0 c_global_norm=52607.9647 c_delta_norm=2418283.6248
+Round 42 | selected=[19, 43, 5, 0, 18]
+Round 42 | train_loss=6634003.6304 train_acc=0.2434 test_loss=7571985.3376 test_acc=0.1000 steps=16.0 c_global_norm=53302.0410 c_delta_norm=2281568.6514
+Round 43 | selected=[16, 24, 46, 14, 47]
+Round 43 | train_loss=9872708.0842 train_acc=0.2202 test_loss=16818745.9216 test_acc=0.1000 steps=16.0 c_global_norm=112570.2033 c_delta_norm=1314119.5611
+Round 44 | selected=[36, 48, 41, 40, 27]
+Round 44 | train_loss=13719353.7392 train_acc=0.1998 test_loss=866483216.3840 test_acc=0.0992 steps=16.0 c_global_norm=186784.2420 c_delta_norm=836489.6913
+Round 45 | selected=[33, 38, 36, 2, 41]
+Round 45 | train_loss=33535220.1072 train_acc=0.1590 test_loss=37568870.1120 test_acc=0.1000 steps=16.0 c_global_norm=79625.9078 c_delta_norm=3241097.9474
+Round 46 | selected=[43, 42, 33, 0, 4]
+Round 46 | train_loss=204693496.3648 train_acc=0.1820 test_loss=700950336.9216 test_acc=0.1000 steps=16.0 c_global_norm=575767.6321 c_delta_norm=7564508.7454
+Round 47 | selected=[37, 29, 32, 20, 28]
+Round 47 | train_loss=344833135.3856 train_acc=0.3128 test_loss=24594765869.8752 test_acc=0.1000 steps=16.0 c_global_norm=879381.4881 c_delta_norm=3043315.5140
+Round 48 | selected=[35, 31, 0, 49, 7]
+Round 48 | train_loss=403772334.6624 train_acc=0.2236 test_loss=820914290.0736 test_acc=0.1000 steps=16.0 c_global_norm=1632967.7289 c_delta_norm=29821571.9530
+Round 49 | selected=[12, 31, 29, 21, 3]
+Round 49 | train_loss=2863004912.5376 train_acc=0.2658 test_loss=3821219519.6928 test_acc=0.1000 steps=16.0 c_global_norm=713788.1531 c_delta_norm=39770545.9695
+Round 50 | selected=[24, 6, 39, 1, 40]
+Round 50 | train_loss=2544125293.6704 train_acc=0.1846 test_loss=1605527263.2320 test_acc=0.1000 steps=16.0 c_global_norm=981501.2312 c_delta_norm=2814103.0804
+Round 51 | selected=[0, 41, 17, 3, 10]
+Round 51 | train_loss=40842416037.1712 train_acc=0.1824 test_loss=78359134627.4304 test_acc=0.1000 steps=16.0 c_global_norm=11357138.4554 c_delta_norm=111989353.1943
+Round 52 | selected=[16, 11, 45, 4, 14]
+Round 52 | train_loss=50789150264.5248 train_acc=0.3034 test_loss=10850862962730.5977 test_acc=0.1000 steps=16.0 c_global_norm=16453420.7561 c_delta_norm=50989767.8086
+Round 53 | selected=[17, 13, 16, 14, 12]
+Round 53 | train_loss=59530674559.3856 train_acc=0.2660 test_loss=206731590893.5680 test_acc=0.1000 steps=16.0 c_global_norm=13461480.3364 c_delta_norm=131525557.7989
+Round 54 | selected=[2, 0, 26, 23, 16]
+Round 54 | train_loss=163322058434.1504 train_acc=0.2604 test_loss=40351827977.8304 test_acc=0.1000 steps=16.0 c_global_norm=5897400.6199 c_delta_norm=593052028.9032
+Round 55 | selected=[39, 44, 23, 48, 22]
+Round 55 | train_loss=28545748953.4976 train_acc=0.2666 test_loss=95817331349.9136 test_acc=0.1000 steps=16.0 c_global_norm=13346661.5170 c_delta_norm=88020828.5625
+Round 56 | selected=[0, 16, 9, 2, 3]
+Round 56 | train_loss=13774692429594.6230 train_acc=0.1890 test_loss=7205490980080.8447 test_acc=0.1000 steps=16.0 c_global_norm=60015882.0110 c_delta_norm=2621026479.3804
+Round 57 | selected=[48, 19, 18, 15, 24]
+Round 57 | train_loss=3936436357169.1519 train_acc=0.2752 test_loss=5745059114778.6240 test_acc=0.1000 steps=16.0 c_global_norm=88454212.8725 c_delta_norm=286454798.6077
+Round 58 | selected=[18, 32, 27, 9, 10]
+Round 58 | train_loss=4915743008856.4736 train_acc=0.3402 test_loss=12823102744428.5449 test_acc=0.1000 steps=16.0 c_global_norm=103101200.9838 c_delta_norm=554847592.6739
+Round 59 | selected=[43, 20, 40, 33, 27]
+Round 59 | train_loss=8495505334914.2529 train_acc=0.2782 test_loss=10765915420150.9883 test_acc=0.1022 steps=16.0 c_global_norm=106267294.4939 c_delta_norm=693267727.8471
+Round 60 | selected=[10, 40, 6, 34, 29]
+Round 60 | train_loss=6195444531907.7891 train_acc=0.2936 test_loss=10228828387409.9199 test_acc=0.1000 steps=16.0 c_global_norm=72858382.3181 c_delta_norm=941013517.0776
+Round 61 | selected=[46, 13, 34, 45, 11]
+Round 61 | train_loss=4780064997218.7139 train_acc=0.3060 test_loss=10623922262874.5215 test_acc=0.1000 steps=16.0 c_global_norm=35454582.3557 c_delta_norm=567454708.8203
+Round 62 | selected=[32, 33, 17, 6, 7]
+Round 62 | train_loss=5179835725486.4893 train_acc=0.2332 test_loss=4621456864863.8467 test_acc=0.1000 steps=16.0 c_global_norm=98994866.2924 c_delta_norm=1399589202.4653
+Round 63 | selected=[13, 38, 17, 18, 14]
+Round 63 | train_loss=21529933875930.7266 train_acc=0.1576 test_loss=4177791978097.8687 test_acc=0.1000 steps=16.0 c_global_norm=35727153.8370 c_delta_norm=1099870917.9262
+Round 64 | selected=[17, 36, 16, 4, 48]
+Round 64 | train_loss=15718694710149.1191 train_acc=0.1776 test_loss=111545509519504.1719 test_acc=0.1000 steps=16.0 c_global_norm=261022099.9889 c_delta_norm=4280238738.2155
+Round 65 | selected=[43, 33, 1, 44, 5]
+Round 65 | train_loss=122940996924211.2031 train_acc=0.2570 test_loss=175684240546358.8750 test_acc=0.1000 steps=16.0 c_global_norm=524372807.4795 c_delta_norm=3280790522.5894
+Round 66 | selected=[24, 2, 40, 32, 47]
+Round 66 | train_loss=126016303734456.3125 train_acc=0.3074 test_loss=216855008133122304.0000 test_acc=0.1000 steps=16.0 c_global_norm=1080420304.8392 c_delta_norm=5671945578.5053
+Round 67 | selected=[13, 18, 43, 16, 33]
+Round 67 | train_loss=448621952358993.1250 train_acc=0.2534 test_loss=501657929416022.4375 test_acc=0.1000 steps=16.0 c_global_norm=1184374440.3248 c_delta_norm=29532448267.7136
+Round 68 | selected=[47, 21, 11, 39, 38]
+Round 68 | train_loss=280424149423017.1562 train_acc=0.2140 test_loss=5852913729113214.0000 test_acc=0.0939 steps=16.0 c_global_norm=1913525314.6502 c_delta_norm=7317019308.0977
+Round 69 | selected=[19, 28, 5, 8, 25]
+Round 69 | train_loss=161904945595521.4375 train_acc=0.3292 test_loss=45966953894842802176.0000 test_acc=0.1000 steps=16.0 c_global_norm=2906911388.9198 c_delta_norm=9950371601.0254
+Round 70 | selected=[42, 25, 0, 48, 43]
+Round 70 | train_loss=394089421354932.6250 train_acc=0.2596 test_loss=188247769218721344.0000 test_acc=0.0965 steps=16.0 c_global_norm=4756877401.1051 c_delta_norm=32374373879.9192
+Round 71 | selected=[29, 30, 12, 38, 27]
+Round 71 | train_loss=1128491543259250.7500 train_acc=0.3280 test_loss=43581836026897719296.0000 test_acc=0.1000 steps=16.0 c_global_norm=6436327714.8961 c_delta_norm=17017442106.0955
+Round 72 | selected=[43, 7, 41, 37, 4]
+Round 72 | train_loss=11189329629535220.0000 train_acc=0.3260 test_loss=10387326845152604.0000 test_acc=0.1000 steps=16.0 c_global_norm=3900672644.3602 c_delta_norm=73285307346.0042
+Round 73 | selected=[42, 6, 20, 18, 48]
+Round 73 | train_loss=7031329325506468.0000 train_acc=0.2678 test_loss=10040667874781036.0000 test_acc=0.1000 steps=16.0 c_global_norm=2725830342.2443 c_delta_norm=26193944453.8782
+Round 74 | selected=[5, 0, 38, 31, 23]
+Round 74 | train_loss=14517415241633392.0000 train_acc=0.2098 test_loss=46576481257860264.0000 test_acc=0.1000 steps=16.0 c_global_norm=3833207842.4942 c_delta_norm=67328896231.8054
+Round 75 | selected=[9, 12, 21, 4, 15]
+Round 75 | train_loss=36571262377552088.0000 train_acc=0.2384 test_loss=5078270812789332992.0000 test_acc=0.1158 steps=16.0 c_global_norm=10853716467.9172 c_delta_norm=72976789925.9621
+Round 76 | selected=[24, 16, 1, 29, 48]
+Round 76 | train_loss=47331980257646136.0000 train_acc=0.3424 test_loss=9183490451696233472.0000 test_acc=0.1000 steps=16.0 c_global_norm=23327286002.8247 c_delta_norm=137673532393.2175
+Round 77 | selected=[13, 18, 29, 0, 39]
+Round 77 | train_loss=188995095040053856.0000 train_acc=0.2614 test_loss=62018364190353048.0000 test_acc=0.1000 steps=16.0 c_global_norm=5545613913.7634 c_delta_norm=364311184169.3507
+Round 78 | selected=[33, 8, 28, 19, 43]
+Round 78 | train_loss=62670835009554320.0000 train_acc=0.2662 test_loss=65113576923052216.0000 test_acc=0.1000 steps=16.0 c_global_norm=21235412725.4440 c_delta_norm=275938398120.7172
+Round 79 | selected=[20, 32, 15, 13, 21]
+Round 79 | train_loss=46705593841703344.0000 train_acc=0.2714 test_loss=10858845146374187008.0000 test_acc=0.1000 steps=16.0 c_global_norm=43173714153.0187 c_delta_norm=227029334026.7669
+Round 80 | selected=[10, 49, 36, 18, 8]
+Round 80 | train_loss=106479797187074272.0000 train_acc=0.2920 test_loss=148736076186811891712.0000 test_acc=0.1000 steps=16.0 c_global_norm=65660408469.3588 c_delta_norm=237663674367.1420
+Round 81 | selected=[47, 2, 32, 43, 16]
+Round 81 | train_loss=nan train_acc=0.2692 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 82 | selected=[33, 39, 18, 22, 41]
+Round 82 | train_loss=nan train_acc=0.1054 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 83 | selected=[49, 29, 39, 26, 36]
+Round 83 | train_loss=nan train_acc=0.1076 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 84 | selected=[48, 0, 13, 29, 34]
+Round 84 | train_loss=nan train_acc=0.1014 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 85 | selected=[7, 14, 36, 31, 8]
+Round 85 | train_loss=nan train_acc=0.1154 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 86 | selected=[15, 36, 20, 44, 39]
+Round 86 | train_loss=nan train_acc=0.0870 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 87 | selected=[7, 10, 36, 41, 28]
+Round 87 | train_loss=nan train_acc=0.0084 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 88 | selected=[14, 42, 47, 10, 49]
+Round 88 | train_loss=nan train_acc=0.0578 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 89 | selected=[12, 47, 31, 43, 29]
+Round 89 | train_loss=nan train_acc=0.0258 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 90 | selected=[41, 19, 35, 44, 38]
+Round 90 | train_loss=nan train_acc=0.1046 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 91 | selected=[43, 9, 1, 15, 40]
+Round 91 | train_loss=nan train_acc=0.1132 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 92 | selected=[18, 30, 1, 19, 21]
+Round 92 | train_loss=nan train_acc=0.0550 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 93 | selected=[48, 0, 13, 49, 39]
+Round 93 | train_loss=nan train_acc=0.1290 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 94 | selected=[43, 16, 36, 5, 6]
+Round 94 | train_loss=nan train_acc=0.0916 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 95 | selected=[29, 14, 42, 46, 7]
+Round 95 | train_loss=nan train_acc=0.0406 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 96 | selected=[6, 2, 10, 32, 48]
+Round 96 | train_loss=nan train_acc=0.1166 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 97 | selected=[47, 24, 21, 35, 23]
+Round 97 | train_loss=nan train_acc=0.1090 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 98 | selected=[25, 0, 16, 35, 46]
+Round 98 | train_loss=nan train_acc=0.1726 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 99 | selected=[6, 24, 9, 36, 33]
+Round 99 | train_loss=nan train_acc=0.0860 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 100 | selected=[11, 4, 36, 24, 27]
+Round 100 | train_loss=nan train_acc=0.0770 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 101 | selected=[11, 39, 3, 6, 19]
+Round 101 | train_loss=nan train_acc=0.0470 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 102 | selected=[41, 36, 9, 12, 11]
+Round 102 | train_loss=nan train_acc=0.0460 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 103 | selected=[47, 14, 43, 21, 45]
+Round 103 | train_loss=nan train_acc=0.1712 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 104 | selected=[5, 9, 30, 3, 49]
+Round 104 | train_loss=nan train_acc=0.0634 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 105 | selected=[33, 20, 44, 15, 8]
+Round 105 | train_loss=nan train_acc=0.1652 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 106 | selected=[5, 25, 22, 16, 14]
+Round 106 | train_loss=nan train_acc=0.1102 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 107 | selected=[1, 20, 14, 3, 38]
+Round 107 | train_loss=nan train_acc=0.0472 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 108 | selected=[47, 3, 19, 12, 48]
+Round 108 | train_loss=nan train_acc=0.0748 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 109 | selected=[8, 24, 31, 9, 13]
+Round 109 | train_loss=nan train_acc=0.1432 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 110 | selected=[1, 49, 36, 30, 29]
+Round 110 | train_loss=nan train_acc=0.0456 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 111 | selected=[5, 41, 38, 9, 30]
+Round 111 | train_loss=nan train_acc=0.0512 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 112 | selected=[25, 35, 12, 7, 22]
+Round 112 | train_loss=nan train_acc=0.0924 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 113 | selected=[26, 46, 32, 10, 22]
+Round 113 | train_loss=nan train_acc=0.0746 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 114 | selected=[36, 48, 7, 45, 46]
+Round 114 | train_loss=nan train_acc=0.1934 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 115 | selected=[17, 12, 33, 46, 40]
+Round 115 | train_loss=nan train_acc=0.0498 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 116 | selected=[21, 37, 9, 45, 38]
+Round 116 | train_loss=nan train_acc=0.2108 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 117 | selected=[21, 9, 34, 35, 38]
+Round 117 | train_loss=nan train_acc=0.1430 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 118 | selected=[22, 37, 40, 12, 13]
+Round 118 | train_loss=nan train_acc=0.0668 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 119 | selected=[26, 47, 43, 13, 5]
+Round 119 | train_loss=nan train_acc=0.0710 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 120 | selected=[8, 34, 48, 46, 12]
+Round 120 | train_loss=nan train_acc=0.1518 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 121 | selected=[45, 48, 12, 40, 19]
+Round 121 | train_loss=nan train_acc=0.2100 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 122 | selected=[34, 38, 39, 10, 12]
+Round 122 | train_loss=nan train_acc=0.0482 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 123 | selected=[10, 2, 4, 36, 3]
+Round 123 | train_loss=nan train_acc=0.0490 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 124 | selected=[29, 44, 31, 30, 27]
+Round 124 | train_loss=nan train_acc=0.0606 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 125 | selected=[8, 17, 32, 45, 26]
+Round 125 | train_loss=nan train_acc=0.2908 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 126 | selected=[24, 32, 29, 7, 13]
+Round 126 | train_loss=nan train_acc=0.0656 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 127 | selected=[43, 26, 11, 40, 2]
+Round 127 | train_loss=nan train_acc=0.0770 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 128 | selected=[12, 31, 5, 13, 44]
+Round 128 | train_loss=nan train_acc=0.0246 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 129 | selected=[4, 0, 20, 40, 7]
+Round 129 | train_loss=nan train_acc=0.0502 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 130 | selected=[26, 32, 6, 20, 37]
+Round 130 | train_loss=nan train_acc=0.1166 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 131 | selected=[41, 42, 38, 30, 45]
+Round 131 | train_loss=nan train_acc=0.1410 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 132 | selected=[28, 18, 4, 24, 29]
+Round 132 | train_loss=nan train_acc=0.0876 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 133 | selected=[28, 34, 3, 20, 5]
+Round 133 | train_loss=nan train_acc=0.0176 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 134 | selected=[7, 19, 30, 10, 38]
+Round 134 | train_loss=nan train_acc=0.0098 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 135 | selected=[43, 10, 13, 16, 33]
+Round 135 | train_loss=nan train_acc=0.1208 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 136 | selected=[39, 49, 20, 21, 12]
+Round 136 | train_loss=nan train_acc=0.0512 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 137 | selected=[39, 36, 16, 2, 21]
+Round 137 | train_loss=nan train_acc=0.1268 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 138 | selected=[49, 33, 14, 40, 16]
+Round 138 | train_loss=nan train_acc=0.1682 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 139 | selected=[49, 36, 46, 43, 47]
+Round 139 | train_loss=nan train_acc=0.0340 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 140 | selected=[47, 35, 44, 9, 49]
+Round 140 | train_loss=nan train_acc=0.1616 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 141 | selected=[43, 34, 30, 49, 7]
+Round 141 | train_loss=nan train_acc=0.0290 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 142 | selected=[19, 18, 2, 21, 32]
+Round 142 | train_loss=nan train_acc=0.0928 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 143 | selected=[46, 44, 13, 15, 19]
+Round 143 | train_loss=nan train_acc=0.0684 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 144 | selected=[37, 32, 3, 7, 27]
+Round 144 | train_loss=nan train_acc=0.1096 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 145 | selected=[9, 18, 22, 30, 14]
+Round 145 | train_loss=nan train_acc=0.1080 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 146 | selected=[3, 45, 37, 21, 43]
+Round 146 | train_loss=nan train_acc=0.1692 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 147 | selected=[23, 43, 12, 2, 29]
+Round 147 | train_loss=nan train_acc=0.0338 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 148 | selected=[45, 17, 38, 36, 9]
+Round 148 | train_loss=nan train_acc=0.1822 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 149 | selected=[2, 7, 19, 4, 29]
+Round 149 | train_loss=nan train_acc=0.0572 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 150 | selected=[5, 0, 34, 6, 35]
+Round 150 | train_loss=nan train_acc=0.1148 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 151 | selected=[40, 31, 21, 34, 46]
+Round 151 | train_loss=nan train_acc=0.0290 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 152 | selected=[12, 10, 38, 23, 18]
+Round 152 | train_loss=nan train_acc=0.0528 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 153 | selected=[18, 6, 32, 36, 46]
+Round 153 | train_loss=nan train_acc=0.0866 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 154 | selected=[48, 49, 8, 18, 25]
+Round 154 | train_loss=nan train_acc=0.2066 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 155 | selected=[33, 32, 7, 14, 31]
+Round 155 | train_loss=nan train_acc=0.0902 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 156 | selected=[21, 8, 34, 7, 14]
+Round 156 | train_loss=nan train_acc=0.1212 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 157 | selected=[33, 34, 16, 31, 13]
+Round 157 | train_loss=nan train_acc=0.1296 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 158 | selected=[0, 30, 3, 12, 22]
+Round 158 | train_loss=nan train_acc=0.0092 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 159 | selected=[44, 16, 24, 10, 29]
+Round 159 | train_loss=nan train_acc=0.0996 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 160 | selected=[1, 24, 16, 25, 44]
+Round 160 | train_loss=nan train_acc=0.1006 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 161 | selected=[14, 23, 37, 45, 3]
+Round 161 | train_loss=nan train_acc=0.1990 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 162 | selected=[1, 23, 16, 39, 41]
+Round 162 | train_loss=nan train_acc=0.1234 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 163 | selected=[36, 33, 41, 39, 0]
+Round 163 | train_loss=nan train_acc=0.0728 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 164 | selected=[2, 40, 48, 45, 39]
+Round 164 | train_loss=nan train_acc=0.2552 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 165 | selected=[29, 28, 43, 42, 46]
+Round 165 | train_loss=nan train_acc=0.0160 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 166 | selected=[32, 34, 3, 14, 18]
+Round 166 | train_loss=nan train_acc=0.1134 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 167 | selected=[4, 14, 29, 36, 44]
+Round 167 | train_loss=nan train_acc=0.0758 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 168 | selected=[13, 16, 30, 23, 41]
+Round 168 | train_loss=nan train_acc=0.0968 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 169 | selected=[44, 46, 35, 13, 28]
+Round 169 | train_loss=nan train_acc=0.1100 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 170 | selected=[40, 21, 27, 8, 19]
+Round 170 | train_loss=nan train_acc=0.1454 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 171 | selected=[20, 24, 27, 33, 6]
+Round 171 | train_loss=nan train_acc=0.0848 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 172 | selected=[17, 12, 35, 38, 9]
+Round 172 | train_loss=nan train_acc=0.1350 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 173 | selected=[27, 2, 16, 4, 48]
+Round 173 | train_loss=nan train_acc=0.2162 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 174 | selected=[16, 17, 48, 39, 11]
+Round 174 | train_loss=nan train_acc=0.1688 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 175 | selected=[16, 12, 39, 31, 10]
+Round 175 | train_loss=nan train_acc=0.1080 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 176 | selected=[39, 46, 26, 38, 45]
+Round 176 | train_loss=nan train_acc=0.2104 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 177 | selected=[0, 5, 21, 17, 7]
+Round 177 | train_loss=nan train_acc=0.0118 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 178 | selected=[33, 38, 31, 23, 7]
+Round 178 | train_loss=nan train_acc=0.0412 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 179 | selected=[3, 19, 16, 35, 14]
+Round 179 | train_loss=nan train_acc=0.1948 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 180 | selected=[19, 43, 3, 5, 41]
+Round 180 | train_loss=nan train_acc=0.0114 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 181 | selected=[27, 34, 23, 26, 28]
+Round 181 | train_loss=nan train_acc=0.0970 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 182 | selected=[16, 44, 2, 14, 32]
+Round 182 | train_loss=nan train_acc=0.1564 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 183 | selected=[31, 36, 22, 49, 9]
+Round 183 | train_loss=nan train_acc=0.0618 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 184 | selected=[30, 7, 49, 15, 46]
+Round 184 | train_loss=nan train_acc=0.0644 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 185 | selected=[33, 46, 44, 36, 39]
+Round 185 | train_loss=nan train_acc=0.0706 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 186 | selected=[10, 2, 15, 1, 20]
+Round 186 | train_loss=nan train_acc=0.0726 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 187 | selected=[1, 47, 2, 19, 49]
+Round 187 | train_loss=nan train_acc=0.0578 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 188 | selected=[22, 34, 20, 36, 15]
+Round 188 | train_loss=nan train_acc=0.0594 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 189 | selected=[49, 36, 6, 41, 30]
+Round 189 | train_loss=nan train_acc=0.0338 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 190 | selected=[16, 9, 23, 24, 4]
+Round 190 | train_loss=nan train_acc=0.1492 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 191 | selected=[7, 10, 0, 41, 12]
+Round 191 | train_loss=nan train_acc=0.0086 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 192 | selected=[31, 7, 20, 13, 16]
+Round 192 | train_loss=nan train_acc=0.0910 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 193 | selected=[1, 46, 15, 19, 22]
+Round 193 | train_loss=nan train_acc=0.0584 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 194 | selected=[34, 26, 48, 47, 40]
+Round 194 | train_loss=nan train_acc=0.1382 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 195 | selected=[42, 16, 18, 41, 49]
+Round 195 | train_loss=nan train_acc=0.1376 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 196 | selected=[4, 30, 42, 18, 12]
+Round 196 | train_loss=nan train_acc=0.0684 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 197 | selected=[38, 33, 40, 12, 1]
+Round 197 | train_loss=nan train_acc=0.0644 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 198 | selected=[35, 36, 18, 28, 34]
+Round 198 | train_loss=nan train_acc=0.1438 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 199 | selected=[16, 46, 39, 1, 43]
+Round 199 | train_loss=nan train_acc=0.1176 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 200 | selected=[6, 13, 41, 48, 40]
+Round 200 | train_loss=nan train_acc=0.1028 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 201 | selected=[11, 45, 14, 44, 6]
+Round 201 | train_loss=nan train_acc=0.1746 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 202 | selected=[27, 44, 40, 45, 1]
+Round 202 | train_loss=nan train_acc=0.2058 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 203 | selected=[25, 4, 2, 36, 21]
+Round 203 | train_loss=nan train_acc=0.0508 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 204 | selected=[5, 1, 30, 4, 0]
+Round 204 | train_loss=nan train_acc=0.0456 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 205 | selected=[2, 5, 38, 24, 36]
+Round 205 | train_loss=nan train_acc=0.0344 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 206 | selected=[40, 24, 20, 0, 31]
+Round 206 | train_loss=nan train_acc=0.0300 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 207 | selected=[24, 32, 13, 27, 8]
+Round 207 | train_loss=nan train_acc=0.1770 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 208 | selected=[42, 33, 27, 14, 36]
+Round 208 | train_loss=nan train_acc=0.1014 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 209 | selected=[20, 14, 47, 0, 8]
+Round 209 | train_loss=nan train_acc=0.1282 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 210 | selected=[15, 38, 5, 20, 40]
+Round 210 | train_loss=nan train_acc=0.0738 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 211 | selected=[44, 35, 40, 28, 22]
+Round 211 | train_loss=nan train_acc=0.1136 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 212 | selected=[37, 35, 44, 17, 34]
+Round 212 | train_loss=nan train_acc=0.1386 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 213 | selected=[46, 49, 34, 5, 21]
+Round 213 | train_loss=nan train_acc=0.0318 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 214 | selected=[44, 48, 0, 49, 30]
+Round 214 | train_loss=nan train_acc=0.0888 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 215 | selected=[1, 26, 28, 48, 17]
+Round 215 | train_loss=nan train_acc=0.1138 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 216 | selected=[15, 11, 19, 33, 30]
+Round 216 | train_loss=nan train_acc=0.0792 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 217 | selected=[6, 32, 29, 42, 5]
+Round 217 | train_loss=nan train_acc=0.0582 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 218 | selected=[30, 45, 42, 15, 49]
+Round 218 | train_loss=nan train_acc=0.1960 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 219 | selected=[22, 28, 32, 16, 13]
+Round 219 | train_loss=nan train_acc=0.1246 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 220 | selected=[26, 32, 36, 19, 24]
+Round 220 | train_loss=nan train_acc=0.0846 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 221 | selected=[20, 7, 2, 26, 48]
+Round 221 | train_loss=nan train_acc=0.1158 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 222 | selected=[3, 6, 7, 4, 46]
+Round 222 | train_loss=nan train_acc=0.0380 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 223 | selected=[10, 8, 24, 20, 5]
+Round 223 | train_loss=nan train_acc=0.0932 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 224 | selected=[38, 15, 46, 1, 41]
+Round 224 | train_loss=nan train_acc=0.0648 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 225 | selected=[16, 8, 35, 21, 42]
+Round 225 | train_loss=nan train_acc=0.2476 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 226 | selected=[2, 48, 38, 19, 44]
+Round 226 | train_loss=nan train_acc=0.0890 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 227 | selected=[32, 29, 10, 39, 26]
+Round 227 | train_loss=nan train_acc=0.1188 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 228 | selected=[30, 10, 25, 4, 0]
+Round 228 | train_loss=nan train_acc=0.0372 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 229 | selected=[48, 17, 42, 44, 11]
+Round 229 | train_loss=nan train_acc=0.0684 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 230 | selected=[21, 1, 0, 22, 45]
+Round 230 | train_loss=nan train_acc=0.1482 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 231 | selected=[42, 26, 12, 47, 35]
+Round 231 | train_loss=nan train_acc=0.1402 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 232 | selected=[4, 20, 41, 10, 35]
+Round 232 | train_loss=nan train_acc=0.1172 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 233 | selected=[8, 25, 32, 42, 31]
+Round 233 | train_loss=nan train_acc=0.1220 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 234 | selected=[1, 46, 13, 14, 36]
+Round 234 | train_loss=nan train_acc=0.0558 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 235 | selected=[31, 26, 9, 46, 1]
+Round 235 | train_loss=nan train_acc=0.0906 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 236 | selected=[49, 44, 33, 27, 28]
+Round 236 | train_loss=nan train_acc=0.0962 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 237 | selected=[22, 47, 21, 24, 13]
+Round 237 | train_loss=nan train_acc=0.0324 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 238 | selected=[7, 12, 6, 5, 16]
+Round 238 | train_loss=nan train_acc=0.0872 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 239 | selected=[3, 0, 19, 45, 25]
+Round 239 | train_loss=nan train_acc=0.1462 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 240 | selected=[27, 10, 36, 1, 3]
+Round 240 | train_loss=nan train_acc=0.0578 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 241 | selected=[33, 26, 3, 6, 1]
+Round 241 | train_loss=nan train_acc=0.0926 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 242 | selected=[32, 1, 33, 43, 12]
+Round 242 | train_loss=nan train_acc=0.0732 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 243 | selected=[33, 12, 13, 24, 31]
+Round 243 | train_loss=nan train_acc=0.0504 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 244 | selected=[39, 34, 36, 1, 43]
+Round 244 | train_loss=nan train_acc=0.0556 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 245 | selected=[42, 8, 3, 28, 44]
+Round 245 | train_loss=nan train_acc=0.0946 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 246 | selected=[39, 46, 5, 16, 11]
+Round 246 | train_loss=nan train_acc=0.1112 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 247 | selected=[1, 49, 15, 2, 22]
+Round 247 | train_loss=nan train_acc=0.0904 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 248 | selected=[20, 30, 40, 15, 44]
+Round 248 | train_loss=nan train_acc=0.0702 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 249 | selected=[26, 35, 4, 19, 36]
+Round 249 | train_loss=nan train_acc=0.1606 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 250 | selected=[48, 1, 35, 7, 45]
+Round 250 | train_loss=nan train_acc=0.2876 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 251 | selected=[38, 29, 10, 27, 21]
+Round 251 | train_loss=nan train_acc=0.0616 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 252 | selected=[10, 26, 33, 34, 8]
+Round 252 | train_loss=nan train_acc=0.1644 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 253 | selected=[33, 19, 35, 44, 1]
+Round 253 | train_loss=nan train_acc=0.1354 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 254 | selected=[1, 0, 13, 47, 38]
+Round 254 | train_loss=nan train_acc=0.0484 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 255 | selected=[24, 48, 19, 45, 38]
+Round 255 | train_loss=nan train_acc=0.2038 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 256 | selected=[45, 34, 31, 15, 32]
+Round 256 | train_loss=nan train_acc=0.2196 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 257 | selected=[36, 43, 6, 48, 28]
+Round 257 | train_loss=nan train_acc=0.0738 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 258 | selected=[25, 7, 23, 6, 36]
+Round 258 | train_loss=nan train_acc=0.0212 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 259 | selected=[32, 27, 31, 3, 48]
+Round 259 | train_loss=nan train_acc=0.1354 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 260 | selected=[42, 12, 43, 37, 31]
+Round 260 | train_loss=nan train_acc=0.0356 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 261 | selected=[30, 1, 26, 37, 11]
+Round 261 | train_loss=nan train_acc=0.0866 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 262 | selected=[24, 25, 9, 44, 41]
+Round 262 | train_loss=nan train_acc=0.0564 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 263 | selected=[28, 45, 40, 30, 19]
+Round 263 | train_loss=nan train_acc=0.1536 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 264 | selected=[43, 16, 25, 5, 42]
+Round 264 | train_loss=nan train_acc=0.0838 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 265 | selected=[2, 16, 19, 0, 3]
+Round 265 | train_loss=nan train_acc=0.1014 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 266 | selected=[28, 9, 21, 27, 5]
+Round 266 | train_loss=nan train_acc=0.0850 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 267 | selected=[44, 29, 23, 17, 7]
+Round 267 | train_loss=nan train_acc=0.0252 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 268 | selected=[42, 35, 7, 22, 2]
+Round 268 | train_loss=nan train_acc=0.1042 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 269 | selected=[18, 43, 20, 25, 49]
+Round 269 | train_loss=nan train_acc=0.0654 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 270 | selected=[18, 46, 45, 32, 31]
+Round 270 | train_loss=nan train_acc=0.2060 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 271 | selected=[8, 23, 12, 31, 2]
+Round 271 | train_loss=nan train_acc=0.1046 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 272 | selected=[40, 9, 41, 26, 36]
+Round 272 | train_loss=nan train_acc=0.1036 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 273 | selected=[6, 49, 11, 3, 26]
+Round 273 | train_loss=nan train_acc=0.0726 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 274 | selected=[8, 29, 25, 14, 7]
+Round 274 | train_loss=nan train_acc=0.1284 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 275 | selected=[26, 5, 2, 27, 36]
+Round 275 | train_loss=nan train_acc=0.1042 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 276 | selected=[16, 1, 18, 10, 36]
+Round 276 | train_loss=nan train_acc=0.1308 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 277 | selected=[5, 14, 16, 2, 3]
+Round 277 | train_loss=nan train_acc=0.1240 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 278 | selected=[9, 20, 19, 28, 39]
+Round 278 | train_loss=nan train_acc=0.0746 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 279 | selected=[4, 12, 26, 35, 28]
+Round 279 | train_loss=nan train_acc=0.1566 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 280 | selected=[44, 10, 15, 8, 2]
+Round 280 | train_loss=nan train_acc=0.1516 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 281 | selected=[44, 38, 8, 29, 16]
+Round 281 | train_loss=nan train_acc=0.1842 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 282 | selected=[39, 20, 33, 28, 0]
+Round 282 | train_loss=nan train_acc=0.0690 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 283 | selected=[20, 5, 27, 1, 39]
+Round 283 | train_loss=nan train_acc=0.0860 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 284 | selected=[14, 30, 48, 36, 42]
+Round 284 | train_loss=nan train_acc=0.0902 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 285 | selected=[34, 42, 20, 31, 32]
+Round 285 | train_loss=nan train_acc=0.0436 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 286 | selected=[5, 3, 27, 21, 47]
+Round 286 | train_loss=nan train_acc=0.0586 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 287 | selected=[1, 19, 11, 35, 18]
+Round 287 | train_loss=nan train_acc=0.1428 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 288 | selected=[47, 8, 13, 1, 31]
+Round 288 | train_loss=nan train_acc=0.1208 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 289 | selected=[7, 43, 25, 45, 18]
+Round 289 | train_loss=nan train_acc=0.1778 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 290 | selected=[24, 9, 34, 1, 49]
+Round 290 | train_loss=nan train_acc=0.0818 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 291 | selected=[47, 40, 34, 21, 10]
+Round 291 | train_loss=nan train_acc=0.0400 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 292 | selected=[35, 47, 39, 49, 17]
+Round 292 | train_loss=nan train_acc=0.1510 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 293 | selected=[7, 40, 36, 38, 17]
+Round 293 | train_loss=nan train_acc=0.0304 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 294 | selected=[11, 16, 43, 8, 0]
+Round 294 | train_loss=nan train_acc=0.1666 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 295 | selected=[40, 4, 12, 46, 26]
+Round 295 | train_loss=nan train_acc=0.0852 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 296 | selected=[8, 24, 45, 49, 42]
+Round 296 | train_loss=nan train_acc=0.2390 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 297 | selected=[21, 43, 38, 11, 44]
+Round 297 | train_loss=nan train_acc=0.0154 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 298 | selected=[36, 1, 37, 19, 34]
+Round 298 | train_loss=nan train_acc=0.0590 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 299 | selected=[27, 24, 3, 12, 5]
+Round 299 | train_loss=nan train_acc=0.0518 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 300 | selected=[13, 18, 46, 43, 14]
+Round 300 | train_loss=nan train_acc=0.0842 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 301 | selected=[25, 7, 49, 4, 27]
+Round 301 | train_loss=nan train_acc=0.0896 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 302 | selected=[34, 31, 35, 5, 25]
+Round 302 | train_loss=nan train_acc=0.1054 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 303 | selected=[30, 49, 13, 27, 12]
+Round 303 | train_loss=nan train_acc=0.0742 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 304 | selected=[12, 25, 5, 44, 48]
+Round 304 | train_loss=nan train_acc=0.0720 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 305 | selected=[0, 49, 42, 33, 10]
+Round 305 | train_loss=nan train_acc=0.0546 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 306 | selected=[21, 47, 5, 16, 4]
+Round 306 | train_loss=nan train_acc=0.1164 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 307 | selected=[44, 10, 7, 22, 9]
+Round 307 | train_loss=nan train_acc=0.0454 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 308 | selected=[49, 7, 11, 37, 2]
+Round 308 | train_loss=nan train_acc=0.0692 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 309 | selected=[22, 16, 31, 15, 34]
+Round 309 | train_loss=nan train_acc=0.1312 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 310 | selected=[30, 42, 15, 36, 29]
+Round 310 | train_loss=nan train_acc=0.0630 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 311 | selected=[31, 7, 24, 6, 9]
+Round 311 | train_loss=nan train_acc=0.0536 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 312 | selected=[11, 12, 32, 1, 10]
+Round 312 | train_loss=nan train_acc=0.0448 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 313 | selected=[41, 34, 33, 19, 49]
+Round 313 | train_loss=nan train_acc=0.0620 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 314 | selected=[14, 38, 15, 18, 34]
+Round 314 | train_loss=nan train_acc=0.1302 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 315 | selected=[19, 28, 23, 21, 13]
+Round 315 | train_loss=nan train_acc=0.0238 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 316 | selected=[8, 10, 4, 36, 9]
+Round 316 | train_loss=nan train_acc=0.1528 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 317 | selected=[32, 43, 37, 42, 11]
+Round 317 | train_loss=nan train_acc=0.0688 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 318 | selected=[8, 42, 32, 43, 10]
+Round 318 | train_loss=nan train_acc=0.1182 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 319 | selected=[49, 32, 18, 41, 7]
+Round 319 | train_loss=nan train_acc=0.0948 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 320 | selected=[3, 30, 17, 40, 21]
+Round 320 | train_loss=nan train_acc=0.0242 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 321 | selected=[17, 16, 32, 37, 33]
+Round 321 | train_loss=nan train_acc=0.1730 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 322 | selected=[4, 12, 42, 30, 16]
+Round 322 | train_loss=nan train_acc=0.1020 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 323 | selected=[18, 25, 21, 24, 31]
+Round 323 | train_loss=nan train_acc=0.0526 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 324 | selected=[16, 7, 19, 47, 29]
+Round 324 | train_loss=nan train_acc=0.1014 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 325 | selected=[36, 17, 29, 35, 45]
+Round 325 | train_loss=nan train_acc=0.2376 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 326 | selected=[38, 33, 49, 19, 44]
+Round 326 | train_loss=nan train_acc=0.0626 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 327 | selected=[33, 26, 37, 8, 1]
+Round 327 | train_loss=nan train_acc=0.1982 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 328 | selected=[48, 4, 12, 46, 26]
+Round 328 | train_loss=nan train_acc=0.1258 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 329 | selected=[7, 19, 1, 35, 11]
+Round 329 | train_loss=nan train_acc=0.1014 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 330 | selected=[49, 4, 30, 16, 37]
+Round 330 | train_loss=nan train_acc=0.1536 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 331 | selected=[28, 47, 1, 38, 37]
+Round 331 | train_loss=nan train_acc=0.0634 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 332 | selected=[47, 4, 33, 25, 45]
+Round 332 | train_loss=nan train_acc=0.2026 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 333 | selected=[37, 3, 27, 49, 12]
+Round 333 | train_loss=nan train_acc=0.0954 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 334 | selected=[14, 13, 32, 33, 25]
+Round 334 | train_loss=nan train_acc=0.1086 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 335 | selected=[22, 18, 42, 16, 46]
+Round 335 | train_loss=nan train_acc=0.1172 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 336 | selected=[9, 30, 4, 47, 35]
+Round 336 | train_loss=nan train_acc=0.1640 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 337 | selected=[6, 34, 33, 25, 35]
+Round 337 | train_loss=nan train_acc=0.1400 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 338 | selected=[29, 31, 41, 22, 23]
+Round 338 | train_loss=nan train_acc=0.0208 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 339 | selected=[29, 22, 5, 6, 37]
+Round 339 | train_loss=nan train_acc=0.0592 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 340 | selected=[49, 42, 8, 14, 33]
+Round 340 | train_loss=nan train_acc=0.1594 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 341 | selected=[44, 37, 10, 15, 20]
+Round 341 | train_loss=nan train_acc=0.0860 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 342 | selected=[36, 3, 49, 40, 1]
+Round 342 | train_loss=nan train_acc=0.0530 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 343 | selected=[31, 48, 11, 5, 29]
+Round 343 | train_loss=nan train_acc=0.0770 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 344 | selected=[38, 9, 25, 42, 21]
+Round 344 | train_loss=nan train_acc=0.0508 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 345 | selected=[24, 19, 21, 42, 8]
+Round 345 | train_loss=nan train_acc=0.0924 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 346 | selected=[30, 15, 42, 23, 46]
+Round 346 | train_loss=nan train_acc=0.0506 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 347 | selected=[14, 29, 24, 39, 21]
+Round 347 | train_loss=nan train_acc=0.0778 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 348 | selected=[36, 18, 7, 21, 15]
+Round 348 | train_loss=nan train_acc=0.0914 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 349 | selected=[30, 5, 38, 7, 1]
+Round 349 | train_loss=nan train_acc=0.0204 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 350 | selected=[29, 15, 13, 6, 16]
+Round 350 | train_loss=nan train_acc=0.1574 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 351 | selected=[34, 19, 23, 21, 12]
+Round 351 | train_loss=nan train_acc=0.0166 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 352 | selected=[2, 26, 49, 12, 41]
+Round 352 | train_loss=nan train_acc=0.0776 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 353 | selected=[17, 3, 32, 48, 44]
+Round 353 | train_loss=nan train_acc=0.1020 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 354 | selected=[26, 43, 10, 48, 40]
+Round 354 | train_loss=nan train_acc=0.1190 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 355 | selected=[37, 48, 4, 1, 19]
+Round 355 | train_loss=nan train_acc=0.1308 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 356 | selected=[40, 33, 38, 39, 0]
+Round 356 | train_loss=nan train_acc=0.0914 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 357 | selected=[4, 40, 23, 47, 39]
+Round 357 | train_loss=nan train_acc=0.0912 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 358 | selected=[32, 13, 4, 34, 40]
+Round 358 | train_loss=nan train_acc=0.1010 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 359 | selected=[16, 43, 48, 9, 45]
+Round 359 | train_loss=nan train_acc=0.3042 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 360 | selected=[49, 16, 21, 40, 9]
+Round 360 | train_loss=nan train_acc=0.1508 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 361 | selected=[33, 37, 19, 18, 41]
+Round 361 | train_loss=nan train_acc=0.1092 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 362 | selected=[38, 36, 37, 4, 47]
+Round 362 | train_loss=nan train_acc=0.0812 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 363 | selected=[0, 42, 8, 36, 35]
+Round 363 | train_loss=nan train_acc=0.1810 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 364 | selected=[36, 33, 34, 28, 14]
+Round 364 | train_loss=nan train_acc=0.0716 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 365 | selected=[14, 15, 34, 33, 10]
+Round 365 | train_loss=nan train_acc=0.1124 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 366 | selected=[41, 29, 49, 28, 31]
+Round 366 | train_loss=nan train_acc=0.0364 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 367 | selected=[16, 46, 42, 43, 48]
+Round 367 | train_loss=nan train_acc=0.1348 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 368 | selected=[3, 9, 0, 12, 30]
+Round 368 | train_loss=nan train_acc=0.0474 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 369 | selected=[0, 34, 12, 26, 11]
+Round 369 | train_loss=nan train_acc=0.0574 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 370 | selected=[48, 32, 10, 42, 16]
+Round 370 | train_loss=nan train_acc=0.1672 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 371 | selected=[21, 17, 37, 25, 23]
+Round 371 | train_loss=nan train_acc=0.0452 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 372 | selected=[0, 49, 23, 31, 11]
+Round 372 | train_loss=nan train_acc=0.0304 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 373 | selected=[13, 7, 41, 22, 32]
+Round 373 | train_loss=nan train_acc=0.0502 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 374 | selected=[23, 0, 47, 46, 37]
+Round 374 | train_loss=nan train_acc=0.0546 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 375 | selected=[44, 46, 27, 31, 42]
+Round 375 | train_loss=nan train_acc=0.0476 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 376 | selected=[32, 29, 26, 15, 19]
+Round 376 | train_loss=nan train_acc=0.1344 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 377 | selected=[32, 8, 41, 42, 9]
+Round 377 | train_loss=nan train_acc=0.1578 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 378 | selected=[5, 26, 0, 30, 38]
+Round 378 | train_loss=nan train_acc=0.0568 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 379 | selected=[3, 28, 36, 14, 25]
+Round 379 | train_loss=nan train_acc=0.0398 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 380 | selected=[46, 22, 33, 8, 14]
+Round 380 | train_loss=nan train_acc=0.1410 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 381 | selected=[30, 13, 4, 37, 0]
+Round 381 | train_loss=nan train_acc=0.0806 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 382 | selected=[15, 12, 26, 7, 5]
+Round 382 | train_loss=nan train_acc=0.0898 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 383 | selected=[29, 2, 17, 32, 36]
+Round 383 | train_loss=nan train_acc=0.0672 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 384 | selected=[18, 34, 5, 19, 44]
+Round 384 | train_loss=nan train_acc=0.0620 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 385 | selected=[45, 29, 30, 17, 4]
+Round 385 | train_loss=nan train_acc=0.1730 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 386 | selected=[38, 12, 3, 29, 22]
+Round 386 | train_loss=nan train_acc=0.0228 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 387 | selected=[16, 22, 27, 8, 17]
+Round 387 | train_loss=nan train_acc=0.2020 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 388 | selected=[21, 40, 28, 18, 13]
+Round 388 | train_loss=nan train_acc=0.0768 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 389 | selected=[13, 21, 29, 4, 25]
+Round 389 | train_loss=nan train_acc=0.0592 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 390 | selected=[44, 37, 6, 20, 17]
+Round 390 | train_loss=nan train_acc=0.0510 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 391 | selected=[32, 45, 43, 10, 36]
+Round 391 | train_loss=nan train_acc=0.1688 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 392 | selected=[48, 47, 19, 4, 23]
+Round 392 | train_loss=nan train_acc=0.1024 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 393 | selected=[33, 38, 5, 13, 12]
+Round 393 | train_loss=nan train_acc=0.0542 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 394 | selected=[32, 5, 31, 0, 28]
+Round 394 | train_loss=nan train_acc=0.0440 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 395 | selected=[22, 37, 47, 21, 2]
+Round 395 | train_loss=nan train_acc=0.0618 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 396 | selected=[32, 37, 10, 41, 13]
+Round 396 | train_loss=nan train_acc=0.0840 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 397 | selected=[39, 35, 41, 5, 1]
+Round 397 | train_loss=nan train_acc=0.1350 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 398 | selected=[40, 37, 1, 17, 10]
+Round 398 | train_loss=nan train_acc=0.0646 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 399 | selected=[37, 14, 3, 16, 10]
+Round 399 | train_loss=nan train_acc=0.1392 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 400 | selected=[17, 42, 34, 19, 15]
+Round 400 | train_loss=nan train_acc=0.0598 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 401 | selected=[21, 24, 1, 23, 16]
+Round 401 | train_loss=nan train_acc=0.0954 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 402 | selected=[27, 16, 0, 10, 17]
+Round 402 | train_loss=nan train_acc=0.1240 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 403 | selected=[37, 26, 45, 44, 6]
+Round 403 | train_loss=nan train_acc=0.2206 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 404 | selected=[38, 33, 2, 34, 12]
+Round 404 | train_loss=nan train_acc=0.0614 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 405 | selected=[44, 38, 1, 46, 12]
+Round 405 | train_loss=nan train_acc=0.0226 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 406 | selected=[21, 35, 47, 3, 14]
+Round 406 | train_loss=nan train_acc=0.1296 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 407 | selected=[4, 22, 26, 0, 8]
+Round 407 | train_loss=nan train_acc=0.1570 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 408 | selected=[31, 28, 49, 46, 35]
+Round 408 | train_loss=nan train_acc=0.1086 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 409 | selected=[33, 48, 25, 5, 13]
+Round 409 | train_loss=nan train_acc=0.1106 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 410 | selected=[18, 33, 16, 24, 43]
+Round 410 | train_loss=nan train_acc=0.1520 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 411 | selected=[11, 15, 45, 18, 38]
+Round 411 | train_loss=nan train_acc=0.2262 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 412 | selected=[49, 3, 20, 47, 42]
+Round 412 | train_loss=nan train_acc=0.0332 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 413 | selected=[37, 26, 19, 38, 25]
+Round 413 | train_loss=nan train_acc=0.0878 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 414 | selected=[48, 12, 5, 40, 30]
+Round 414 | train_loss=nan train_acc=0.0802 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 415 | selected=[3, 47, 14, 22, 43]
+Round 415 | train_loss=nan train_acc=0.0424 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 416 | selected=[5, 40, 3, 17, 22]
+Round 416 | train_loss=nan train_acc=0.0266 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 417 | selected=[6, 24, 32, 29, 2]
+Round 417 | train_loss=nan train_acc=0.0756 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 418 | selected=[27, 36, 8, 48, 0]
+Round 418 | train_loss=nan train_acc=0.1922 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 419 | selected=[20, 11, 33, 38, 1]
+Round 419 | train_loss=nan train_acc=0.0482 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 420 | selected=[1, 9, 12, 38, 30]
+Round 420 | train_loss=nan train_acc=0.0558 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 421 | selected=[34, 46, 22, 33, 38]
+Round 421 | train_loss=nan train_acc=0.0460 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 422 | selected=[24, 47, 23, 0, 16]
+Round 422 | train_loss=nan train_acc=0.1012 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 423 | selected=[35, 30, 33, 34, 37]
+Round 423 | train_loss=nan train_acc=0.1606 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 424 | selected=[15, 23, 10, 39, 4]
+Round 424 | train_loss=nan train_acc=0.1082 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 425 | selected=[32, 44, 11, 16, 8]
+Round 425 | train_loss=nan train_acc=0.1986 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 426 | selected=[4, 13, 23, 19, 30]
+Round 426 | train_loss=nan train_acc=0.0478 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 427 | selected=[29, 38, 45, 0, 16]
+Round 427 | train_loss=nan train_acc=0.2314 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 428 | selected=[19, 26, 21, 6, 4]
+Round 428 | train_loss=nan train_acc=0.0792 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 429 | selected=[39, 12, 28, 11, 8]
+Round 429 | train_loss=nan train_acc=0.1186 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 430 | selected=[15, 44, 2, 19, 39]
+Round 430 | train_loss=nan train_acc=0.1010 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 431 | selected=[44, 30, 16, 31, 8]
+Round 431 | train_loss=nan train_acc=0.1658 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 432 | selected=[24, 27, 46, 2, 23]
+Round 432 | train_loss=nan train_acc=0.0658 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 433 | selected=[27, 12, 18, 49, 22]
+Round 433 | train_loss=nan train_acc=0.1008 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 434 | selected=[10, 30, 8, 24, 21]
+Round 434 | train_loss=nan train_acc=0.0908 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 435 | selected=[25, 23, 7, 12, 48]
+Round 435 | train_loss=nan train_acc=0.0672 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 436 | selected=[12, 3, 26, 17, 15]
+Round 436 | train_loss=nan train_acc=0.0916 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 437 | selected=[18, 40, 29, 26, 36]
+Round 437 | train_loss=nan train_acc=0.1170 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 438 | selected=[8, 21, 10, 32, 30]
+Round 438 | train_loss=nan train_acc=0.1182 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 439 | selected=[31, 10, 33, 35, 40]
+Round 439 | train_loss=nan train_acc=0.1366 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 440 | selected=[33, 12, 0, 38, 10]
+Round 440 | train_loss=nan train_acc=0.0424 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 441 | selected=[38, 19, 49, 1, 6]
+Round 441 | train_loss=nan train_acc=0.0464 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 442 | selected=[11, 23, 20, 5, 21]
+Round 442 | train_loss=nan train_acc=0.0100 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 443 | selected=[15, 46, 39, 6, 27]
+Round 443 | train_loss=nan train_acc=0.1268 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 444 | selected=[35, 32, 34, 27, 44]
+Round 444 | train_loss=nan train_acc=0.1760 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 445 | selected=[1, 2, 8, 4, 15]
+Round 445 | train_loss=nan train_acc=0.1816 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 446 | selected=[34, 6, 45, 30, 46]
+Round 446 | train_loss=nan train_acc=0.1500 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 447 | selected=[31, 3, 44, 49, 32]
+Round 447 | train_loss=nan train_acc=0.0604 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 448 | selected=[46, 4, 13, 12, 47]
+Round 448 | train_loss=nan train_acc=0.0522 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 449 | selected=[48, 8, 41, 9, 13]
+Round 449 | train_loss=nan train_acc=0.1982 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 450 | selected=[33, 27, 48, 17, 42]
+Round 450 | train_loss=nan train_acc=0.1314 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 451 | selected=[35, 34, 30, 48, 11]
+Round 451 | train_loss=nan train_acc=0.1574 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 452 | selected=[27, 40, 15, 33, 11]
+Round 452 | train_loss=nan train_acc=0.1352 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 453 | selected=[23, 40, 12, 46, 8]
+Round 453 | train_loss=nan train_acc=0.1060 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 454 | selected=[11, 1, 21, 19, 4]
+Round 454 | train_loss=nan train_acc=0.0408 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 455 | selected=[14, 48, 39, 30, 45]
+Round 455 | train_loss=nan train_acc=0.2490 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 456 | selected=[43, 12, 14, 45, 2]
+Round 456 | train_loss=nan train_acc=0.1750 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 457 | selected=[20, 32, 9, 40, 33]
+Round 457 | train_loss=nan train_acc=0.1192 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 458 | selected=[26, 13, 20, 5, 0]
+Round 458 | train_loss=nan train_acc=0.0650 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 459 | selected=[43, 10, 31, 44, 2]
+Round 459 | train_loss=nan train_acc=0.0238 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 460 | selected=[0, 26, 43, 13, 23]
+Round 460 | train_loss=nan train_acc=0.0664 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 461 | selected=[18, 0, 41, 24, 9]
+Round 461 | train_loss=nan train_acc=0.0932 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 462 | selected=[16, 3, 39, 36, 47]
+Round 462 | train_loss=nan train_acc=0.1242 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 463 | selected=[24, 45, 21, 0, 23]
+Round 463 | train_loss=nan train_acc=0.1470 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 464 | selected=[19, 13, 29, 7, 5]
+Round 464 | train_loss=nan train_acc=0.0332 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 465 | selected=[15, 28, 20, 27, 1]
+Round 465 | train_loss=nan train_acc=0.0986 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 466 | selected=[37, 49, 46, 30, 9]
+Round 466 | train_loss=nan train_acc=0.0910 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 467 | selected=[48, 7, 42, 44, 41]
+Round 467 | train_loss=nan train_acc=0.0672 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 468 | selected=[27, 7, 33, 22, 19]
+Round 468 | train_loss=nan train_acc=0.0728 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 469 | selected=[5, 15, 0, 16, 30]
+Round 469 | train_loss=nan train_acc=0.1298 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 470 | selected=[34, 15, 45, 41, 43]
+Round 470 | train_loss=nan train_acc=0.1894 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 471 | selected=[45, 23, 12, 22, 3]
+Round 471 | train_loss=nan train_acc=0.1386 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 472 | selected=[27, 48, 13, 44, 16]
+Round 472 | train_loss=nan train_acc=0.1948 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 473 | selected=[11, 12, 39, 10, 26]
+Round 473 | train_loss=nan train_acc=0.0746 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 474 | selected=[10, 38, 40, 29, 8]
+Round 474 | train_loss=nan train_acc=0.1220 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 475 | selected=[7, 40, 42, 29, 0]
+Round 475 | train_loss=nan train_acc=0.0370 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 476 | selected=[22, 19, 23, 48, 42]
+Round 476 | train_loss=nan train_acc=0.0658 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 477 | selected=[19, 23, 46, 47, 5]
+Round 477 | train_loss=nan train_acc=0.0208 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 478 | selected=[0, 19, 28, 48, 7]
+Round 478 | train_loss=nan train_acc=0.0682 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 479 | selected=[26, 5, 11, 4, 18]
+Round 479 | train_loss=nan train_acc=0.1132 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 480 | selected=[49, 11, 33, 7, 16]
+Round 480 | train_loss=nan train_acc=0.1244 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 481 | selected=[16, 43, 39, 7, 40]
+Round 481 | train_loss=nan train_acc=0.1254 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 482 | selected=[9, 26, 37, 24, 35]
+Round 482 | train_loss=nan train_acc=0.2060 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 483 | selected=[30, 28, 13, 27, 17]
+Round 483 | train_loss=nan train_acc=0.0598 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 484 | selected=[10, 1, 27, 33, 2]
+Round 484 | train_loss=nan train_acc=0.0968 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 485 | selected=[6, 34, 47, 21, 40]
+Round 485 | train_loss=nan train_acc=0.0484 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 486 | selected=[3, 0, 15, 14, 40]
+Round 486 | train_loss=nan train_acc=0.0992 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 487 | selected=[40, 9, 46, 33, 23]
+Round 487 | train_loss=nan train_acc=0.0904 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 488 | selected=[41, 17, 25, 10, 43]
+Round 488 | train_loss=nan train_acc=0.0104 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 489 | selected=[44, 6, 35, 15, 8]
+Round 489 | train_loss=nan train_acc=0.2318 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 490 | selected=[44, 7, 15, 25, 39]
+Round 490 | train_loss=nan train_acc=0.0874 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 491 | selected=[36, 46, 18, 14, 20]
+Round 491 | train_loss=nan train_acc=0.0726 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 492 | selected=[17, 18, 33, 10, 39]
+Round 492 | train_loss=nan train_acc=0.1054 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 493 | selected=[39, 31, 40, 20, 36]
+Round 493 | train_loss=nan train_acc=0.0544 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 494 | selected=[39, 0, 21, 19, 10]
+Round 494 | train_loss=nan train_acc=0.0408 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 495 | selected=[6, 10, 29, 18, 35]
+Round 495 | train_loss=nan train_acc=0.1516 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 496 | selected=[13, 22, 20, 30, 3]
+Round 496 | train_loss=nan train_acc=0.0188 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 497 | selected=[40, 0, 3, 12, 32]
+Round 497 | train_loss=nan train_acc=0.0590 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 498 | selected=[18, 42, 36, 19, 34]
+Round 498 | train_loss=nan train_acc=0.0570 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 499 | selected=[8, 10, 30, 44, 29]
+Round 499 | train_loss=nan train_acc=0.1036 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Round 500 | selected=[47, 17, 23, 35, 7]
+Round 500 | train_loss=nan train_acc=0.1052 test_loss=nan test_acc=0.1000 steps=16.0 c_global_norm=nan c_delta_norm=nan
+Saved: /work/nvme/bioh/ashah28/flower_bench/track4/results/production/scaffold_niid10_50c_5cpr_seed43.partial.csv

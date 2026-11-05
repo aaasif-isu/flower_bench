@@ -1,0 +1,11 @@
+GPU: NVIDIA A100-SXM4-40GB; CUDA_VISIBLE_DEVICES=0
+/sw/rh9.4/user/python/conda-env/pytorch-2.8-cu128/bin/python -u track1/cifar/run_fedadam.py --partition-file track4/partitions/dirichlet_50c_seed42.npz --schedule-file track4/schedules/50c_5cpr_seed42.json --output /work/nvme/bioh/ashah28/flower_bench/track4/results/smoke/fedadam_niid10_50c_5cpr_seed42.partial.csv --data-dir track1/data --num-clients 50 --rounds 2 --local-epochs 1 --batch-size 64 --lr 0.01 --momentum 0.9 --weight-decay 0.0 --training-seed 42 --server-lr 0.01 --beta1 0.9 --beta2 0.99 --tau 1e-9
+Device: cuda
+GPU: NVIDIA A100-SXM4-40GB
+Round 0 | test_loss=3.2142 test_acc=0.1000
+Round 1 | selected=[36, 21, 31, 4, 49]
+Round 1 | train_loss=1.7382 train_acc=0.4152 test_loss=16867.5802 test_acc=0.1000
+Round 2 | selected=[46, 4, 24, 38, 36]
+Round 2 | train_loss=2.2074 train_acc=0.4116 test_loss=87571.1274 test_acc=0.1000
+Saved: /work/nvme/bioh/ashah28/flower_bench/track4/results/smoke/fedadam_niid10_50c_5cpr_seed42.partial.csv
+Completed: /work/nvme/bioh/ashah28/flower_bench/track4/results/smoke/fedadam_niid10_50c_5cpr_seed42.csv

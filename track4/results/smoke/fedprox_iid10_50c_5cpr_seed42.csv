@@ -1,0 +1,3 @@
+round,train_loss,train_accuracy,test_loss,test_accuracy,num_fit_clients,run_completed
+1,2.3199538988113404,0.1406,2.1270088333129884,0.1945,5,False
+2,2.1089066791534425,0.2106,1.9459528186798096,0.2502,5,True

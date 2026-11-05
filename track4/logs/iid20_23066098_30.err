@@ -1,0 +1,29 @@
+=====================================================
+Conda-Forge PyTorch 2.8 Environment Loaded Successfully!
+=====================================================
+
+To activate the environment:
+  conda activate base
+
+If 'conda activate' fails, use:
+  source $CONDA_PREFIX/etc/profile.d/conda.sh && conda activate base
+
+To verify PyTorch installation:
+  python -c "import torch; print(f'PyTorch {torch.__version__} CUDA:
+{torch.cuda.is_available()}')"
+
+Environment includes:
+  - PyTorch 2.8 with CUDA 12.8 support
+  - Scientific Python stack (numpy, scipy, pandas)
+  - ML libraries (transformers, lightning, timm)
+  - Cray PE integration with optimized MPI
+
+For Jupyter notebook support:
+  setup-kernel (creates Jupyter kernel for this environment)
+
+For distributed training, load:
+  module load aws-ofi-nccl/1.14.2
+
+Ready for single-node and distributed training!
+=====================================================
+

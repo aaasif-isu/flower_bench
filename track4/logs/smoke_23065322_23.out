@@ -1,0 +1,11 @@
+GPU: NVIDIA A100-SXM4-40GB; CUDA_VISIBLE_DEVICES=0
+/sw/rh9.4/user/python/conda-env/pytorch-2.8-cu128/bin/python -u track1/cifar/run_scaffold.py --partition-file track4/partitions/dirichlet_50c_seed42.npz --schedule-file track4/schedules/50c_10cpr_seed42.json --output /work/nvme/bioh/ashah28/flower_bench/track4/results/smoke/scaffold_niid20_50c_10cpr_seed42.partial.csv --data-dir track1/data --num-clients 50 --rounds 2 --local-epochs 1 --batch-size 64 --lr 0.01 --momentum 0.9 --weight-decay 0.0 --training-seed 42
+Device: cuda
+GPU: NVIDIA A100-SXM4-40GB
+Round 0 | test_loss=3.2142 test_acc=0.1000
+Round 1 | selected=[4, 32, 3, 28, 19, 44, 33, 49, 9, 39]
+Round 1 | train_loss=1.7499 train_acc=0.3895 test_loss=2.5014 test_acc=0.1076 steps=16.0 c_global_norm=0.6117 c_delta_norm=7.3813
+Round 2 | selected=[35, 19, 15, 30, 40, 8, 18, 21, 27, 41]
+Round 2 | train_loss=1.8486 train_acc=0.4436 test_loss=2.6656 test_acc=0.1710 steps=16.0 c_global_norm=1.3725 c_delta_norm=10.7635
+Saved: /work/nvme/bioh/ashah28/flower_bench/track4/results/smoke/scaffold_niid20_50c_10cpr_seed42.partial.csv
+Completed: /work/nvme/bioh/ashah28/flower_bench/track4/results/smoke/scaffold_niid20_50c_10cpr_seed42.csv

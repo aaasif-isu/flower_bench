@@ -1,0 +1,41 @@
+{
+  "source_hashes": {
+    "track1/cifar/model.py": "d350d4f87d73c197c5e424b383ae7c762bb8b4043a3fb6e14605a8de71ca806e",
+    "track1/cifar/partition.py": "9dd26fc0ddef14c1975f89d861fff7e31395b7d9ed7595e175c0e4ffd0e6821a",
+    "track1/cifar/run_fedadam.py": "866931b3f661f96365600d3df2046b029310642269391f4e161fded2acdb03e0",
+    "track1/cifar/run_fedavg.py": "99f52737d00350c91d3a21139119d19949554ee43dda7967d7b2f1eb5c4260c8",
+    "track1/cifar/run_fedavgm.py": "9035061cec02a7e7d8a03427f6440fc6f62fecb10545160f863d84939dceb0c2",
+    "track1/cifar/run_fednova.py": "9edfe36b52c3486f0ccb30bbb6e22a17f95c3f9e3ee71080bec7698ec3f92946",
+    "track1/cifar/run_fedprox.py": "d2cf938a85e3426b8b01aae506b90c31c6f80e74c874ee141068d57b61c04ace",
+    "track1/cifar/run_scaffold.py": "038119d12d98efb2f151bc26f8534b784e4bf8b1a28b2a169abb72d83f10aed7",
+    "track1/cifar/schedule.py": "5f448ddc25dad56b3a750481b7c69009d79e72efc417e442b232ec9821982c73",
+    "track4/jobs/manage.py": "7f7144af3683029b4649e1521c838fa95a2ca5f49b6c448250fd464c0d65270c"
+  },
+  "python": "/sw/rh9.4/user/python/conda-env/pytorch-2.8-cu128/bin/python",
+  "created": 1792538022.967334,
+  "algorithm_options": {
+    "fedavg": [],
+    "fedprox": [
+      "--mu",
+      "0.01"
+    ],
+    "fedavgm": [
+      "--server-momentum",
+      "0.9",
+      "--server-lr",
+      "1.0"
+    ],
+    "fedadam": [
+      "--server-lr",
+      "0.01",
+      "--beta1",
+      "0.9",
+      "--beta2",
+      "0.99",
+      "--tau",
+      "1e-9"
+    ],
+    "fednova": [],
+    "scaffold": []
+  }
+}
