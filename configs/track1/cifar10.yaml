@@ -1,0 +1,135 @@
+# Track 1: CIFAR-10 Statistical Heterogeneity Benchmark Configuration
+track: track1
+experiment_name: track1_cifar10_heterogeneity
+dataset: cifar10
+model: resnet18
+data_dir: tracks/track1/data
+output_dir: results
+
+num_clients: 100
+clients_per_round: 10
+
+partitions:
+  - type: iid
+    label: iid
+  - type: dirichlet
+    alpha: 1.0
+    label: alpha_1.0
+  - type: dirichlet
+    alpha: 0.3
+    label: alpha_0.3
+  - type: dirichlet
+    alpha: 0.1
+    label: alpha_0.1
+
+methods:
+  - fedavg
+  - fedprox
+  - fedavgm
+  - fedadam
+  - fednova
+  - scaffold
+
+seeds: [42, 43, 44, 45, 46]
+
+training:
+  rounds: 500
+  local_epochs: 1
+  batch_size: 64
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 0.0
+  max_grad_norm: null
+
+evaluation:
+  eval_interval: 1
+  eval_batch_size: 256
+  include_num_fit_examples: false
+  include_perplexity: false
+  include_comm_accounting: false
+
+method_params:
+  fedavg: {}
+  fedprox:
+    mu: 0.01
+  fedavgm:
+    server_momentum: 0.9
+    server_lr: 1.0
+  fedadam:
+    server_lr: 0.001
+    beta1: 0.9
+    beta2: 0.99
+    tau: 1.0e-9
+  fednova: {}
+  scaffold:
+    momentum: 0.0
+    version: v2_option2_mom0
+  fedspeed:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 0.998
+    momentum: 0.0
+    weight_decay: 0.001
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.1
+    lamb: 0.1
+    fedspeed_alpha: 1.0
+    fedspeed_prox_mode: paper_symmetric
+    fedspeed_comm_mode: reference_simulator
+    fedspeed_freeze_bn_on_perturb: true
+  fedlesam:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 0.998
+    momentum: 0.0
+    weight_decay: 0.001
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.1
+    lamb: 0.1
+    fedlesam_variant: base
+    fedlesam_norm_mode: reference_sum_l2
+    fedlesam_perturbation_target: server_global_update
+  fedgps:
+    hyperparameter_source: paper_default
+    lr: 0.01
+    lr_decay: 1.0
+    momentum: 0.9
+    weight_decay: 1.0e-5
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.5
+    fedgps_use_minus: true
+    fedgps_require_prev_delta: true
+    fedgps_label_shift: true
+    fedgps_surrogate_mode: gaussian
+    fedgps_surrogate_alpha: 1.0
+    fedgps_align_loss_weight: 0.1
+    fedgps_proto_align_method: mse
+    fedgps_surrogate_num: 10
+  fedwmsam:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 0.998
+    momentum: 0.0
+    weight_decay: 0.001
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.01
+    wmsam_alpha: 0.1
+    wmsam_norm_mode: reference_sum_l2
+
+slurm:
+  job_name: t1_cifar10
+  account: jannesar-lab
+  partition: nova
+  nodes: 1
+  ntasks: 1
+  cpus_per_task: 4
+  gpus_per_task: 1
+  mem: 24G
+  time: "24:00:00"
+  max_concurrent: 4
+  log_dir: tracks/track1/logs/slurm
+

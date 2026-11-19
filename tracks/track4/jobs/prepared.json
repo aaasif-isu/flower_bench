@@ -1,0 +1,80 @@
+{
+  "source_hashes": {
+    "fl_bench/__init__.py": "3c86aa715c04313ab33907ec1f93a9a150ef8dc5a128dc1846318449471b72bb",
+    "fl_bench/config.py": "e1a58f650e2837ecc87e12fed340d105a0beaed687fc4c24ab1530aff39609d9",
+    "fl_bench/datasets/__init__.py": "85caab8095dbe51bdec2b7b59b4948a43b767c4ebe0e6433e2b470d34c72956a",
+    "fl_bench/datasets/assets.py": "8041e2b4bb2731b345e8ee87e5eeb722e1a07963848ac8c6b58ce7e72dd5f222",
+    "fl_bench/datasets/cifar10.py": "fe6f75e88bdb1e45e01ebf2ef005ecd91ed0b473e67164c0fb7d98f547a6b271",
+    "fl_bench/datasets/leaf.py": "c6d131e3503a89e4b9c37cce17905171a9d0c377d824ca6585cf649d606b66db",
+    "fl_bench/datasets/partition.py": "fffd9a8130e978be7f9509e4ae7376fed8e94462c2e1f49f45cc4fbc35b1651c",
+    "fl_bench/datasets/schedule.py": "43f0e5c9329705676d5a89a73d69234dd6ab15e20cae9a905b1bb5ece2dc13b8",
+    "fl_bench/engine/__init__.py": "9e9c4479dc101444800d4c4b5caedcecc3730035ccf5ed7485a87cec2eabd681",
+    "fl_bench/engine/trainer.py": "2579393200c3afafbad9083c47b4883a7ba0a4a9bd476999f5a91a1b1c338b08",
+    "fl_bench/methods/__init__.py": "902e17ebce080fba00d1cf887ff4411cb9697c20b3eedaac29ef0123d9a471bd",
+    "fl_bench/methods/base.py": "883047b8ab889528e74e876c7c4cc7a2a3254aee391478f44a6744f85d6adcb4",
+    "fl_bench/methods/fedadam/__init__.py": "1118ef85f71ed81f42925e2745d49c47662421402ea184ebdebbf2465a3bd374",
+    "fl_bench/methods/fedadam/method.py": "37bb6e8423b2d65a98ee6e2f62f9f0c471176607a7cc3577a29f59102b55c1e0",
+    "fl_bench/methods/fedavg/__init__.py": "7183b504030634f404e657729e354615896d53e5bd6c9fb002693f68a8539b5d",
+    "fl_bench/methods/fedavg/method.py": "8ceea24e5068f1ac3c669e0406fda7fa32d87ea4c5e68b064e0d7dd32f3629fd",
+    "fl_bench/methods/fedavgm/__init__.py": "a8f4df937b6f82d212629ee92263ee0323ad23cf37113547be6d010efc17d499",
+    "fl_bench/methods/fedavgm/method.py": "003fec5c5742ee12b9b30c0c411457819acb658e29ba8676ec74e155db0a0d49",
+    "fl_bench/methods/fednova/__init__.py": "f9e0b443a52d13d3c44cfac82fcfd5c88b0735feda847b0c162d760ef760318f",
+    "fl_bench/methods/fednova/method.py": "5df47e30532d26371aeaeaaa2595cc3ce20aa49fe9e03bd48ae53af02133ed5b",
+    "fl_bench/methods/fedprox/__init__.py": "42dc0398bb6b5f942629bdb7c2ea02188518845f74e284df34d5b779dc2a63aa",
+    "fl_bench/methods/fedprox/method.py": "994ff7b926537d5c4f115c231fbc61def860284a0117181bd949aba947edf276",
+    "fl_bench/methods/scaffold/__init__.py": "79d965128c001709737eb927db96f538487cc565fe5f7e39ee56bf4f59b54494",
+    "fl_bench/methods/scaffold/method.py": "5e3b6537b6f1aec2d921b4dcb734cdf4e40d86f0e82494d7fedd391e9b0cb362",
+    "fl_bench/metrics/__init__.py": "2afa0655f962926aefa4fcac0e1e6ff16a1c4031460c1ed1a5e7d90c3895f2a9",
+    "fl_bench/metrics/analysis.py": "ffe74d575dc8b6f0c156f8b01b37dea24bdbc73cd911deb7fdb6c77740a682f7",
+    "fl_bench/metrics/schema.py": "d6122fee9cef054eb07c71e6ed75f9db70dc0fba4e30247d5ba09447a9c513ff",
+    "fl_bench/models/__init__.py": "0502a933afb55e41deb6f16c904c571e9833dbf23ae008fe37bb02456dc22d99",
+    "fl_bench/models/femnist_cnn.py": "22238356641aa2b9981162c57da03e25a30ae545d823bacc3e8505c0c33adbbe",
+    "fl_bench/models/resnet18.py": "c427ba78d47f0735835a1d1ad6afaab76c27c8636f1e75b3448fb76e3e452e7a",
+    "fl_bench/models/shakespeare_lstm.py": "c551e04869f0bc0e1f5bfce19caa2591dceffe5c8bc29ae3b790da2a1d6f09f1",
+    "fl_bench/run.py": "532e03b08d27ed97074bab184f878ba9e1ea1f9b91d69f5fb95f4b76ebbeab37",
+    "fl_bench/utils/__init__.py": "16737b07af6df0adc2e1d548ce210298ba719a93dc2a98dc8c9d03bd4a1df5bc",
+    "fl_bench/utils/io.py": "968940c700cf50fb548736c18f450739a40a7579c0983ca655ff9b432fd06dc1",
+    "fl_bench/utils/provenance.py": "7811ae6df328122770e8a02d67fc0ef0e993f943b6d5d4e225f6fd6780e46126",
+    "fl_bench/utils/seed.py": "51ea7cc1c119d8dcba7858d30f890ebfd13aa642126c3183e5516ed437a4f8bf",
+    "tracks/track4/jobs/manage.py": "aa8565427083cb6c3b296e14bcf3ed8d220ad192aaa3263d274378bfa88cb12d"
+  },
+  "legacy_source_hashes": {
+    "track1/cifar/model.py": "d350d4f87d73c197c5e424b383ae7c762bb8b4043a3fb6e14605a8de71ca806e",
+    "track1/cifar/partition.py": "9dd26fc0ddef14c1975f89d861fff7e31395b7d9ed7595e175c0e4ffd0e6821a",
+    "track1/cifar/run_fedadam.py": "866931b3f661f96365600d3df2046b029310642269391f4e161fded2acdb03e0",
+    "track1/cifar/run_fedavg.py": "99f52737d00350c91d3a21139119d19949554ee43dda7967d7b2f1eb5c4260c8",
+    "track1/cifar/run_fedavgm.py": "9035061cec02a7e7d8a03427f6440fc6f62fecb10545160f863d84939dceb0c2",
+    "track1/cifar/run_fednova.py": "9edfe36b52c3486f0ccb30bbb6e22a17f95c3f9e3ee71080bec7698ec3f92946",
+    "track1/cifar/run_fedprox.py": "d2cf938a85e3426b8b01aae506b90c31c6f80e74c874ee141068d57b61c04ace",
+    "track1/cifar/run_scaffold.py": "038119d12d98efb2f151bc26f8534b784e4bf8b1a28b2a169abb72d83f10aed7",
+    "track1/cifar/schedule.py": "5f448ddc25dad56b3a750481b7c69009d79e72efc417e442b232ec9821982c73",
+    "track4/jobs/manage.py": "7f7144af3683029b4649e1521c838fa95a2ca5f49b6c448250fd464c0d65270c"
+  },
+  "python": "/sw/rh9.4/user/python/conda-env/pytorch-2.8-cu128/bin/python",
+  "created": 1792538022.967334,
+  "algorithm_options": {
+    "fedavg": [],
+    "fedprox": [
+      "--mu",
+      "0.01"
+    ],
+    "fedavgm": [
+      "--server-momentum",
+      "0.9",
+      "--server-lr",
+      "1.0"
+    ],
+    "fedadam": [
+      "--server-lr",
+      "0.01",
+      "--beta1",
+      "0.9",
+      "--beta2",
+      "0.99",
+      "--tau",
+      "1e-9"
+    ],
+    "fednova": [],
+    "scaffold": []
+  }
+}

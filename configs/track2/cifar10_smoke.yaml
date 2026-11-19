@@ -1,0 +1,115 @@
+# Track 2 Smoke Configuration: Exact Local-Step Budgets & Method-Aware Comm Accounting
+track: track2
+experiment_name: track2_cifar10_smoke
+dataset: cifar10
+model: resnet18
+data_dir: tracks/track1/data
+output_dir: results
+
+num_clients: 100
+clients_per_round: 10
+
+partition:
+  type: dirichlet
+  alpha: 0.3
+  label: alpha_0.3
+
+methods:
+  - fedavg
+  - fednova
+  - scaffold
+  - fedspeed
+  - fedlesam
+  - fedgps
+  - fedwmsam
+
+seeds: [42]
+
+# Sweep over both an epoch-based budget and an exact local optimizer-step budget
+local_budgets:
+  - label: steps5
+    local_steps: 5
+  - label: steps10
+    local_steps: 10
+
+training:
+  rounds: 6
+  local_epochs: 1
+  local_steps: 5
+  batch_size: 64
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 0.0
+  max_grad_norm: null
+
+evaluation:
+  eval_interval: 2
+  eval_batch_size: 256
+  include_num_fit_examples: true
+  include_perplexity: false
+  include_comm_accounting: true
+  sustained_eval_checkpoints: 3
+  targets_by_dataset:
+    cifar10: [0.15, 0.20]
+
+method_params:
+  fedavg: {}
+  fednova: {}
+  scaffold:
+    version: v2_option2_mom0
+    momentum: 0.0
+  fedspeed:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 0.998
+    momentum: 0.0
+    weight_decay: 0.001
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.1
+    lamb: 0.1
+    fedspeed_alpha: 1.0
+    fedspeed_prox_mode: paper_symmetric
+    fedspeed_comm_mode: reference_simulator
+    fedspeed_freeze_bn_on_perturb: true
+  fedlesam:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 0.998
+    momentum: 0.0
+    weight_decay: 0.001
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.1
+    lamb: 0.1
+    fedlesam_variant: base
+    fedlesam_norm_mode: reference_sum_l2
+    fedlesam_perturbation_target: server_global_update
+  fedgps:
+    hyperparameter_source: paper_default
+    lr: 0.01
+    lr_decay: 1.0
+    momentum: 0.9
+    weight_decay: 1.0e-5
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.5
+    fedgps_use_minus: true
+    fedgps_require_prev_delta: true
+    fedgps_label_shift: true
+    fedgps_surrogate_mode: gaussian
+    fedgps_surrogate_alpha: 1.0
+    fedgps_align_loss_weight: 0.1
+    fedgps_proto_align_method: mse
+    fedgps_surrogate_num: 10
+  fedwmsam:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 0.998
+    momentum: 0.0
+    weight_decay: 0.001
+    max_grad_norm: 10.0
+    server_lr: 1.0
+    rho: 0.01
+    wmsam_alpha: 0.1
+    wmsam_norm_mode: reference_sum_l2

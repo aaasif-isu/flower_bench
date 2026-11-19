@@ -1,0 +1,54 @@
+# HeteroFL (ICLR 2021) Smoke Configuration: Heterogeneous Client Subnetwork Capacities
+track: track2
+experiment_name: heterofl_cifar10_smoke
+dataset: cifar10
+model: resnet18
+data_dir: tracks/track1/data
+output_dir: results
+
+num_clients: 100
+clients_per_round: 10
+
+partition:
+  type: dirichlet
+  alpha: 0.3
+  label: alpha_0.3
+
+methods:
+  - heterofl
+
+seeds: [42]
+
+training:
+  rounds: 6
+  local_epochs: 1
+  local_steps: 5
+  batch_size: 64
+  lr: 0.1
+  momentum: 0.9
+  weight_decay: 5.0e-4
+  max_grad_norm: 1.0
+
+evaluation:
+  eval_interval: 2
+  eval_batch_size: 256
+  include_num_fit_examples: true
+  include_perplexity: false
+  include_comm_accounting: true
+  sustained_eval_checkpoints: 3
+
+method_params:
+  heterofl:
+    hyperparameter_source: paper_default
+    lr: 0.1
+    lr_decay: 1.0
+    momentum: 0.9
+    weight_decay: 5.0e-4
+    max_grad_norm: 1.0
+    heterofl_split_mode: fix
+    heterofl_model_mode: "a2-b2-c2-d2-e2"
+    heterofl_scaler: true
+    heterofl_mask: true
+    heterofl_sbn: true
+    # Optional custom rate dictionary (e.g. {"a": 1.0, "b": 0.5, "c": 0.25})
+    heterofl_custom_rates: null

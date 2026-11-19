@@ -1,0 +1,86 @@
+# Track 4: CIFAR-10 Scalability & Participation Benchmark Configuration (360-run grid)
+track: track4
+experiment_name: track4_cifar10_scalability
+dataset: cifar10
+model: resnet18
+data_dir: tracks/track1/data
+output_dir: results
+
+partitions:
+  - type: iid
+    label: iid
+  - type: dirichlet
+    alpha: 0.5
+    label: alpha_0.5
+
+scales:
+  - num_clients: 50
+    participation_ratio: 0.10
+  - num_clients: 100
+    participation_ratio: 0.10
+  - num_clients: 500
+    participation_ratio: 0.10
+  - num_clients: 50
+    participation_ratio: 0.20
+  - num_clients: 100
+    participation_ratio: 0.20
+  - num_clients: 500
+    participation_ratio: 0.20
+
+methods:
+  - fedavg
+  - fedprox
+  - fedavgm
+  - fedadam
+  - fednova
+  - scaffold
+
+seeds: [42, 43, 44, 45, 46]
+
+training:
+  rounds: 500
+  local_epochs: 1
+  batch_size: 64
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 0.0
+  max_grad_norm: null
+
+evaluation:
+  eval_interval: 1
+  eval_batch_size: 256
+  include_num_fit_examples: false
+  include_perplexity: false
+  include_comm_accounting: false
+
+method_params:
+  fedavg: {}
+  fedprox:
+    mu: 0.01
+  fedavgm:
+    server_momentum: 0.9
+    server_lr: 1.0
+  fedadam:
+    server_lr: 0.01
+    beta1: 0.9
+    beta2: 0.99
+    tau: 1.0e-9
+  fednova: {}
+  scaffold:
+    momentum: 0.0
+    version: v2_option2_mom0
+
+slurm:
+  job_name: t4_scale
+  account: bioh-delta-gpu
+  qos: bioh-delta-gpu
+  partition: gpuA100x4
+  nodes: 1
+  ntasks: 1
+  cpus_per_task: 4
+  gpus_per_task: 1
+  mem: 64G
+  time: "2-00:00:00"
+  max_concurrent: 1
+  log_dir: tracks/track4/logs
+

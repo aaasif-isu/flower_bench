@@ -1,0 +1,111 @@
+# Track 2 Analysis & Figure Generation Configuration
+track: track2
+suite_version: track2_v1
+results_root: results/track2
+raw_fallback_dir: results/track2/raw
+
+output_dirs:
+  metrics: analysis/track2/outputs/metrics
+  tables: analysis/track2/outputs/tables
+  figures: analysis/track2/outputs/figures
+
+discover_additional_methods: true
+
+methods:
+  - fedavg
+  - fedprox
+  - fedavgm
+  - fedadam
+  - fednova
+  - scaffold
+
+method_labels:
+  fedavg: "FedAvg"
+  fedprox: "FedProx"
+  fedavgm: "FedAvgM"
+  fedadam: "FedAdam"
+  fednova: "FedNova"
+  scaffold: "SCAFFOLD"
+  fedspeed: "FedSpeed"
+  fedlesam: "FedLESAM"
+  fedgps: "FedGPS"
+  fedwmsam: "FedWMSAM"
+  heterofl: "HeteroFL"
+
+seeds: [42, 43, 44, 45, 46]
+
+accounting:
+  sustained_eval_checkpoints: 3
+  recompute_analytical_bytes: true
+  strict_full_success_ranking: false
+  byte_accounting_type: "analytical_serialized_tensor_estimate"
+  is_measured_network_traffic: false
+  active_resource_bases:
+    - rounds
+    - client_updates
+    - upload_bytes
+    - download_bytes
+    - total_bytes
+    - local_steps
+    - forward_passes
+    - backward_passes
+  deferred_resource_bases:
+    flops: "Deferred: client/server FLOPs accounting requires a standardized per-layer and method-specific optimizer step operation counter."
+    simulated_wall_clock_time: "Deferred: simulated synchronous wall-clock time requires per-client hardware/network straggler logs or a calibrated latency model."
+
+datasets:
+  cifar10:
+    enabled: true
+    modality: image
+    display_name: "CIFAR-10 (ResNet-18)"
+    model: resnet18
+    num_clients: 100
+    clients_per_round: 10
+    rounds: 500
+    eval_interval: 5
+    partitions: [iid]
+    partition_labels:
+      iid: "IID"
+      alpha_1.0: "Dirichlet ($\\alpha=1.0$)"
+      alpha_0.3: "Dirichlet ($\\alpha=0.3$)"
+      alpha_0.1: "Dirichlet ($\\alpha=0.1$)"
+    local_budgets: [epochs1]
+    targets: [0.70, 0.80, 0.85]
+  femnist:
+    enabled: true
+    modality: image
+    display_name: "FEMNIST (2-Conv CNN)"
+    model: femnist_cnn
+    num_clients: 500
+    clients_per_round: 20
+    rounds: 1000
+    eval_interval: 10
+    partitions: [natural]
+    partition_labels:
+      natural: "Natural User Split"
+    local_budgets: [epochs1]
+    targets: [0.80, 0.85, 0.90]
+  shakespeare:
+    enabled: true
+    modality: language
+    display_name: "Shakespeare (2-Layer LSTM)"
+    model: shakespeare_lstm
+    num_clients: 100
+    clients_per_round: 10
+    rounds: 1000
+    eval_interval: 10
+    partitions: [natural]
+    partition_labels:
+      natural: "Natural Role Split"
+    local_budgets: [epochs1]
+    targets: [0.45, 0.50, 0.53]
+
+figures:
+  enabled: true
+  formats: [pdf, png]
+  dpi: 300
+  plots:
+    efficiency_to_target: true
+    accuracy_vs_resources: true
+    rank_comparison: true
+    success_rate_heatmap: true
